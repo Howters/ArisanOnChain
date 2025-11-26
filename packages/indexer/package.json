@@ -1,0 +1,22 @@
+{
+  "name": "@arisanaman/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ponder dev",
+    "start": "ponder start",
+    "codegen": "ponder codegen",
+    "serve": "ponder serve"
+  },
+  "dependencies": {
+    "@ponder/core": "^0.6.0",
+    "hono": "^4.6.0",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
+
+

@@ -1,0 +1,35 @@
+node_modules
+.pnpm-store
+dist
+.next
+.turbo
+*.log
+.env
+.env.local
+.env.*.local
+
+# Hardhat
+artifacts
+cache
+typechain-types
+coverage
+coverage.json
+
+# Ponder
+.ponder
+generated
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+
+
