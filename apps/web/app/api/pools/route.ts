@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     const pools = [];
     
-    for (let i = 1n; i <= poolCount; i++) {
+    for (let i = BigInt(1); i <= poolCount; i++) {
       const poolAddress = await publicClient.readContract({
         address: CONTRACTS.FACTORY,
         abi: ArisanFactoryAbi,

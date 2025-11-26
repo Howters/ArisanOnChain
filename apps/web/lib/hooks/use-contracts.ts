@@ -10,7 +10,7 @@ export function useBalance() {
   return useQuery({
     queryKey: ["balance", walletAddress],
     queryFn: async () => {
-      if (!walletAddress) return { liquid: 0n, locked: 0n };
+      if (!walletAddress) return { liquid: BigInt(0), locked: BigInt(0) };
       
       const res = await fetch(`/api/balance?address=${walletAddress}`);
       const data = await res.json();
