@@ -54,9 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           logo: undefined,
         },
         loginMethods: ["google", "email"],
-        embeddedWallets: {
-          createOnLogin: "users-without-wallets",
-        },
+        createOnLogin: "users-without-wallets",
         defaultChain: localhost,
         supportedChains: [localhost, liskSepolia],
       }}
