@@ -54,6 +54,16 @@ export const ArisanPoolAbi = [
   },
   {
     type: "event",
+    name: "VouchReturned",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "voucher", type: "address" },
+      { indexed: true, name: "vouchee", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
     name: "MemberReportedDefault",
     inputs: [
       { indexed: true, name: "poolId", type: "uint256" },
@@ -86,12 +96,16 @@ export const ArisanPoolAbi = [
       { indexed: true, name: "poolId", type: "uint256" },
       { indexed: true, name: "winner", type: "address" },
       { indexed: false, name: "amount", type: "uint256" },
+      { indexed: false, name: "platformFee", type: "uint256" },
     ],
   },
   {
     type: "event",
     name: "PoolActivated",
-    inputs: [{ indexed: true, name: "poolId", type: "uint256" }],
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: false, name: "totalRounds", type: "uint256" },
+    ],
   },
   {
     type: "event",
@@ -113,10 +127,21 @@ export const ArisanPoolAbi = [
   },
   {
     type: "event",
-    name: "LiquidFundsWithdrawn",
+    name: "RoundStarted",
     inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "round", type: "uint256" },
+      { indexed: false, name: "deadline", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "FundsWithdrawn",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
       { indexed: true, name: "member", type: "address" },
       { indexed: false, name: "amount", type: "uint256" },
+      { indexed: false, name: "withdrawType", type: "string" },
     ],
   },
   {
@@ -147,6 +172,11 @@ export const ArisanPoolAbi = [
     outputs: [{ name: "", type: "uint256" }],
     stateMutability: "view",
   },
+  {
+    type: "function",
+    name: "totalRounds",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
 ] as const;
-
-

@@ -1,9 +1,8 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const [deployer, user1, user2] = await ethers.getSigners();
   console.log("Deploying contracts with:", deployer.address);
-  console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
 
   const MockIDRX = await ethers.getContractFactory("MockIDRX");
   const mockIDRX = await MockIDRX.deploy();
@@ -17,35 +16,64 @@ async function main() {
   const debtNFTAddress = await debtNFT.getAddress();
   console.log("DebtNFT deployed to:", debtNFTAddress);
 
+  const ReputationRegistry = await ethers.getContractFactory("ReputationRegistry");
+  const reputationRegistry = await ReputationRegistry.deploy();
+  await reputationRegistry.waitForDeployment();
+  const reputationRegistryAddress = await reputationRegistry.getAddress();
+  console.log("ReputationRegistry deployed to:", reputationRegistryAddress);
+
+  const platformWallet = deployer.address;
+
   const ArisanFactory = await ethers.getContractFactory("ArisanFactory");
-  const factory = await ArisanFactory.deploy(mockIDRXAddress, debtNFTAddress);
+  const factory = await ArisanFactory.deploy(
+    mockIDRXAddress,
+    debtNFTAddress,
+    reputationRegistryAddress,
+    platformWallet
+  );
   await factory.waitForDeployment();
   const factoryAddress = await factory.getAddress();
   console.log("ArisanFactory deployed to:", factoryAddress);
 
-  const poolImplAddress = await factory.poolImplementation();
-  console.log("ArisanPool implementation:", poolImplAddress);
+  await debtNFT.grantFactoryRole(factoryAddress);
+  console.log("Granted FACTORY_ROLE to ArisanFactory on DebtNFT");
 
-  await debtNFT.grantMinterRole(poolImplAddress);
-  console.log("Granted MINTER_ROLE to pool implementation");
+  const ADMIN_ROLE = await reputationRegistry.DEFAULT_ADMIN_ROLE();
+  await reputationRegistry.grantRole(ADMIN_ROLE, factoryAddress);
+  console.log("Granted DEFAULT_ADMIN_ROLE to ArisanFactory on ReputationRegistry");
 
-  await mockIDRX.grantRelayerRole(deployer.address);
-  console.log("Granted RELAYER_ROLE to deployer for testing");
+  console.log("\nMinting test tokens...");
+  await mockIDRX.simulatedTopUp(deployer.address, 10_000_000);
+  await mockIDRX.simulatedTopUp(user1.address, 10_000_000);
+  await mockIDRX.simulatedTopUp(user2.address, 10_000_000);
+  console.log("Minted 10M mIDRX each to deployer, user1, user2");
 
-  console.log("\n=== LOCAL DEPLOYMENT COMPLETE ===");
+  console.log("\nCreating test pool...");
+  const tx = await factory.createPool(
+    500_000,
+    1_000_000,
+    5,
+    1,
+    false
+  );
+  const receipt = await tx.wait();
+  console.log("Test pool created!");
+
+  const poolAddress = await factory.getPool(1);
+  console.log("Pool 1 address:", poolAddress);
+
+  console.log("\n=== Local Deployment Summary ===");
   console.log("MockIDRX:", mockIDRXAddress);
   console.log("DebtNFT:", debtNFTAddress);
+  console.log("ReputationRegistry:", reputationRegistryAddress);
   console.log("ArisanFactory:", factoryAddress);
-  console.log("ArisanPool Implementation:", poolImplAddress);
+  console.log("Test Pool #1:", poolAddress);
   console.log("================================\n");
 
-  console.log("Copy these to apps/web/.env.local:");
-  console.log(`NEXT_PUBLIC_MOCK_IDRX_ADDRESS=${mockIDRXAddress}`);
-  console.log(`NEXT_PUBLIC_DEBT_NFT_ADDRESS=${debtNFTAddress}`);
-  console.log(`NEXT_PUBLIC_FACTORY_ADDRESS=${factoryAddress}`);
-  console.log("");
-  console.log("For relayer, use one of the Hardhat default accounts:");
-  console.log("RELAYER_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
+  console.log("Test accounts:");
+  console.log("Deployer:", deployer.address);
+  console.log("User1:", user1.address);
+  console.log("User2:", user2.address);
 }
 
 main()
@@ -54,5 +82,3 @@ main()
     console.error(error);
     process.exit(1);
   });
-
-

@@ -1,40 +1,31 @@
-import { ponder } from "@/generated";
-import { debtNft, defaultRecord } from "../ponder.schema";
-import { eq, and } from "@ponder/core";
+import { ponder } from "ponder:registry";
+import { debtNft } from "ponder:schema";
 
 ponder.on("DebtNFT:DebtNFTMinted", async ({ event, context }) => {
-  const poolId = event.args.poolId.toString();
-  const memberAddress = event.args.member.toLowerCase();
-
   await context.db
     .insert(debtNft)
     .values({
       id: event.args.tokenId,
-      owner: memberAddress,
-      poolId: poolId,
+      owner: event.args.member.toLowerCase(),
+      poolId: event.args.poolId.toString(),
       defaultedAmount: event.args.defaultedAmount,
       mintedAt: event.block.timestamp,
     });
+});
 
-  const defaults = await context.db.sql
-    .select()
-    .from(defaultRecord)
-    .where(
-      and(
-        eq(defaultRecord.poolId, poolId),
-        eq(defaultRecord.memberAddress, memberAddress)
-      )
-    )
-    .orderBy(defaultRecord.timestamp);
+ponder.on("DebtNFT:Transfer", async ({ event, context }) => {
+  if (event.args.from === "0x0000000000000000000000000000000000000000") {
+    return;
+  }
 
-  if (defaults.length > 0) {
-    const latestDefault = defaults[defaults.length - 1];
+  const tokenId = event.args.tokenId;
+  const existing = await context.db.find(debtNft, { id: tokenId });
+  
+  if (existing) {
     await context.db
-      .update(defaultRecord, { id: latestDefault.id })
+      .update(debtNft, { id: tokenId })
       .set({
-        debtNftId: event.args.tokenId,
+        owner: event.args.to.toLowerCase(),
       });
   }
 });
-
-

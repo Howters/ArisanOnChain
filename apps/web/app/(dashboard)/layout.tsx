@@ -1,37 +1,71 @@
 "use client";
 
-import { usePrivy } from "@privy-io/react-auth";
+import { useActiveAccount, useAutoConnect } from "thirdweb/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { Loader2 } from "lucide-react";
+import { client, liskSepolia } from "@/lib/thirdweb/client";
+import { inAppWallet, createWallet } from "thirdweb/wallets";
+
+const wallets = [
+  inAppWallet({
+    auth: {
+      options: ["google", "email"],
+    },
+    smartAccount: {
+      chain: liskSepolia,
+      sponsorGas: true,
+    },
+  }),
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+];
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { ready, authenticated } = usePrivy();
+  const account = useActiveAccount();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Auto-connect with the same wallet config as login
+  const { isLoading: isAutoConnecting } = useAutoConnect({
+    client,
+    wallets,
+  });
 
   useEffect(() => {
-    if (ready && !authenticated) {
+    // Only redirect after auto-connect is done and no account
+    if (!isAutoConnecting && !account) {
       router.push("/login");
     }
-  }, [ready, authenticated, router]);
+  }, [isAutoConnecting, account, router]);
 
-  if (!ready) {
+  // Show loading while auto-connecting
+  if (isAutoConnecting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">Memuat sesi...</p>
+        </div>
       </div>
     );
   }
 
-  if (!authenticated) {
-    return null;
+  if (!account) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">Mengalihkan ke login...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

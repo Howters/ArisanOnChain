@@ -1,29 +1,36 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { usePrivy } from "@privy-io/react-auth";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { client, liskSepolia } from "@/lib/thirdweb/client";
+import { inAppWallet, createWallet } from "thirdweb/wallets";
+
+const wallets = [
+  inAppWallet({
+    auth: {
+      options: ["google", "email"],
+    },
+    smartAccount: {
+      chain: liskSepolia,
+      sponsorGas: true,
+    },
+  }),
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+];
 
 export default function LoginPage() {
-  const { login, ready, authenticated } = usePrivy();
+  const account = useActiveAccount();
   const router = useRouter();
 
   useEffect(() => {
-    if (ready && authenticated) {
+    if (account) {
       router.push("/dashboard");
     }
-  }, [ready, authenticated, router]);
-
-  if (!ready) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    );
-  }
+  }, [account, router]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -52,12 +59,32 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <Button
-            className="w-full h-12 text-base"
-            onClick={login}
-          >
-            Continue with Google or Email
-          </Button>
+          <div className="flex justify-center">
+            <ConnectButton
+              client={client}
+              chain={liskSepolia}
+              wallets={wallets}
+              connectModal={{
+                size: "wide",
+                title: "Login ke ArisanAman",
+                showThirdwebBranding: false,
+              }}
+              theme="dark"
+              connectButton={{
+                label: "Continue with Google",
+                style: {
+                  backgroundColor: "#22c55e",
+                  color: "white",
+                  borderRadius: "0.75rem",
+                  padding: "0.75rem 2rem",
+                  fontWeight: "600",
+                  width: "100%",
+                  height: "3rem",
+                  fontSize: "1rem",
+                },
+              }}
+            />
+          </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
             By continuing, you agree to our{" "}
@@ -80,7 +107,7 @@ export default function LoginPage() {
             <p className="text-xs text-muted-foreground text-center">
               🔐 Your wallet is created automatically.
               <br />
-              No seed phrases, no extensions needed.
+              No seed phrases, no gas fees needed.
             </p>
           </div>
         </div>

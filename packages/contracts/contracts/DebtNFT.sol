@@ -10,6 +10,7 @@ contract DebtNFT is ERC721, AccessControl {
     using Strings for uint256;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant FACTORY_ROLE = keccak256("FACTORY_ROLE");
 
     uint256 private _nextTokenId;
 
@@ -59,24 +60,7 @@ contract DebtNFT is ERC721, AccessControl {
 
         DebtRecord memory record = debtRecords[tokenId];
 
-        string memory svg = string(
-            abi.encodePacked(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="350" height="350">',
-                '<rect width="100%" height="100%" fill="#1a1a1a"/>',
-                '<text x="175" y="50" text-anchor="middle" fill="#ef4444" font-size="24" font-weight="bold">DEBT RECORD</text>',
-                '<text x="175" y="120" text-anchor="middle" fill="#fff" font-size="16">Pool #',
-                record.poolId.toString(),
-                "</text>",
-                '<text x="175" y="160" text-anchor="middle" fill="#fff" font-size="16">Amount: ',
-                record.defaultedAmount.toString(),
-                " IDRX</text>",
-                '<text x="175" y="200" text-anchor="middle" fill="#666" font-size="12">Token #',
-                tokenId.toString(),
-                "</text>",
-                '<text x="175" y="320" text-anchor="middle" fill="#ef4444" font-size="14">ArisanAman Default</text>',
-                "</svg>"
-            )
-        );
+        string memory svg = _generateSVG(record, tokenId);
 
         string memory json = Base64.encode(
             bytes(
@@ -84,7 +68,7 @@ contract DebtNFT is ERC721, AccessControl {
                     abi.encodePacked(
                         '{"name": "Debt Record #',
                         tokenId.toString(),
-                        '", "description": "This NFT represents a default record in ArisanAman pool.", "image": "data:image/svg+xml;base64,',
+                        '", "description": "This NFT represents a default record in ArisanAman pool. This token is non-transferable and serves as a permanent on-chain record.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(svg)),
                         '", "attributes": [{"trait_type": "Pool ID", "value": "',
                         record.poolId.toString(),
@@ -92,13 +76,50 @@ contract DebtNFT is ERC721, AccessControl {
                         record.defaultedAmount.toString(),
                         '"}, {"trait_type": "Timestamp", "value": "',
                         record.timestamp.toString(),
-                        '"}]}'
+                        '"}, {"trait_type": "Type", "value": "Soulbound"}]}'
                     )
                 )
             )
         );
 
         return string(abi.encodePacked("data:application/json;base64,", json));
+    }
+
+    function _generateSVG(DebtRecord memory record, uint256 tokenId) internal pure returns (string memory) {
+        return string(
+            abi.encodePacked(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="350" height="350">',
+                '<defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">',
+                '<stop offset="0%" style="stop-color:#1a1a2e"/>',
+                '<stop offset="100%" style="stop-color:#16213e"/>',
+                '</linearGradient></defs>',
+                '<rect width="100%" height="100%" fill="url(#bg)"/>',
+                '<rect x="10" y="10" width="330" height="330" rx="15" fill="none" stroke="#ef4444" stroke-width="2"/>',
+                '<text x="175" y="50" text-anchor="middle" fill="#ef4444" font-size="24" font-weight="bold" font-family="Arial">DEBT RECORD</text>',
+                '<text x="175" y="80" text-anchor="middle" fill="#666" font-size="10" font-family="Arial">SOULBOUND TOKEN</text>',
+                '<line x1="50" y1="100" x2="300" y2="100" stroke="#333" stroke-width="1"/>',
+                '<text x="175" y="140" text-anchor="middle" fill="#fff" font-size="14" font-family="Arial">Pool #',
+                record.poolId.toString(),
+                '</text>',
+                '<text x="175" y="180" text-anchor="middle" fill="#fff" font-size="14" font-family="Arial">Amount Defaulted:</text>',
+                '<text x="175" y="210" text-anchor="middle" fill="#ef4444" font-size="20" font-weight="bold" font-family="Arial">',
+                record.defaultedAmount.toString(),
+                ' IDRX</text>',
+                '<text x="175" y="260" text-anchor="middle" fill="#666" font-size="10" font-family="Arial">Token #',
+                tokenId.toString(),
+                '</text>',
+                '<text x="175" y="320" text-anchor="middle" fill="#ef4444" font-size="12" font-family="Arial">ArisanAman Default Record</text>',
+                '</svg>'
+            )
+        );
+    }
+
+    function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
+        address from = _ownerOf(tokenId);
+        if (from != address(0) && to != address(0)) {
+            revert("Soulbound: Transfer not allowed");
+        }
+        return super._update(to, tokenId, auth);
     }
 
     function getUserDebtCount(address user) external view returns (uint256) {
@@ -109,8 +130,20 @@ contract DebtNFT is ERC721, AccessControl {
         return userDebts[user];
     }
 
-    function grantMinterRole(address minter) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function hasDebt(address user) external view returns (bool) {
+        return userDebts[user].length > 0;
+    }
+
+    function grantMinterRole(address minter) external {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(FACTORY_ROLE, msg.sender),
+            "Not authorized"
+        );
         _grantRole(MINTER_ROLE, minter);
+    }
+
+    function grantFactoryRole(address factory) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _grantRole(FACTORY_ROLE, factory);
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -122,5 +155,3 @@ contract DebtNFT is ERC721, AccessControl {
         return super.supportsInterface(interfaceId);
     }
 }
-
-

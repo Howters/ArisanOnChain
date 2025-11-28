@@ -20,13 +20,6 @@ export const MockIDRXAbi = [
   },
   {
     type: "function",
-    name: "RELAYER_ROLE",
-    inputs: [],
-    outputs: [{ name: "", type: "bytes32" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
     name: "allowance",
     inputs: [
       { name: "owner", type: "address" },
@@ -94,6 +87,17 @@ export const MockIDRXAbi = [
     stateMutability: "nonpayable",
   },
   {
+    type: "function",
+    name: "transferFrom",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "value", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+  },
+  {
     type: "event",
     name: "TopUpCompleted",
     inputs: [
@@ -118,6 +122,15 @@ export const MockIDRXAbi = [
       { indexed: false, name: "value", type: "uint256" },
     ],
   },
+  {
+    type: "event",
+    name: "Approval",
+    inputs: [
+      { indexed: true, name: "owner", type: "address" },
+      { indexed: true, name: "spender", type: "address" },
+      { indexed: false, name: "value", type: "uint256" },
+    ],
+  },
 ] as const;
 
 export const ArisanFactoryAbi = [
@@ -126,6 +139,8 @@ export const ArisanFactoryAbi = [
     inputs: [
       { name: "_token", type: "address" },
       { name: "_debtNFT", type: "address" },
+      { name: "_reputationRegistry", type: "address" },
+      { name: "_platformWallet", type: "address" },
     ],
     stateMutability: "nonpayable",
   },
@@ -136,6 +151,8 @@ export const ArisanFactoryAbi = [
       { name: "contributionAmount", type: "uint256" },
       { name: "securityDepositAmount", type: "uint256" },
       { name: "maxMembers", type: "uint256" },
+      { name: "paymentDay", type: "uint8" },
+      { name: "vouchRequired", type: "bool" },
     ],
     outputs: [
       { name: "", type: "uint256" },
@@ -154,6 +171,13 @@ export const ArisanFactoryAbi = [
     type: "function",
     name: "getUserPools",
     inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "uint256[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getAdminPools",
+    inputs: [{ name: "admin", type: "address" }],
     outputs: [{ name: "", type: "uint256[]" }],
     stateMutability: "view",
   },
@@ -179,6 +203,27 @@ export const ArisanFactoryAbi = [
     stateMutability: "view",
   },
   {
+    type: "function",
+    name: "debtNFT",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "reputationRegistry",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "platformWallet",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
     type: "event",
     name: "PoolCreated",
     inputs: [
@@ -188,6 +233,16 @@ export const ArisanFactoryAbi = [
       { indexed: false, name: "contributionAmount", type: "uint256" },
       { indexed: false, name: "securityDeposit", type: "uint256" },
       { indexed: false, name: "maxMembers", type: "uint256" },
+      { indexed: false, name: "paymentDay", type: "uint8" },
+      { indexed: false, name: "vouchRequired", type: "bool" },
+    ],
+  },
+  {
+    type: "event",
+    name: "PlatformWalletUpdated",
+    inputs: [
+      { indexed: true, name: "oldWallet", type: "address" },
+      { indexed: true, name: "newWallet", type: "address" },
     ],
   },
 ] as const;
@@ -216,27 +271,6 @@ export const ArisanPoolAbi = [
   },
   {
     type: "function",
-    name: "contributionAmount",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "securityDepositAmount",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "maxMembers",
-    inputs: [],
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
     name: "currentRound",
     inputs: [],
     outputs: [{ name: "", type: "uint256" }],
@@ -251,7 +285,101 @@ export const ArisanPoolAbi = [
   },
   {
     type: "function",
+    name: "activatedAt",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "roundStartedAt",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "recoveredFunds",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "GRACE_PERIOD",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "PLATFORM_FEE_BPS",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "config",
+    inputs: [],
+    outputs: [
+      { name: "contributionAmount", type: "uint256" },
+      { name: "securityDepositAmount", type: "uint256" },
+      { name: "maxMembers", type: "uint256" },
+      { name: "paymentDay", type: "uint8" },
+      { name: "vouchRequired", type: "bool" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getPoolConfig",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "contributionAmount", type: "uint256" },
+          { name: "securityDepositAmount", type: "uint256" },
+          { name: "maxMembers", type: "uint256" },
+          { name: "paymentDay", type: "uint8" },
+          { name: "vouchRequired", type: "bool" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getPoolStatus",
+    inputs: [],
+    outputs: [
+      { name: "_status", type: "uint8" },
+      { name: "_currentRound", type: "uint256" },
+      { name: "_totalRounds", type: "uint256" },
+      { name: "_activeMembers", type: "uint256" },
+      { name: "_deadline", type: "uint256" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getRoundDeadline",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "getMemberList",
+    inputs: [],
+    outputs: [{ name: "", type: "address[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getPendingList",
     inputs: [],
     outputs: [{ name: "", type: "address[]" }],
     stateMutability: "view",
@@ -284,11 +412,49 @@ export const ArisanPoolAbi = [
   },
   {
     type: "function",
+    name: "getVouchesReceived",
+    inputs: [{ name: "member", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        components: [
+          { name: "voucher", type: "address" },
+          { name: "amount", type: "uint256" },
+          { name: "returned", type: "bool" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "hasContributed",
     inputs: [
       { name: "round", type: "uint256" },
       { name: "member", type: "address" },
     ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "roundWinners",
+    inputs: [{ name: "round", type: "uint256" }],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "roundPayouts",
+    inputs: [{ name: "round", type: "uint256" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "roundCompleted",
+    inputs: [{ name: "round", type: "uint256" }],
     outputs: [{ name: "", type: "bool" }],
     stateMutability: "view",
   },
@@ -302,6 +468,20 @@ export const ArisanPoolAbi = [
   {
     type: "function",
     name: "approveMember",
+    inputs: [{ name: "member", type: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "rejectMember",
+    inputs: [{ name: "member", type: "address" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "removeMember",
     inputs: [{ name: "member", type: "address" }],
     outputs: [],
     stateMutability: "nonpayable",
@@ -329,6 +509,13 @@ export const ArisanPoolAbi = [
   },
   {
     type: "function",
+    name: "cancelPool",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     name: "contribute",
     inputs: [],
     outputs: [],
@@ -341,6 +528,13 @@ export const ArisanPoolAbi = [
       { name: "vouchee", type: "address" },
       { name: "amount", type: "uint256" },
     ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "withdrawVouch",
+    inputs: [{ name: "vouchee", type: "address" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -397,6 +591,14 @@ export const ArisanPoolAbi = [
   },
   {
     type: "event",
+    name: "MemberRemoved",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "member", type: "address" },
+    ],
+  },
+  {
+    type: "event",
     name: "SecurityDepositLocked",
     inputs: [
       { indexed: true, name: "poolId", type: "uint256" },
@@ -416,6 +618,44 @@ export const ArisanPoolAbi = [
   },
   {
     type: "event",
+    name: "MemberVouched",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "voucher", type: "address" },
+      { indexed: true, name: "vouchee", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "VouchReturned",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "voucher", type: "address" },
+      { indexed: true, name: "vouchee", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "MemberReportedDefault",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "member", type: "address" },
+      { indexed: true, name: "reportedBy", type: "address" },
+    ],
+  },
+  {
+    type: "event",
+    name: "DefaultResolved",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "member", type: "address" },
+      { indexed: false, name: "recoveredAmount", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
     name: "WinnerDetermined",
     inputs: [
       { indexed: true, name: "poolId", type: "uint256" },
@@ -430,12 +670,52 @@ export const ArisanPoolAbi = [
       { indexed: true, name: "poolId", type: "uint256" },
       { indexed: true, name: "winner", type: "address" },
       { indexed: false, name: "amount", type: "uint256" },
+      { indexed: false, name: "platformFee", type: "uint256" },
     ],
   },
   {
     type: "event",
     name: "PoolActivated",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: false, name: "totalRounds", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "PoolCompleted",
     inputs: [{ indexed: true, name: "poolId", type: "uint256" }],
+  },
+  {
+    type: "event",
+    name: "PoolCancelled",
+    inputs: [{ indexed: true, name: "poolId", type: "uint256" }],
+  },
+  {
+    type: "event",
+    name: "RotationOrderSet",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: false, name: "order", type: "address[]" },
+    ],
+  },
+  {
+    type: "event",
+    name: "RoundStarted",
+    inputs: [
+      { indexed: true, name: "poolId", type: "uint256" },
+      { indexed: true, name: "round", type: "uint256" },
+      { indexed: false, name: "deadline", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "FundsWithdrawn",
+    inputs: [
+      { indexed: true, name: "member", type: "address" },
+      { indexed: false, name: "amount", type: "uint256" },
+      { indexed: false, name: "withdrawType", type: "string" },
+    ],
   },
 ] as const;
 
@@ -467,6 +747,13 @@ export const DebtNFTAbi = [
   },
   {
     type: "function",
+    name: "hasDebt",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "balanceOf",
     inputs: [{ name: "owner", type: "address" }],
     outputs: [{ name: "", type: "uint256" }],
@@ -491,4 +778,66 @@ export const DebtNFTAbi = [
   },
 ] as const;
 
-
+export const ReputationRegistryAbi = [
+  {
+    type: "function",
+    name: "getCompletedPools",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getDefaultCount",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getReputation",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "completedPools", type: "uint256" },
+          { name: "defaultCount", type: "uint256" },
+          { name: "lastUpdated", type: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getReputationScore",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "int256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "canVouch",
+    inputs: [{ name: "user", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "event",
+    name: "PoolCompletionRecorded",
+    inputs: [
+      { indexed: true, name: "user", type: "address" },
+      { indexed: false, name: "totalCompleted", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "DefaultRecorded",
+    inputs: [
+      { indexed: true, name: "user", type: "address" },
+      { indexed: false, name: "totalDefaults", type: "uint256" },
+    ],
+  },
+] as const;

@@ -12,13 +12,15 @@ import {
   Plus,
   Sparkles,
   X,
+  History,
 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Arisan Saya", href: "/dashboard/circles", icon: CircleDot },
-  { name: "Profil", href: "/profile/me", icon: User },
-  { name: "Pengaturan", href: "/settings", icon: Settings },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+  { name: "Arisan", href: "/circles", icon: CircleDot, exact: false },
+  { name: "Riwayat", href: "/history", icon: History, exact: false },
+  { name: "Profil", href: "/profile/me", icon: User, exact: false },
+  { name: "Pengaturan", href: "/settings", icon: Settings, exact: false },
 ];
 
 interface SidebarProps {
@@ -28,6 +30,13 @@ interface SidebarProps {
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
+
+  const isActiveLink = (item: typeof navigation[0]) => {
+    if (item.exact) {
+      return pathname === item.href;
+    }
+    return pathname === item.href || pathname.startsWith(item.href + "/");
+  };
 
   return (
     <>
@@ -75,7 +84,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
             <nav className="space-y-1 px-2">
               {navigation.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                const isActive = isActiveLink(item);
                 return (
                   <Link
                     key={item.name}
@@ -97,12 +106,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </div>
 
           <div className="border-t p-4">
-            <div className="rounded-lg bg-muted/50 p-4">
+            <div className="rounded-lg bg-primary/10 p-4">
               <p className="text-xs text-muted-foreground mb-2">
-                ⚠️ Mode Simulasi
+                🔐 Powered by Blockchain
               </p>
               <p className="text-xs text-muted-foreground">
-                Ini adalah versi MVP. Semua transaksi menggunakan token simulasi.
+                Semua transaksi tercatat di Lisk L2. Aman, transparan, dan tanpa biaya gas.
               </p>
             </div>
           </div>
@@ -111,5 +120,3 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     </>
   );
 }
-
-

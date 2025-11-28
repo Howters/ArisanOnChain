@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, decodeEventLog } from "viem";
 import { publicClient, getRelayerClient, CONTRACTS } from "@/lib/contracts/client";
 import { ArisanFactoryAbi, MockIDRXAbi } from "@/lib/contracts/abis";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { contributionAmount, securityDeposit, maxMembers, walletAddress } = body;
+    const { 
+      contributionAmount, 
+      securityDeposit, 
+      maxMembers, 
+      paymentDay,
+      vouchRequired,
+      name,
+      walletAddress 
+    } = body;
 
     if (!walletAddress) {
       return NextResponse.json({ error: "Wallet address required" }, { status: 401 });
     }
-
-    const userWallet = walletAddress as `0x${string}`;
 
     if (CONTRACTS.FACTORY === "0x0") {
       const mockPoolId = Math.floor(Math.random() * 1000) + 1;
@@ -28,20 +34,6 @@ export async function POST(req: NextRequest) {
 
     const relayerClient = getRelayerClient();
 
-    const approvalData = encodeFunctionData({
-      abi: MockIDRXAbi,
-      functionName: "approve",
-      args: [CONTRACTS.FACTORY, BigInt(securityDeposit)],
-    });
-
-    const approvalTx = await relayerClient.sendTransaction({
-      to: CONTRACTS.MOCK_IDRX,
-      data: approvalData,
-      account: relayerClient.account!,
-    });
-
-    await publicClient.waitForTransactionReceipt({ hash: approvalTx });
-
     const createPoolData = encodeFunctionData({
       abi: ArisanFactoryAbi,
       functionName: "createPool",
@@ -49,6 +41,8 @@ export async function POST(req: NextRequest) {
         BigInt(contributionAmount),
         BigInt(securityDeposit),
         BigInt(maxMembers),
+        paymentDay || 1,
+        vouchRequired || false,
       ],
     });
 
@@ -60,13 +54,33 @@ export async function POST(req: NextRequest) {
 
     const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
 
-    const poolCreatedLog = receipt.logs.find((log) => {
-      return log.topics[0] === "0x" + "PoolCreated";
-    });
+    let poolId = "0";
+    let poolAddress = "0x0";
+
+    for (const log of receipt.logs) {
+      try {
+        const decoded = decodeEventLog({
+          abi: ArisanFactoryAbi,
+          data: log.data,
+          topics: log.topics,
+        });
+
+        if (decoded.eventName === "PoolCreated") {
+          const args = decoded.args as { poolId: bigint; poolAddress: `0x${string}` };
+          poolId = args.poolId.toString();
+          poolAddress = args.poolAddress;
+          break;
+        }
+      } catch {
+      }
+    }
 
     return NextResponse.json({
       success: true,
+      poolId,
+      poolAddress,
       txHash,
+      name,
       receipt: {
         status: receipt.status,
         blockNumber: receipt.blockNumber.toString(),
@@ -80,5 +94,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-

@@ -9,6 +9,16 @@ export const ArisanFactoryAbi = [
       { indexed: false, name: "contributionAmount", type: "uint256" },
       { indexed: false, name: "securityDeposit", type: "uint256" },
       { indexed: false, name: "maxMembers", type: "uint256" },
+      { indexed: false, name: "paymentDay", type: "uint8" },
+      { indexed: false, name: "vouchRequired", type: "bool" },
+    ],
+  },
+  {
+    type: "event",
+    name: "PlatformWalletUpdated",
+    inputs: [
+      { indexed: true, name: "oldWallet", type: "address" },
+      { indexed: true, name: "newWallet", type: "address" },
     ],
   },
   {
@@ -18,6 +28,8 @@ export const ArisanFactoryAbi = [
       { name: "contributionAmount", type: "uint256" },
       { name: "securityDepositAmount", type: "uint256" },
       { name: "maxMembers", type: "uint256" },
+      { name: "paymentDay", type: "uint8" },
+      { name: "vouchRequired", type: "bool" },
     ],
     outputs: [
       { name: "", type: "uint256" },
@@ -40,5 +52,3 @@ export const ArisanFactoryAbi = [
     stateMutability: "view",
   },
 ] as const;
-
-

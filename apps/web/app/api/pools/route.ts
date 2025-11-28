@@ -1,28 +1,100 @@
 import { NextRequest, NextResponse } from "next/server";
+import { queryIndexer, QUERIES } from "@/lib/graphql/client";
 import { publicClient, CONTRACTS } from "@/lib/contracts/client";
 import { ArisanFactoryAbi, ArisanPoolAbi } from "@/lib/contracts/abis";
 
+const USE_INDEXER = process.env.NEXT_PUBLIC_USE_INDEXER === "true";
+const STATUS_MAP = ["Pending", "Active", "Completed", "Cancelled"];
+
 export async function GET(req: NextRequest) {
   try {
-    const address = req.nextUrl.searchParams.get("address") as `0x${string}`;
+    const address = req.nextUrl.searchParams.get("address") as `0x${string}` | null;
 
-    if (CONTRACTS.FACTORY === "0x0") {
+    console.log(`[Pools API] USE_INDEXER=${USE_INDEXER}, fetching for address: ${address}`);
+
+    if (USE_INDEXER) {
+      console.log("[Pools API] 📊 Fetching from INDEXER...");
+      return await getPoolsFromIndexer(address);
+    }
+    
+    console.log("[Pools API] 🔗 Fetching from RPC (direct contract calls)...");
+    return await getPoolsFromRPC(address);
+  } catch (error: any) {
+    console.error("Pools error:", error);
+    return NextResponse.json({ pools: [], error: error.message });
+  }
+}
+
+async function getPoolsFromIndexer(address: string | null) {
+  try {
+    console.log("[Pools API] 📊 Querying indexer at:", process.env.NEXT_PUBLIC_INDEXER_URL);
+    const data = await queryIndexer<{
+      pools: { items: any[] };
+      members: { items: any[] };
+    }>(QUERIES.GET_POOLS, { userAddress: address?.toLowerCase() });
+    console.log(`[Pools API] ✅ Indexer returned ${data.pools.items.length} pools`);
+
+    const userMemberships = new Map(
+      data.members.items.map((m: any) => [m.poolId, m])
+    );
+
+    const pools = data.pools.items.map((p: any) => {
+      const membership = userMemberships.get(p.id);
+      const isAdmin = address?.toLowerCase() === p.admin.toLowerCase();
+      const isUserMember = !!membership;
+
+      return {
+        id: p.id,
+        address: p.address,
+        admin: p.admin,
+        status: p.status,
+        contributionAmount: p.contributionAmount.toString(),
+        securityDeposit: p.securityDeposit.toString(),
+        maxMembers: p.maxMembers,
+        paymentDay: p.paymentDay,
+        vouchRequired: p.vouchRequired,
+        currentRound: p.currentRound,
+        totalRounds: p.totalRounds,
+        memberCount: 0,
+        isUserMember,
+        isAdmin,
+        userLockedStake: membership?.lockedStake?.toString() || "0",
+      };
+    });
+
+    if (address) {
       return NextResponse.json({
-        pools: [],
-        simulated: true,
-        message: "Contracts not deployed yet",
+        pools: pools.filter((p) => p.isUserMember || p.isAdmin),
+        allPools: pools,
       });
     }
 
-    const poolCount = await publicClient.readContract({
-      address: CONTRACTS.FACTORY,
-      abi: ArisanFactoryAbi,
-      functionName: "poolCount",
-    });
+    return NextResponse.json({ pools });
+  } catch (error) {
+    console.error("Indexer error, falling back to RPC:", error);
+    return await getPoolsFromRPC(address);
+  }
+}
 
-    const pools = [];
-    
-    for (let i = BigInt(1); i <= poolCount; i++) {
+async function getPoolsFromRPC(address: string | null) {
+  if (CONTRACTS.FACTORY === "0x0") {
+    return NextResponse.json({
+      pools: [],
+      simulated: true,
+      message: "Contracts not deployed yet",
+    });
+  }
+
+  const poolCount = await publicClient.readContract({
+    address: CONTRACTS.FACTORY,
+    abi: ArisanFactoryAbi,
+    functionName: "poolCount",
+  });
+
+  const pools = [];
+  
+  for (let i = BigInt(1); i <= poolCount; i++) {
+    try {
       const poolAddress = await publicClient.readContract({
         address: CONTRACTS.FACTORY,
         abi: ArisanFactoryAbi,
@@ -30,97 +102,101 @@ export async function GET(req: NextRequest) {
         args: [i],
       });
 
-      const [
-        poolId,
-        admin,
-        status,
-        contributionAmount,
-        securityDepositAmount,
-        maxMembers,
-        currentRound,
-        totalRounds,
-      ] = await Promise.all([
+      const [poolStatus, config, memberList] = await Promise.all([
         publicClient.readContract({
           address: poolAddress,
           abi: ArisanPoolAbi,
-          functionName: "poolId",
+          functionName: "getPoolStatus",
         }),
         publicClient.readContract({
           address: poolAddress,
           abi: ArisanPoolAbi,
-          functionName: "admin",
+          functionName: "getPoolConfig",
         }),
         publicClient.readContract({
           address: poolAddress,
           abi: ArisanPoolAbi,
-          functionName: "status",
-        }),
-        publicClient.readContract({
-          address: poolAddress,
-          abi: ArisanPoolAbi,
-          functionName: "contributionAmount",
-        }),
-        publicClient.readContract({
-          address: poolAddress,
-          abi: ArisanPoolAbi,
-          functionName: "securityDepositAmount",
-        }),
-        publicClient.readContract({
-          address: poolAddress,
-          abi: ArisanPoolAbi,
-          functionName: "maxMembers",
-        }),
-        publicClient.readContract({
-          address: poolAddress,
-          abi: ArisanPoolAbi,
-          functionName: "currentRound",
-        }),
-        publicClient.readContract({
-          address: poolAddress,
-          abi: ArisanPoolAbi,
-          functionName: "totalRounds",
+          functionName: "getMemberList",
         }),
       ]);
 
-      const memberList = await publicClient.readContract({
+      const [status, currentRound, totalRounds, activeMembers, deadline] = poolStatus as [number, bigint, bigint, bigint, bigint];
+      const poolConfig = config as { 
+        contributionAmount: bigint; 
+        securityDepositAmount: bigint; 
+        maxMembers: bigint;
+        paymentDay: number;
+        vouchRequired: boolean;
+      };
+
+      const admin = await publicClient.readContract({
         address: poolAddress,
         abi: ArisanPoolAbi,
-        functionName: "getMemberList",
+        functionName: "admin",
       });
 
-      const statusMap = ["Pending", "Active", "Completed", "Cancelled"];
-      const isUserMember = address ? memberList.some(
-        (m) => m.toLowerCase() === address.toLowerCase()
-      ) : false;
+      const isUserMember = address 
+        ? (memberList as string[]).some((m: string) => m.toLowerCase() === address.toLowerCase())
+        : false;
+
+      const isAdmin = address 
+        ? (admin as string).toLowerCase() === address.toLowerCase()
+        : false;
+
+      let userLockedStake = "0";
+      if (address && (isUserMember || isAdmin)) {
+        try {
+          const memberInfo = await publicClient.readContract({
+            address: poolAddress,
+            abi: ArisanPoolAbi,
+            functionName: "getMemberInfo",
+            args: [address],
+          });
+          const info = memberInfo as {
+            status: number;
+            lockedStake: bigint;
+            liquidBalance: bigint;
+            joinedAt: bigint;
+            hasClaimedPayout: boolean;
+          };
+          if (info.status >= 2) {
+            userLockedStake = info.lockedStake.toString();
+          }
+        } catch (err) {
+          console.error(`Error fetching member info:`, err);
+        }
+      }
 
       pools.push({
-        id: poolId.toString(),
+        id: i.toString(),
         address: poolAddress,
         admin,
-        status: statusMap[status] || "Unknown",
-        contributionAmount: contributionAmount.toString(),
-        securityDeposit: securityDepositAmount.toString(),
-        maxMembers: Number(maxMembers),
+        status: STATUS_MAP[status] || "Unknown",
+        contributionAmount: poolConfig.contributionAmount.toString(),
+        securityDeposit: poolConfig.securityDepositAmount.toString(),
+        maxMembers: Number(poolConfig.maxMembers),
+        paymentDay: poolConfig.paymentDay,
+        vouchRequired: poolConfig.vouchRequired,
         currentRound: Number(currentRound),
         totalRounds: Number(totalRounds),
-        memberCount: memberList.length,
+        activeMembers: Number(activeMembers),
+        memberCount: (memberList as string[]).length,
+        deadline: Number(deadline),
         isUserMember,
-        isAdmin: address ? admin.toLowerCase() === address.toLowerCase() : false,
+        isAdmin,
+        userLockedStake,
       });
+    } catch (err) {
+      console.error(`Error fetching pool ${i}:`, err);
     }
-
-    if (address) {
-      return NextResponse.json({
-        pools: pools.filter((p) => p.isUserMember),
-        allPools: pools,
-      });
-    }
-
-    return NextResponse.json({ pools });
-  } catch (error: any) {
-    console.error("Pools error:", error);
-    return NextResponse.json({ pools: [], error: error.message });
   }
+
+  if (address) {
+    return NextResponse.json({
+      pools: pools.filter((p) => p.isUserMember || p.isAdmin),
+      allPools: pools,
+    });
+  }
+
+  return NextResponse.json({ pools });
 }
-
-

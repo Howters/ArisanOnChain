@@ -6,6 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./DebtNFT.sol";
 
+interface IReputationRegistry {
+    function getCompletedPools(address user) external view returns (uint256);
+    function getDefaultCount(address user) external view returns (uint256);
+    function recordPoolCompletion(address user) external;
+    function recordDefault(address user) external;
+}
+
 contract ArisanPool is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -23,23 +30,39 @@ contract ArisanPool is ReentrancyGuard {
     struct VouchInfo {
         address voucher;
         uint256 amount;
+        bool returned;
     }
+
+    struct PoolConfig {
+        uint256 contributionAmount;
+        uint256 securityDepositAmount;
+        uint256 maxMembers;
+        uint8 paymentDay;
+        bool vouchRequired;
+    }
+
+    uint256 public constant GRACE_PERIOD = 7 days;
+    uint256 public constant PLATFORM_FEE_BPS = 150;
 
     uint256 public poolId;
     address public admin;
     address public factory;
     IERC20 public token;
     DebtNFT public debtNFT;
+    IReputationRegistry public reputationRegistry;
+    address public platformWallet;
 
-    uint256 public contributionAmount;
-    uint256 public securityDepositAmount;
-    uint256 public maxMembers;
+    PoolConfig public config;
     uint256 public currentRound;
     uint256 public totalRounds;
+    uint256 public activatedAt;
+    uint256 public roundStartedAt;
+    uint256 public recoveredFunds;
 
     PoolStatus public status;
     address[] public rotationOrder;
     address[] public memberList;
+    address[] public pendingList;
 
     mapping(address => MemberInfo) public members;
     mapping(address => VouchInfo[]) public vouchesReceived;
@@ -58,12 +81,14 @@ contract ArisanPool is ReentrancyGuard {
     event MemberReportedDefault(uint256 indexed poolId, address indexed member, address indexed reportedBy);
     event DefaultResolved(uint256 indexed poolId, address indexed member, uint256 recoveredAmount);
     event WinnerDetermined(uint256 indexed poolId, uint256 indexed round, address indexed winner);
-    event PayoutClaimed(uint256 indexed poolId, address indexed winner, uint256 amount);
-    event PoolActivated(uint256 indexed poolId);
+    event PayoutClaimed(uint256 indexed poolId, address indexed winner, uint256 amount, uint256 platformFee);
+    event PoolActivated(uint256 indexed poolId, uint256 totalRounds);
     event PoolCompleted(uint256 indexed poolId);
     event PoolCancelled(uint256 indexed poolId);
     event RotationOrderSet(uint256 indexed poolId, address[] order);
-    event LiquidFundsWithdrawn(address indexed member, uint256 amount);
+    event RoundStarted(uint256 indexed poolId, uint256 indexed round, uint256 deadline);
+    event FundsWithdrawn(address indexed member, uint256 amount, string withdrawType);
+    event VouchReturned(uint256 indexed poolId, address indexed voucher, address indexed vouchee, uint256 amount);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin");
@@ -85,41 +110,55 @@ contract ArisanPool is ReentrancyGuard {
         _;
     }
 
-    function initialize(
-        uint256 _poolId,
-        address _admin,
-        address _token,
-        address _debtNFT,
-        uint256 _contributionAmount,
-        uint256 _securityDepositAmount,
-        uint256 _maxMembers
-    ) external {
+    struct InitParams {
+        uint256 poolId;
+        address admin;
+        address token;
+        address debtNFT;
+        address reputationRegistry;
+        address platformWallet;
+        uint256 contributionAmount;
+        uint256 securityDepositAmount;
+        uint256 maxMembers;
+        uint8 paymentDay;
+        bool vouchRequired;
+    }
+
+    function initialize(InitParams calldata params) external {
         require(factory == address(0), "Already initialized");
+        require(params.paymentDay >= 1 && params.paymentDay <= 28, "Invalid payment day");
         
         factory = msg.sender;
-        poolId = _poolId;
-        admin = _admin;
-        token = IERC20(_token);
-        debtNFT = DebtNFT(_debtNFT);
-        contributionAmount = _contributionAmount;
-        securityDepositAmount = _securityDepositAmount;
-        maxMembers = _maxMembers;
-        totalRounds = _maxMembers;
+        poolId = params.poolId;
+        admin = params.admin;
+        token = IERC20(params.token);
+        debtNFT = DebtNFT(params.debtNFT);
+        reputationRegistry = IReputationRegistry(params.reputationRegistry);
+        platformWallet = params.platformWallet;
+
+        config = PoolConfig({
+            contributionAmount: params.contributionAmount,
+            securityDepositAmount: params.securityDepositAmount,
+            maxMembers: params.maxMembers,
+            paymentDay: params.paymentDay,
+            vouchRequired: params.vouchRequired
+        });
+
         status = PoolStatus.Pending;
 
-        members[_admin] = MemberInfo({
+        members[params.admin] = MemberInfo({
             status: MemberStatus.Approved,
             lockedStake: 0,
             liquidBalance: 0,
             joinedAt: block.timestamp,
             hasClaimedPayout: false
         });
-        memberList.push(_admin);
+        memberList.push(params.admin);
     }
 
     function requestJoin() external poolPending {
         require(members[msg.sender].status == MemberStatus.None, "Already requested or member");
-        require(memberList.length < maxMembers, "Pool full");
+        require(memberList.length + pendingList.length < config.maxMembers, "Pool full");
 
         members[msg.sender] = MemberInfo({
             status: MemberStatus.Pending,
@@ -128,47 +167,71 @@ contract ArisanPool is ReentrancyGuard {
             joinedAt: 0,
             hasClaimedPayout: false
         });
+        pendingList.push(msg.sender);
 
         emit MemberRequested(poolId, msg.sender);
     }
 
     function approveMember(address member) external onlyAdmin poolPending {
         require(members[member].status == MemberStatus.Pending, "Not pending");
-        require(memberList.length < maxMembers, "Pool full");
+        require(memberList.length < config.maxMembers, "Pool full");
+
+        if (config.vouchRequired) {
+            require(vouchesReceived[member].length > 0, "Vouch required");
+        }
 
         members[member].status = MemberStatus.Approved;
         members[member].joinedAt = block.timestamp;
         memberList.push(member);
+        _removePending(member);
 
         emit MemberApproved(poolId, member);
     }
 
-    function removeMember(address member) external onlyAdmin poolPending {
-        require(members[member].status == MemberStatus.Pending || members[member].status == MemberStatus.Approved, "Cannot remove");
-        require(member != admin, "Cannot remove admin");
+    function rejectMember(address member) external onlyAdmin poolPending {
+        require(members[member].status == MemberStatus.Pending, "Not pending");
 
-        if (members[member].lockedStake > 0) {
-            token.safeTransfer(member, members[member].lockedStake);
-        }
-
+        _returnVouches(member);
         members[member].status = MemberStatus.Removed;
+        _removePending(member);
+
         emit MemberRemoved(poolId, member);
     }
 
-    function lockSecurityDeposit() external nonReentrant {
+    function removeMember(address member) external onlyAdmin poolPending {
+        require(
+            members[member].status == MemberStatus.Approved,
+            "Can only remove approved members"
+        );
+        require(member != admin, "Cannot remove admin");
+
+        if (members[member].lockedStake > 0) {
+            uint256 stake = members[member].lockedStake;
+            members[member].lockedStake = 0;
+            token.safeTransfer(member, stake);
+        }
+
+        _returnVouches(member);
+        members[member].status = MemberStatus.Removed;
+
+        emit MemberRemoved(poolId, member);
+    }
+
+    function lockSecurityDeposit() external nonReentrant poolPending {
         MemberInfo storage member = members[msg.sender];
         require(member.status == MemberStatus.Approved, "Not approved");
         require(member.lockedStake == 0, "Already locked");
 
-        token.safeTransferFrom(msg.sender, address(this), securityDepositAmount);
-        member.lockedStake = securityDepositAmount;
+        token.safeTransferFrom(msg.sender, address(this), config.securityDepositAmount);
+        member.lockedStake = config.securityDepositAmount;
         member.status = MemberStatus.Active;
 
-        emit SecurityDepositLocked(poolId, msg.sender, securityDepositAmount);
+        emit SecurityDepositLocked(poolId, msg.sender, config.securityDepositAmount);
     }
 
     function setRotationOrder(address[] calldata order) external onlyAdmin poolPending {
-        require(order.length == memberList.length, "Order length mismatch");
+        uint256 activeCount = _countActiveMembers();
+        require(order.length == activeCount, "Order must match active members");
         
         for (uint256 i = 0; i < order.length; i++) {
             require(members[order[i]].status == MemberStatus.Active, "Member not active");
@@ -179,13 +242,19 @@ contract ArisanPool is ReentrancyGuard {
     }
 
     function activatePool() external onlyAdmin poolPending {
-        require(rotationOrder.length >= 3, "Need at least 3 members in rotation");
-        require(rotationOrder.length == _countActiveMembers(), "Rotation must include all active members");
+        uint256 activeCount = _countActiveMembers();
+        require(activeCount >= 3, "Need at least 3 active members");
+        require(rotationOrder.length == activeCount, "Set rotation order first");
+        require(_allApprovedHaveLocked(), "Not all approved members have locked deposit");
 
         status = PoolStatus.Active;
         currentRound = 1;
+        totalRounds = activeCount;
+        activatedAt = block.timestamp;
+        roundStartedAt = block.timestamp;
 
-        emit PoolActivated(poolId);
+        emit PoolActivated(poolId, totalRounds);
+        emit RoundStarted(poolId, 1, _calculateDeadline());
     }
 
     function contribute() external nonReentrant poolActive {
@@ -193,10 +262,10 @@ contract ArisanPool is ReentrancyGuard {
         require(member.status == MemberStatus.Active, "Not active member");
         require(!contributions[currentRound][msg.sender], "Already contributed this round");
 
-        token.safeTransferFrom(msg.sender, address(this), contributionAmount);
+        token.safeTransferFrom(msg.sender, address(this), config.contributionAmount);
         contributions[currentRound][msg.sender] = true;
 
-        emit ContributionMade(poolId, msg.sender, contributionAmount, currentRound);
+        emit ContributionMade(poolId, msg.sender, config.contributionAmount, currentRound);
     }
 
     function vouch(address vouchee, uint256 amount) external nonReentrant {
@@ -207,12 +276,14 @@ contract ArisanPool is ReentrancyGuard {
             "Cannot vouch for this member"
         );
         require(amount > 0, "Amount must be positive");
+        require(_canVouch(msg.sender), "Not eligible to vouch");
 
         token.safeTransferFrom(msg.sender, address(this), amount);
         
         vouchesReceived[vouchee].push(VouchInfo({
             voucher: msg.sender,
-            amount: amount
+            amount: amount,
+            returned: false
         }));
         vouchesGiven[msg.sender][vouchee] += amount;
 
@@ -222,39 +293,49 @@ contract ArisanPool is ReentrancyGuard {
     function reportDefault(address member) external onlyAdmin poolActive {
         require(members[member].status == MemberStatus.Active, "Not active member");
         require(!contributions[currentRound][member], "Member has contributed");
+        require(_isGracePeriodOver(), "Grace period not over");
 
         members[member].status = MemberStatus.Defaulted;
         
-        uint256 recoveredAmount = members[member].lockedStake;
+        uint256 recovered = members[member].lockedStake;
         members[member].lockedStake = 0;
 
         VouchInfo[] storage vouches = vouchesReceived[member];
         for (uint256 i = 0; i < vouches.length; i++) {
-            recoveredAmount += vouches[i].amount;
-            vouchesGiven[vouches[i].voucher][member] = 0;
+            if (!vouches[i].returned) {
+                recovered += vouches[i].amount;
+                vouchesGiven[vouches[i].voucher][member] = 0;
+            }
         }
 
-        debtNFT.mint(member, poolId, recoveredAmount);
+        recoveredFunds += recovered;
+
+        debtNFT.mint(member, poolId, recovered);
+        reputationRegistry.recordDefault(member);
+
+        totalRounds = _countActiveMembers();
 
         emit MemberReportedDefault(poolId, member, msg.sender);
-        emit DefaultResolved(poolId, member, recoveredAmount);
+        emit DefaultResolved(poolId, member, recovered);
     }
 
     function determineWinner() external onlyAdmin poolActive {
         require(!roundCompleted[currentRound], "Round already completed");
         require(_allActiveContributed(), "Not all members contributed");
 
-        uint256 rotationIndex = (currentRound - 1) % rotationOrder.length;
-        address winner = rotationOrder[rotationIndex];
-
-        while (members[winner].status != MemberStatus.Active || members[winner].hasClaimedPayout) {
-            rotationIndex = (rotationIndex + 1) % rotationOrder.length;
-            winner = rotationOrder[rotationIndex];
-        }
-
+        address winner = _shuffleWinner();
         roundWinners[currentRound] = winner;
         
-        uint256 payoutAmount = contributionAmount * _countActiveMembers();
+        uint256 activeCount = _countActiveMembers();
+        uint256 baseAmount = config.contributionAmount * activeCount;
+        
+        uint256 bonusFromRecovered = 0;
+        if (recoveredFunds > 0 && currentRound == totalRounds) {
+            bonusFromRecovered = recoveredFunds;
+            recoveredFunds = 0;
+        }
+
+        uint256 payoutAmount = baseAmount + bonusFromRecovered;
         roundPayouts[currentRound] = payoutAmount;
         roundCompleted[currentRound] = true;
 
@@ -267,17 +348,25 @@ contract ArisanPool is ReentrancyGuard {
         require(!member.hasClaimedPayout, "Already claimed");
         require(roundWinners[currentRound] == msg.sender, "Not winner of current round");
 
-        uint256 payout = roundPayouts[currentRound];
-        member.hasClaimedPayout = true;
-        member.liquidBalance += payout;
+        uint256 grossPayout = roundPayouts[currentRound];
+        uint256 platformFee = (grossPayout * PLATFORM_FEE_BPS) / 10000;
+        uint256 netPayout = grossPayout - platformFee;
 
-        emit PayoutClaimed(poolId, msg.sender, payout);
+        member.hasClaimedPayout = true;
+        member.liquidBalance += netPayout;
+
+        if (platformFee > 0) {
+            token.safeTransfer(platformWallet, platformFee);
+        }
+
+        emit PayoutClaimed(poolId, msg.sender, netPayout, platformFee);
 
         if (currentRound >= totalRounds) {
-            status = PoolStatus.Completed;
-            emit PoolCompleted(poolId);
+            _completePool();
         } else {
             currentRound++;
+            roundStartedAt = block.timestamp;
+            emit RoundStarted(poolId, currentRound, _calculateDeadline());
         }
     }
 
@@ -290,25 +379,106 @@ contract ArisanPool is ReentrancyGuard {
 
         token.safeTransfer(msg.sender, amount);
 
-        emit LiquidFundsWithdrawn(msg.sender, amount);
+        emit FundsWithdrawn(msg.sender, amount, "liquid");
     }
 
     function withdrawSecurityDeposit() external nonReentrant {
         require(status == PoolStatus.Completed || status == PoolStatus.Cancelled, "Pool not ended");
         
         MemberInfo storage member = members[msg.sender];
-        require(member.status == MemberStatus.Active, "Not active member");
+        require(
+            member.status == MemberStatus.Active || 
+            (status == PoolStatus.Cancelled && member.status == MemberStatus.Approved),
+            "Not eligible"
+        );
         require(member.lockedStake > 0, "No stake to withdraw");
 
         uint256 amount = member.lockedStake;
         member.lockedStake = 0;
 
         token.safeTransfer(msg.sender, amount);
+
+        emit FundsWithdrawn(msg.sender, amount, "security_deposit");
+    }
+
+    function withdrawVouch(address vouchee) external nonReentrant {
+        require(
+            status == PoolStatus.Completed || 
+            status == PoolStatus.Cancelled ||
+            members[vouchee].status == MemberStatus.Removed,
+            "Cannot withdraw vouch yet"
+        );
+        require(members[vouchee].status != MemberStatus.Defaulted, "Vouchee defaulted");
+
+        uint256 totalToReturn = 0;
+        VouchInfo[] storage vouches = vouchesReceived[vouchee];
+        
+        for (uint256 i = 0; i < vouches.length; i++) {
+            if (vouches[i].voucher == msg.sender && !vouches[i].returned) {
+                totalToReturn += vouches[i].amount;
+                vouches[i].returned = true;
+            }
+        }
+
+        require(totalToReturn > 0, "No vouch to withdraw");
+        vouchesGiven[msg.sender][vouchee] = 0;
+
+        token.safeTransfer(msg.sender, totalToReturn);
+
+        emit VouchReturned(poolId, msg.sender, vouchee, totalToReturn);
     }
 
     function cancelPool() external onlyAdmin poolPending {
         status = PoolStatus.Cancelled;
         emit PoolCancelled(poolId);
+    }
+
+    function _completePool() internal {
+        status = PoolStatus.Completed;
+
+        for (uint256 i = 0; i < memberList.length; i++) {
+            address memberAddr = memberList[i];
+            if (members[memberAddr].status == MemberStatus.Active) {
+                reputationRegistry.recordPoolCompletion(memberAddr);
+            }
+        }
+
+        emit PoolCompleted(poolId);
+    }
+
+    function _shuffleWinner() internal view returns (address) {
+        address[] memory eligible = new address[](rotationOrder.length);
+        uint256 eligibleCount = 0;
+
+        for (uint256 i = 0; i < rotationOrder.length; i++) {
+            address candidate = rotationOrder[i];
+            if (members[candidate].status == MemberStatus.Active && !members[candidate].hasClaimedPayout) {
+                eligible[eligibleCount] = candidate;
+                eligibleCount++;
+            }
+        }
+
+        require(eligibleCount > 0, "No eligible winners");
+
+        uint256 randomIndex = uint256(
+            keccak256(abi.encodePacked(block.timestamp, block.prevrandao, currentRound, poolId))
+        ) % eligibleCount;
+
+        return eligible[randomIndex];
+    }
+
+    function _canVouch(address voucher) internal view returns (bool) {
+        uint256 completed = reputationRegistry.getCompletedPools(voucher);
+        uint256 defaults = reputationRegistry.getDefaultCount(voucher);
+        return completed >= 1 && defaults == 0;
+    }
+
+    function _isGracePeriodOver() internal view returns (bool) {
+        return block.timestamp > roundStartedAt + GRACE_PERIOD;
+    }
+
+    function _calculateDeadline() internal view returns (uint256) {
+        return roundStartedAt + GRACE_PERIOD;
     }
 
     function _countActiveMembers() internal view returns (uint256) {
@@ -331,8 +501,46 @@ contract ArisanPool is ReentrancyGuard {
         return true;
     }
 
+    function _allApprovedHaveLocked() internal view returns (bool) {
+        for (uint256 i = 0; i < memberList.length; i++) {
+            MemberInfo storage m = members[memberList[i]];
+            if (m.status == MemberStatus.Approved) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function _returnVouches(address vouchee) internal {
+        VouchInfo[] storage vouches = vouchesReceived[vouchee];
+        for (uint256 i = 0; i < vouches.length; i++) {
+            if (!vouches[i].returned) {
+                uint256 amount = vouches[i].amount;
+                address voucher = vouches[i].voucher;
+                vouches[i].returned = true;
+                vouchesGiven[voucher][vouchee] = 0;
+                token.safeTransfer(voucher, amount);
+                emit VouchReturned(poolId, voucher, vouchee, amount);
+            }
+        }
+    }
+
+    function _removePending(address member) internal {
+        for (uint256 i = 0; i < pendingList.length; i++) {
+            if (pendingList[i] == member) {
+                pendingList[i] = pendingList[pendingList.length - 1];
+                pendingList.pop();
+                break;
+            }
+        }
+    }
+
     function getMemberList() external view returns (address[] memory) {
         return memberList;
+    }
+
+    function getPendingList() external view returns (address[] memory) {
+        return pendingList;
     }
 
     function getRotationOrder() external view returns (address[] memory) {
@@ -347,9 +555,32 @@ contract ArisanPool is ReentrancyGuard {
         return members[member];
     }
 
+    function getPoolConfig() external view returns (PoolConfig memory) {
+        return config;
+    }
+
     function hasContributed(uint256 round, address member) external view returns (bool) {
         return contributions[round][member];
     }
+
+    function getRoundDeadline() external view returns (uint256) {
+        if (status != PoolStatus.Active) return 0;
+        return _calculateDeadline();
+    }
+
+    function getPoolStatus() external view returns (
+        PoolStatus _status,
+        uint256 _currentRound,
+        uint256 _totalRounds,
+        uint256 _activeMembers,
+        uint256 _deadline
+    ) {
+        return (
+            status,
+            currentRound,
+            totalRounds,
+            _countActiveMembers(),
+            status == PoolStatus.Active ? _calculateDeadline() : 0
+        );
+    }
 }
-
-

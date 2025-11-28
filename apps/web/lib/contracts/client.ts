@@ -50,12 +50,16 @@ export const publicClient = createPublicClient({
 });
 
 export function getRelayerClient() {
-  const privateKey = process.env.RELAYER_PRIVATE_KEY as `0x${string}`;
+  let privateKey = process.env.RELAYER_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error("RELAYER_PRIVATE_KEY not configured");
   }
 
-  const account = privateKeyToAccount(privateKey);
+  if (!privateKey.startsWith("0x")) {
+    privateKey = `0x${privateKey}`;
+  }
+
+  const account = privateKeyToAccount(privateKey as `0x${string}`);
 
   return createWalletClient({
     account,
@@ -77,6 +81,8 @@ export function getUserWalletClient(privateKey: `0x${string}`) {
 export const CONTRACTS = {
   MOCK_IDRX: (process.env.NEXT_PUBLIC_MOCK_IDRX_ADDRESS || "0x0") as `0x${string}`,
   DEBT_NFT: (process.env.NEXT_PUBLIC_DEBT_NFT_ADDRESS || "0x0") as `0x${string}`,
+  REPUTATION_REGISTRY: (process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || "0x0") as `0x${string}`,
   FACTORY: (process.env.NEXT_PUBLIC_FACTORY_ADDRESS || "0x0") as `0x${string}`,
+  PLATFORM_WALLET: (process.env.NEXT_PUBLIC_PLATFORM_WALLET || "0x0") as `0x${string}`,
 };
 

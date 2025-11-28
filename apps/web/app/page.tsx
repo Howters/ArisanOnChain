@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { usePrivy } from "@privy-io/react-auth";
+import { useActiveAccount } from "thirdweb/react";
 import { ArrowRight, Shield, Users, Zap } from "lucide-react";
 import Aurora from "@/components/Aurora";
 import GradientText from "@/components/GradientText";
@@ -34,7 +34,8 @@ const features = [
 ];
 
 export default function LandingPage() {
-  const { ready, authenticated } = usePrivy();
+  const account = useActiveAccount();
+  const isAuthenticated = !!account;
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -54,7 +55,7 @@ export default function LandingPage() {
             </Link>
 
             <div className="flex items-center gap-3">
-              {ready && authenticated ? (
+              {isAuthenticated ? (
                 <Button asChild size="sm">
                   <Link href="/dashboard">Open App</Link>
                 </Button>

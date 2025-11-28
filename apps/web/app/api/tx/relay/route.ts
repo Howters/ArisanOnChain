@@ -10,9 +10,14 @@ const SUPPORTED_FUNCTIONS = [
   "requestJoin",
   "claimPayout",
   "withdrawLiquidFunds",
+  "withdrawSecurityDeposit",
+  "withdrawVouch",
   "approveMember",
+  "rejectMember",
+  "removeMember",
   "setRotationOrder",
   "activatePool",
+  "cancelPool",
   "reportDefault",
   "determineWinner",
 ];
@@ -28,12 +33,10 @@ export async function POST(req: NextRequest) {
 
     if (!SUPPORTED_FUNCTIONS.includes(functionName)) {
       return NextResponse.json(
-        { error: "Function not supported" },
+        { error: `Function ${functionName} not supported` },
         { status: 400 }
       );
     }
-
-    const userWallet = walletAddress as `0x${string}`;
 
     if (!process.env.RELAYER_PRIVATE_KEY || CONTRACTS.FACTORY === "0x0") {
       console.log("SIMULATION MODE: No relayer key or contracts not deployed");
@@ -47,48 +50,34 @@ export async function POST(req: NextRequest) {
 
     const relayerClient = getRelayerClient();
 
-    if (functionName === "contribute" || functionName === "lockSecurityDeposit") {
-      const poolContributionAmount = await publicClient.readContract({
+    if (functionName === "contribute") {
+      const config = await publicClient.readContract({
         address: contractAddress as `0x${string}`,
         abi: ArisanPoolAbi,
-        functionName: functionName === "contribute" ? "contributionAmount" : "securityDepositAmount",
-      });
+        functionName: "getPoolConfig",
+      }) as { contributionAmount: bigint };
 
-      const approvalData = encodeFunctionData({
-        abi: MockIDRXAbi,
-        functionName: "approve",
-        args: [contractAddress as `0x${string}`, poolContributionAmount],
-      });
-
-      const approvalTx = await relayerClient.sendTransaction({
-        to: CONTRACTS.MOCK_IDRX,
-        data: approvalData,
-        account: relayerClient.account!,
-      });
-
-      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+      await approveToken(relayerClient, contractAddress, config.contributionAmount);
     }
 
-    if (functionName === "vouch" && args?.values) {
-      const vouchAmount = BigInt(args.values[1]);
-      const approvalData = encodeFunctionData({
-        abi: MockIDRXAbi,
-        functionName: "approve",
-        args: [contractAddress as `0x${string}`, vouchAmount],
-      });
+    if (functionName === "lockSecurityDeposit") {
+      const config = await publicClient.readContract({
+        address: contractAddress as `0x${string}`,
+        abi: ArisanPoolAbi,
+        functionName: "getPoolConfig",
+      }) as { securityDepositAmount: bigint };
 
-      const approvalTx = await relayerClient.sendTransaction({
-        to: CONTRACTS.MOCK_IDRX,
-        data: approvalData,
-        account: relayerClient.account!,
-      });
+      await approveToken(relayerClient, contractAddress, config.securityDepositAmount);
+    }
 
-      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+    if (functionName === "vouch" && args && args.length >= 2) {
+      const vouchAmount = BigInt(args[1]);
+      await approveToken(relayerClient, contractAddress, vouchAmount);
     }
 
     let data: `0x${string}`;
 
-    if (args?.types && args?.values && args.values.length > 0) {
+    if (args && args.length > 0) {
       const abiItem = ArisanPoolAbi.find(
         (item) => item.type === "function" && item.name === functionName
       );
@@ -97,15 +86,18 @@ export async function POST(req: NextRequest) {
         throw new Error(`Function ${functionName} not found in ABI`);
       }
 
+      const inputs = (abiItem as { inputs?: Array<{ type: string }> }).inputs || [];
+      const processedArgs = args.map((v: any, i: number) => {
+        const inputType = inputs[i]?.type;
+        if (inputType === "uint256") return BigInt(v);
+        if (inputType === "address[]") return Array.isArray(v) ? v : JSON.parse(v);
+        return v;
+      });
+
       data = encodeFunctionData({
         abi: ArisanPoolAbi,
         functionName: functionName as any,
-        args: args.values.map((v: string, i: number) => {
-          const type = args.types[i];
-          if (type === "uint256") return BigInt(v);
-          if (type === "address[]") return JSON.parse(v);
-          return v;
-        }),
+        args: processedArgs,
       });
     } else {
       data = encodeFunctionData({
@@ -127,6 +119,7 @@ export async function POST(req: NextRequest) {
       txHash,
       simulated: false,
       status: receipt.status,
+      blockNumber: receipt.blockNumber.toString(),
     });
   } catch (error: any) {
     console.error("Relay error:", error);
@@ -137,3 +130,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
+async function approveToken(
+  relayerClient: ReturnType<typeof getRelayerClient>,
+  spender: string,
+  amount: bigint
+) {
+  const approvalData = encodeFunctionData({
+    abi: MockIDRXAbi,
+    functionName: "approve",
+    args: [spender as `0x${string}`, amount],
+  });
+
+  const approvalTx = await relayerClient.sendTransaction({
+    to: CONTRACTS.MOCK_IDRX,
+    data: approvalData,
+    account: relayerClient.account!,
+  });
+
+  await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+}

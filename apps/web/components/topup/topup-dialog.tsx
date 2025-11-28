@@ -12,8 +12,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn, formatIDR } from "@/lib/utils";
-import { Wallet, QrCode, CreditCard, Building2, Check, AlertTriangle } from "lucide-react";
+import { Wallet, QrCode, Building2, Check, AlertTriangle, Loader2 } from "lucide-react";
 import { useUserStore } from "@/stores/user-store";
+import { useTopUp } from "@/lib/hooks/use-contracts";
+import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 
 const paymentMethods = [
   { id: "qris", name: "QRIS", icon: QrCode, description: "Scan untuk bayar" },
@@ -30,19 +32,33 @@ export function TopUpDialog() {
   const [step, setStep] = useState<Step>("amount");
   const [amount, setAmount] = useState<number>(100000);
   const [selectedMethod, setSelectedMethod] = useState<string>("qris");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { setBalances, balances } = useUserStore();
+  const [error, setError] = useState<string | null>(null);
+  const { setBalances } = useUserStore();
+  const walletAddress = useWalletAddress();
+  const topUp = useTopUp();
 
   const handleConfirm = async () => {
-    setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!walletAddress) {
+      setError("Wallet tidak tersedia");
+      return;
+    }
+
+    setError(null);
     
-    setBalances({
-      liquid: balances.liquid + BigInt(amount),
-    });
-    
-    setIsProcessing(false);
-    setStep("success");
+    try {
+      const result = await topUp.mutateAsync({
+        amount,
+        paymentMethod: selectedMethod,
+      });
+      
+      if (result.newBalance) {
+        setBalances({ liquid: BigInt(result.newBalance) });
+      }
+      
+      setStep("success");
+    } catch (err: any) {
+      setError(err.message || "Top up gagal");
+    }
   };
 
   const handleClose = () => {
@@ -51,6 +67,7 @@ export function TopUpDialog() {
       setStep("amount");
       setAmount(100000);
       setSelectedMethod("qris");
+      setError(null);
     }, 300);
   };
 
@@ -201,16 +218,29 @@ export function TopUpDialog() {
                 </p>
               </div>
 
+              {error && (
+                <div className="p-3 bg-destructive/10 rounded-lg text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setStep("payment")}>
+                <Button variant="outline" onClick={() => setStep("payment")} disabled={topUp.isPending}>
                   Kembali
                 </Button>
                 <Button 
                   className="flex-1" 
                   onClick={handleConfirm}
-                  disabled={isProcessing}
+                  disabled={topUp.isPending}
                 >
-                  {isProcessing ? "Memproses..." : "Saya Sudah Bayar (Simulasi)"}
+                  {topUp.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Memproses...
+                    </>
+                  ) : (
+                    "Saya Sudah Bayar (Simulasi)"
+                  )}
                 </Button>
               </div>
             </div>
@@ -238,5 +268,3 @@ export function TopUpDialog() {
     </Dialog>
   );
 }
-
-

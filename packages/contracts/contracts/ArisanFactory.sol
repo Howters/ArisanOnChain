@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ArisanPool.sol";
 import "./MockIDRX.sol";
 import "./DebtNFT.sol";
+import "./ReputationRegistry.sol";
 
 contract ArisanFactory is Ownable {
     using Clones for address;
@@ -13,11 +14,14 @@ contract ArisanFactory is Ownable {
     address public poolImplementation;
     address public token;
     address public debtNFT;
+    address public reputationRegistry;
+    address public platformWallet;
 
     uint256 public poolCount;
 
     mapping(uint256 => address) public pools;
     mapping(address => uint256[]) public userPools;
+    mapping(address => uint256[]) public adminPools;
 
     event PoolCreated(
         uint256 indexed poolId,
@@ -25,23 +29,37 @@ contract ArisanFactory is Ownable {
         address indexed admin,
         uint256 contributionAmount,
         uint256 securityDeposit,
-        uint256 maxMembers
+        uint256 maxMembers,
+        uint8 paymentDay,
+        bool vouchRequired
     );
 
-    constructor(address _token, address _debtNFT) Ownable(msg.sender) {
+    event PlatformWalletUpdated(address indexed oldWallet, address indexed newWallet);
+
+    constructor(
+        address _token,
+        address _debtNFT,
+        address _reputationRegistry,
+        address _platformWallet
+    ) Ownable(msg.sender) {
         poolImplementation = address(new ArisanPool());
         token = _token;
         debtNFT = _debtNFT;
+        reputationRegistry = _reputationRegistry;
+        platformWallet = _platformWallet;
     }
 
     function createPool(
         uint256 contributionAmount,
         uint256 securityDepositAmount,
-        uint256 maxMembers
+        uint256 maxMembers,
+        uint8 paymentDay,
+        bool vouchRequired
     ) external returns (uint256, address) {
         require(contributionAmount > 0, "Contribution must be positive");
         require(securityDepositAmount > 0, "Security deposit must be positive");
         require(maxMembers >= 3, "Need at least 3 members");
+        require(paymentDay >= 1 && paymentDay <= 28, "Payment day must be 1-28");
 
         poolCount++;
         uint256 newPoolId = poolCount;
@@ -49,17 +67,27 @@ contract ArisanFactory is Ownable {
         address poolClone = poolImplementation.clone();
         
         ArisanPool(poolClone).initialize(
-            newPoolId,
-            msg.sender,
-            token,
-            debtNFT,
-            contributionAmount,
-            securityDepositAmount,
-            maxMembers
+            ArisanPool.InitParams({
+                poolId: newPoolId,
+                admin: msg.sender,
+                token: token,
+                debtNFT: debtNFT,
+                reputationRegistry: reputationRegistry,
+                platformWallet: platformWallet,
+                contributionAmount: contributionAmount,
+                securityDepositAmount: securityDepositAmount,
+                maxMembers: maxMembers,
+                paymentDay: paymentDay,
+                vouchRequired: vouchRequired
+            })
         );
+
+        DebtNFT(debtNFT).grantMinterRole(poolClone);
+        ReputationRegistry(reputationRegistry).grantPoolRole(poolClone);
 
         pools[newPoolId] = poolClone;
         userPools[msg.sender].push(newPoolId);
+        adminPools[msg.sender].push(newPoolId);
 
         emit PoolCreated(
             newPoolId,
@@ -67,7 +95,9 @@ contract ArisanFactory is Ownable {
             msg.sender,
             contributionAmount,
             securityDepositAmount,
-            maxMembers
+            maxMembers,
+            paymentDay,
+            vouchRequired
         );
 
         return (newPoolId, poolClone);
@@ -81,6 +111,15 @@ contract ArisanFactory is Ownable {
         return userPools[user];
     }
 
+    function getAdminPools(address admin) external view returns (uint256[] memory) {
+        return adminPools[admin];
+    }
+
+    function addUserToPool(address user, uint256 poolId) external {
+        require(msg.sender == pools[poolId], "Only pool can add users");
+        userPools[user].push(poolId);
+    }
+
     function updatePoolImplementation(address newImplementation) external onlyOwner {
         poolImplementation = newImplementation;
     }
@@ -92,6 +131,15 @@ contract ArisanFactory is Ownable {
     function updateDebtNFT(address newDebtNFT) external onlyOwner {
         debtNFT = newDebtNFT;
     }
+
+    function updateReputationRegistry(address newRegistry) external onlyOwner {
+        reputationRegistry = newRegistry;
+    }
+
+    function updatePlatformWallet(address newWallet) external onlyOwner {
+        require(newWallet != address(0), "Invalid wallet");
+        address oldWallet = platformWallet;
+        platformWallet = newWallet;
+        emit PlatformWalletUpdated(oldWallet, newWallet);
+    }
 }
-
-
