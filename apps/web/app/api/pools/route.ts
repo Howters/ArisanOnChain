@@ -30,13 +30,22 @@ async function getPoolsFromIndexer(address: string | null) {
     console.log("[Pools API] 📊 Querying indexer at:", process.env.NEXT_PUBLIC_INDEXER_URL);
     const data = await queryIndexer<{
       pools: { items: any[] };
-      members: { items: any[] };
+      allMembers: { items: any[] };
+      userMembers: { items: any[] };
     }>(QUERIES.GET_POOLS, { userAddress: address?.toLowerCase() });
     console.log(`[Pools API] ✅ Indexer returned ${data.pools.items.length} pools`);
 
     const userMemberships = new Map(
-      data.members.items.map((m: any) => [m.poolId, m])
+      data.userMembers.items.map((m: any) => [m.poolId, m])
     );
+
+    const memberCountByPool = new Map<string, number>();
+    data.allMembers.items.forEach((m: any) => {
+      if (m.status === "Active" || m.status === "Approved") {
+        const count = memberCountByPool.get(m.poolId) || 0;
+        memberCountByPool.set(m.poolId, count + 1);
+      }
+    });
 
     const pools = data.pools.items.map((p: any) => {
       const membership = userMemberships.get(p.id);
@@ -55,7 +64,7 @@ async function getPoolsFromIndexer(address: string | null) {
         vouchRequired: p.vouchRequired,
         currentRound: p.currentRound,
         totalRounds: p.totalRounds,
-        memberCount: 0,
+        memberCount: memberCountByPool.get(p.id) || 0,
         isUserMember,
         isAdmin,
         userLockedStake: membership?.lockedStake?.toString() || "0",

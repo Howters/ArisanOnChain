@@ -43,7 +43,13 @@ export const QUERIES = {
           createdAt
         }
       }
-      members(where: { address: $userAddress }) {
+      allMembers: members {
+        items {
+          poolId
+          status
+        }
+      }
+      userMembers: members(where: { address: $userAddress }) {
         items {
           poolId
           status
