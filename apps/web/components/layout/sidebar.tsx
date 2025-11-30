@@ -61,7 +61,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                <Image 
   src="/Kelas-Rutin-Pitching.png" 
   alt="ArisanAman" 
-  width={120} 
+  width={40} 
   height={40} 
 />
             </Link>
