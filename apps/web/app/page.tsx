@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useActiveAccount } from "thirdweb/react";
+import Image from "next/image";
 import { 
   ArrowRight, 
   Shield, 
@@ -202,7 +203,12 @@ export default function LandingPage() {
       <header className="border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
         <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold tracking-tight">
-            arisan<span className="text-primary">aman</span>
+          <Image 
+  src="/Kelas-Rutin-Pitching.png" 
+  alt="ArisanAman" 
+  width={120} 
+  height={40} 
+/>
           </Link>
 
           <div className="hidden md:flex items-center gap-8 text-sm">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -57,10 +58,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="flex h-full flex-col">
           <div className="flex h-16 items-center justify-between px-6 border-b">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="font-bold font-display text-lg">ArisanAman</span>
+               <Image 
+  src="/Kelas-Rutin-Pitching.png" 
+  alt="ArisanAman" 
+  width={120} 
+  height={40} 
+/>
             </Link>
             <Button
               variant="ghost"
