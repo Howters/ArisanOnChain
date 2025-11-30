@@ -206,8 +206,8 @@ export default function LandingPage() {
           <Image 
   src="/KelasRutin.jpeg" 
   alt="ArisanAman" 
-  width={100} 
-  height={60} 
+  width={140} 
+  height={90} 
 />
           </Link>
 
@@ -259,9 +259,8 @@ export default function LandingPage() {
                 <GradientText
                   colors={["#22c55e", "#10b981", "#22c55e"]}
                   animationSpeed={6}
-                  className="text-4xl sm:text-5xl lg:text-7xl font-bold"
-                >
-                  zero scam risk
+                  className="text-4xl sm:text-5xl lg:text-7xl font-bold block"
+                >zero scam risk
                 </GradientText>
               </h1>
 
