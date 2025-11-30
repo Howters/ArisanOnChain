@@ -217,7 +217,6 @@ export default function LandingPage() {
             <a href="#security" className="text-muted-foreground hover:text-foreground transition-colors">Security</a>
             <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
-
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <Button asChild size="sm">
@@ -259,7 +258,7 @@ export default function LandingPage() {
                 <GradientText
                   colors={["#22c55e", "#10b981", "#22c55e"]}
                   animationSpeed={6}
-                  className="text-4xl sm:text-5xl lg:text-7xl font-bold block justify-start"
+                  className="mx-0 text-4xl sm:text-5xl lg:text-7xl font-bold align-start"
                 >zero scam risk
                 </GradientText>
               </h1>
