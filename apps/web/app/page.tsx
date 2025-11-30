@@ -259,7 +259,7 @@ export default function LandingPage() {
                 <GradientText
                   colors={["#22c55e", "#10b981", "#22c55e"]}
                   animationSpeed={6}
-                  className="text-4xl sm:text-5xl lg:text-7xl font-bold block"
+                  className="text-4xl sm:text-5xl lg:text-7xl font-bold block justify-start"
                 >zero scam risk
                 </GradientText>
               </h1>
