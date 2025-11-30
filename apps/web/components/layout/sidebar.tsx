@@ -59,7 +59,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <div className="flex h-16 items-center justify-between px-6 border-b">
             <Link href="/dashboard" className="flex items-center gap-2">
                <Image 
-  src="/Kelas-Rutin-Pitching.png" 
+  src="/KelasRutin.jpeg" 
   alt="ArisanAman" 
   width={40} 
   height={40} 

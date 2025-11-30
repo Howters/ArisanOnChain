@@ -204,7 +204,7 @@ export default function LandingPage() {
         <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold tracking-tight">
           <Image 
-  src="/Kelas-Rutin-Pitching.png" 
+  src="/KelasRutin.jpeg" 
   alt="ArisanAman" 
   width={40} 
   height={40} 
