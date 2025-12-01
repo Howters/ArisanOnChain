@@ -4,9 +4,9 @@
 
 **Bringing trust to traditional community savings through blockchain technology.**
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://your-demo-url.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://arisan-on-chain.vercel.app)
 [![Built on Lisk](https://img.shields.io/badge/Built%20on-Lisk%20L2-blue)](https://lisk.com)
-[![Hackathon](https://img.shields.io/badge/Hackathon-2024-orange)]()
+[![Hackathon](https://img.shields.io/badge/Hackathon-2025-orange)]()
 
 ---
 
@@ -771,9 +771,9 @@ pnpm dev
 
 ---
 
-## 👥 Team
+## 👥 Team 
 
-Built with ❤️ for the Lisk Hackathon 2024
+Built with ❤️ for the Kelas Rutin Batch IV 2025
 
 ---
 
