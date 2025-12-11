@@ -198,6 +198,7 @@ export default function LandingPage() {
     moveParticlesOnHover={true}
     alphaParticles={false}
     disableRotation={false}
+    className=""
   />
           </div>
       <header className="border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
@@ -216,6 +217,7 @@ export default function LandingPage() {
             <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
             <a href="#security" className="text-muted-foreground hover:text-foreground transition-colors">Security</a>
             <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+            <Link href="/waitlist" className="text-primary hover:text-primary/80 transition-colors font-medium">Waiting List</Link>
           </div>
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
