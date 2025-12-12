@@ -11,7 +11,7 @@ import { inAppWallet, createWallet } from "thirdweb/wallets";
 const wallets = [
   inAppWallet({
     auth: {
-      options: ["google", "email"],
+      options: ["google", "email", "phone"],
     },
     smartAccount: {
       chain: liskSepolia,
