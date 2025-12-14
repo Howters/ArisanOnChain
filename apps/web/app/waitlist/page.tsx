@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,7 +12,12 @@ import {
   Gift,
   Bell,
   Shield,
-  ExternalLink
+  Loader2,
+  MapPin,
+  Mail,
+  Phone,
+  User,
+  MessageSquare
 } from "lucide-react";
 import Particles from "@/components/Particles";
 import GradientText from "@/components/GradientText";
@@ -41,19 +47,114 @@ const benefits = [
   },
 ];
 
-const socialProof = [
-  { value: "500+", label: "Orang sudah daftar" },
-  { value: "50+", label: "Grup arisan menunggu" },
-  { value: "Rp 2M+", label: "Potensi volume" },
-];
-
-// TODO: Replace with your Google Forms link
-const GOOGLE_FORMS_URL = "https://forms.gle/K8Umay6HJdbpkrqg8";
+interface WaitlistStats {
+  total: number;
+  byRole: { admin: number; member: number };
+  recentSignups: number;
+}
 
 export default function WaitlistPage() {
-  const handleJoinWaitlist = () => {
-    window.open(GOOGLE_FORMS_URL, "_blank");
+  const [formData, setFormData] = useState({
+    nama: "",
+    email: "",
+    whatsapp: "",
+    kota: "",
+    peran: "",
+    ukuranGrup: "",
+    alasan: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [stats, setStats] = useState<WaitlistStats | null>(null);
+
+  useEffect(() => {
+    fetch("/api/waitlist")
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(() => {});
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setError("");
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        setError(data.error || "Terjadi kesalahan");
+        return;
+      }
+      
+      setIsSubmitted(true);
+    } catch {
+      setError("Terjadi kesalahan koneksi");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const socialProof = [
+    { value: stats ? `${stats.total}+` : "---", label: "Orang sudah daftar" },
+    { value: stats ? `${stats.byRole.admin}+` : "---", label: "Admin grup menunggu" },
+    { value: stats ? `${stats.recentSignups}+` : "---", label: "Daftar minggu ini" },
+  ];
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="absolute inset-0 z-0">
+          <Particles
+            particleColors={['#16C47F', '#16C47F']}
+            particleCount={150}
+            particleSpread={10}
+            speed={0.1}
+            particleBaseSize={200}
+            moveParticlesOnHover={true}
+            alphaParticles={false}
+            disableRotation={false}
+            className=""
+          />
+        </div>
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="relative z-10 max-w-md w-full text-center p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm"
+        >
+          <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-10 h-10 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold mb-4">Terima Kasih! 🎉</h1>
+          <p className="text-muted-foreground mb-6">
+            Kamu sudah terdaftar di waiting list ArisanAman. 
+            Kami akan menghubungi kamu melalui WhatsApp atau email saat platform siap diluncurkan.
+          </p>
+          <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6">
+            <p className="text-sm">
+              <strong className="text-primary">Tips:</strong> Share halaman ini ke teman-teman arisan kamu!
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/">Kembali ke Beranda</Link>
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,7 +172,6 @@ export default function WaitlistPage() {
         />
       </div>
 
-      {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
         <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold tracking-tight">
@@ -84,7 +184,6 @@ export default function WaitlistPage() {
       </header>
 
       <main className="relative z-10">
-        {/* Hero */}
         <section className="max-w-6xl mx-auto px-6 pt-16 pb-12">
           <FadeContent blur duration={600}>
             <div className="text-center max-w-2xl mx-auto">
@@ -110,7 +209,6 @@ export default function WaitlistPage() {
             </div>
           </FadeContent>
 
-          {/* Social Proof */}
           <FadeContent blur duration={600} delay={100}>
             <div className="flex flex-wrap justify-center gap-8 mb-12">
               {socialProof.map((item, i) => (
@@ -123,65 +221,173 @@ export default function WaitlistPage() {
           </FadeContent>
         </section>
 
-        {/* Main Content */}
         <section className="max-w-6xl mx-auto px-6 pb-24">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* CTA Card */}
             <FadeContent blur duration={600} delay={200}>
               <div className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                    <Users className="w-10 h-10 text-primary" />
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Users className="w-6 h-6 text-primary" />
                   </div>
-                  
-                  <h2 className="text-2xl font-bold mb-4">Daftar Waiting List</h2>
-                  
-                  <p className="text-muted-foreground mb-8 leading-relaxed">
-                    Isi formulir singkat untuk bergabung dengan waiting list ArisanAman. 
-                    Kami akan menghubungi kamu melalui WhatsApp atau email saat platform siap diluncurkan.
-                  </p>
+                  <h2 className="text-xl font-bold">Daftar Waiting List</h2>
+                </div>
 
-                  <div className="space-y-4">
-                    <Button 
-                      size="lg" 
-                      className="w-full h-14 text-base"
-                      onClick={handleJoinWaitlist}
+                {error && (
+                  <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <User className="w-4 h-4 text-muted-foreground" />
+                      Nama Lengkap
+                    </label>
+                    <input
+                      type="text"
+                      name="nama"
+                      value={formData.nama}
+                      onChange={handleChange}
+                      required
+                      placeholder="Masukkan nama lengkap"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="contoh@email.com"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      Nomor WhatsApp
+                    </label>
+                    <input
+                      type="tel"
+                      name="whatsapp"
+                      value={formData.whatsapp}
+                      onChange={handleChange}
+                      required
+                      placeholder="08xxxxxxxxxx"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                      Kota Domisili
+                    </label>
+                    <input
+                      type="text"
+                      name="kota"
+                      value={formData.kota}
+                      onChange={handleChange}
+                      required
+                      placeholder="Jakarta, Bandung, Surabaya, dll"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      Peran di Arisan
+                    </label>
+                    <select
+                      name="peran"
+                      value={formData.peran}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                     >
+                      <option value="" className="bg-background">Pilih peran</option>
+                      <option value="Admin/Ketua Arisan" className="bg-background">Admin/Ketua Arisan</option>
+                      <option value="Anggota" className="bg-background">Anggota</option>
+                      <option value="Keduanya" className="bg-background">Keduanya (Admin & Anggota)</option>
+                    </select>
+                  </div>
+
+                  {(formData.peran === "Admin/Ketua Arisan" || formData.peran === "Keduanya") && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                    >
+                      <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                        <Users className="w-4 h-4 text-muted-foreground" />
+                        Ukuran Grup Arisan
+                      </label>
+                      <select
+                        name="ukuranGrup"
+                        value={formData.ukuranGrup}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                      >
+                        <option value="" className="bg-background">Pilih ukuran</option>
+                        <option value="5-10 orang" className="bg-background">5-10 orang</option>
+                        <option value="11-20 orang" className="bg-background">11-20 orang</option>
+                        <option value="21-50 orang" className="bg-background">21-50 orang</option>
+                        <option value="50+ orang" className="bg-background">50+ orang</option>
+                      </select>
+                    </motion.div>
+                  )}
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-medium mb-2">
+                      <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                      Apa yang kamu harapkan dari ArisanAman? (opsional)
+                    </label>
+                    <textarea
+                      name="alasan"
+                      value={formData.alasan}
+                      onChange={handleChange}
+                      placeholder="Ceritakan pengalaman arisanmu atau fitur yang kamu inginkan..."
+                      rows={3}
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 resize-none"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit"
+                    size="lg" 
+                    className="w-full h-14 text-base"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Mendaftarkan...
+                      </span>
+                    ) : (
                       <span className="flex items-center gap-2">
                         Daftar Sekarang
-                        <ExternalLink className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4" />
                       </span>
-                    </Button>
+                    )}
+                  </Button>
 
-                    <p className="text-xs text-muted-foreground">
-                      Kamu akan diarahkan ke Google Forms. Data kamu aman dan tidak akan dibagikan ke pihak ketiga.
-                    </p>
-                  </div>
-
-                  {/* What we'll ask */}
-                  <div className="mt-8 pt-8 border-t border-white/10">
-                    <h3 className="text-sm font-medium mb-4 text-left">Yang akan kami tanyakan:</h3>
-                    <div className="grid grid-cols-2 gap-3 text-left">
-                      {[
-                        "Nama lengkap",
-                        "Email",
-                        "Nomor WhatsApp",
-                        "Kota domisili",
-                        "Peran (Admin/Anggota)",
-                        "Ukuran grup arisan",
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                          <span>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Data kamu aman dan tidak akan dibagikan ke pihak ketiga.
+                  </p>
+                </form>
               </div>
             </FadeContent>
 
-            {/* Benefits */}
             <div className="space-y-6">
               <FadeContent blur duration={600} delay={300}>
                 <h2 className="text-2xl font-bold mb-6">
@@ -213,7 +419,6 @@ export default function WaitlistPage() {
                 </div>
               </FadeContent>
 
-              {/* Share CTA */}
               <FadeContent blur duration={600} delay={900}>
                 <div className="p-5 rounded-xl bg-white/5 border border-white/10">
                   <p className="text-sm text-muted-foreground">
@@ -225,7 +430,6 @@ export default function WaitlistPage() {
           </div>
         </section>
 
-        {/* Problem Reminder */}
         <section className="bg-black/20 backdrop-blur-sm border-y border-white/10">
           <div className="max-w-6xl mx-auto px-6 py-16">
             <FadeContent blur duration={600}>
@@ -275,31 +479,8 @@ export default function WaitlistPage() {
             </FadeContent>
           </div>
         </section>
-
-        {/* Final CTA */}
-        <section className="max-w-6xl mx-auto px-6 py-16">
-          <FadeContent blur duration={600}>
-            <div className="rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/20 p-8 sm:p-12 text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.1),transparent_70%)]" />
-              <div className="relative">
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
-                  Siap jadi bagian dari revolusi arisan?
-                </h2>
-                <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                  Jangan sampai ketinggalan. Daftar sekarang dan jadilah yang pertama 
-                  merasakan arisan yang aman dan transparan.
-                </p>
-                <Button size="lg" className="h-12 px-8 text-base" onClick={handleJoinWaitlist}>
-                  Daftar Waiting List
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </FadeContent>
-        </section>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 relative z-10">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
@@ -313,4 +494,3 @@ export default function WaitlistPage() {
     </div>
   );
 }
-
