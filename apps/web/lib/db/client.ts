@@ -112,3 +112,4 @@ export async function getWaitlistStats(): Promise<{
 
 export default pool;
 
+
