@@ -34,9 +34,10 @@ import {
   UserPlus,
   RefreshCw,
   X,
+  MessageCircle,
 } from "lucide-react";
 import { formatIDR, formatAddress } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   usePool, 
   useApproveMember, 
@@ -95,6 +96,52 @@ export default function CirclePage() {
   const [showVouchModal, setShowVouchModal] = useState(false);
   const [vouchTarget, setVouchTarget] = useState<{ address: string; name: string } | null>(null);
   const [vouchAmount, setVouchAmount] = useState("");
+  const [memberProfiles, setMemberProfiles] = useState<Record<string, { nama: string; whatsapp: string }>>({});
+
+  useEffect(() => {
+    if (!pool?.members) return;
+    const addresses = pool.members.map((m: any) => m.address);
+    if (addresses.length === 0) return;
+    
+    fetch("/api/profile/batch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ addresses }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.profiles) {
+          setMemberProfiles(data.profiles);
+        }
+      })
+      .catch(() => {});
+  }, [pool?.members]);
+
+  const sendWhatsAppReminder = (memberAddress: string) => {
+    const profile = memberProfiles[memberAddress.toLowerCase()];
+    if (!profile?.whatsapp) {
+      toast.error("Anggota belum mengisi nomor WhatsApp");
+      return;
+    }
+    
+    const memberName = profile.nama || formatAddress(memberAddress);
+    const poolName = pool?.name || "Arisan";
+    const amount = formatIDR(Number(pool?.contributionAmount || 0));
+    const round = pool?.currentRound || 1;
+    
+    const message = encodeURIComponent(
+      `Halo ${memberName}! 👋\n\n` +
+      `Ini reminder dari *${poolName}*:\n` +
+      `📍 Periode: ${round}\n` +
+      `💰 Iuran: ${amount}\n\n` +
+      `Mohon segera lakukan pembayaran ya. Terima kasih! 🙏\n\n` +
+      `- Admin via ArisanAman`
+    );
+    
+    const cleanPhone = profile.whatsapp.replace(/^0/, "62");
+    window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
+    toast.success("Membuka WhatsApp...");
+  };
   
   const isActionLoading = (actionName: string) => loadingActions.has(actionName);
   const isAnyActionLoading = (prefix: string) => Array.from(loadingActions).some(a => a.startsWith(prefix));
@@ -876,8 +923,8 @@ export default function CirclePage() {
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium truncate font-mono text-sm">
-                            {formatAddress(member.address)}
+                          <p className="font-medium truncate text-sm">
+                            {memberProfiles[member.address.toLowerCase()]?.nama || formatAddress(member.address)}
                           </p>
                           {member.isAdmin && (
                             <Badge variant="secondary" className="shrink-0">
@@ -889,11 +936,9 @@ export default function CirclePage() {
                             <Badge variant="outline" className="shrink-0">Anda</Badge>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          {member.status === "Active" 
-                            ? `Jaminan: ${formatIDR(Number(member.lockedStake))}`
-                            : "Belum bayar jaminan"
-                          }
+                        <p className="text-xs text-muted-foreground font-mono">
+                          {formatAddress(member.address)}
+                          {member.status === "Active" && ` • Jaminan: ${formatIDR(Number(member.lockedStake))}`}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -911,18 +956,29 @@ export default function CirclePage() {
                                   Belum Setor
                                 </Badge>
                                 {isAdmin && member.address.toLowerCase() !== userAddress && (
-                                  <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => openReportDefaultModal(member)}
-                                    disabled={isActionLoading(`reportDefault-${member.address}`)}
-                                  >
-                                    {isActionLoading(`reportDefault-${member.address}`) ? (
-                                      <Loader2 className="h-3 w-3 animate-spin" />
-                                    ) : (
-                                      <AlertTriangle className="h-3 w-3" />
-                                    )}
-                                  </Button>
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => sendWhatsAppReminder(member.address)}
+                                      title="Kirim reminder via WhatsApp"
+                                    >
+                                      <MessageCircle className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => openReportDefaultModal(member)}
+                                      disabled={isActionLoading(`reportDefault-${member.address}`)}
+                                      title="Laporkan gagal bayar"
+                                    >
+                                      {isActionLoading(`reportDefault-${member.address}`) ? (
+                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                      ) : (
+                                        <AlertTriangle className="h-3 w-3" />
+                                      )}
+                                    </Button>
+                                  </>
                                 )}
                               </>
                             )

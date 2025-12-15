@@ -120,4 +120,95 @@ export async function getWaitlistStats(): Promise<{
   }
 }
 
+export async function initProfileTable() {
+  const client = await getPool().connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS user_profiles (
+        wallet_address VARCHAR(42) PRIMARY KEY,
+        nama VARCHAR(255) NOT NULL,
+        whatsapp VARCHAR(50) NOT NULL,
+        kota VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+  } finally {
+    client.release();
+  }
+}
+
+export interface UserProfile {
+  walletAddress: string;
+  nama: string;
+  whatsapp: string;
+  kota?: string;
+}
+
+export async function getProfile(walletAddress: string): Promise<UserProfile | null> {
+  const client = await getPool().connect();
+  try {
+    await initProfileTable();
+    const result = await client.query(
+      "SELECT wallet_address, nama, whatsapp, kota FROM user_profiles WHERE wallet_address = $1",
+      [walletAddress.toLowerCase()]
+    );
+    if (result.rows.length === 0) return null;
+    const row = result.rows[0];
+    return {
+      walletAddress: row.wallet_address,
+      nama: row.nama,
+      whatsapp: row.whatsapp,
+      kota: row.kota,
+    };
+  } finally {
+    client.release();
+  }
+}
+
+export async function upsertProfile(profile: UserProfile): Promise<{ success: boolean; error?: string }> {
+  const client = await getPool().connect();
+  try {
+    await initProfileTable();
+    await client.query(
+      `INSERT INTO user_profiles (wallet_address, nama, whatsapp, kota, updated_at)
+       VALUES ($1, $2, $3, $4, NOW())
+       ON CONFLICT (wallet_address) 
+       DO UPDATE SET nama = $2, whatsapp = $3, kota = $4, updated_at = NOW()`,
+      [profile.walletAddress.toLowerCase(), profile.nama, profile.whatsapp, profile.kota || null]
+    );
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  } finally {
+    client.release();
+  }
+}
+
+export async function getProfilesByAddresses(addresses: string[]): Promise<Map<string, UserProfile>> {
+  if (addresses.length === 0) return new Map();
+  const client = await getPool().connect();
+  try {
+    await initProfileTable();
+    const lowerAddresses = addresses.map(a => a.toLowerCase());
+    const placeholders = lowerAddresses.map((_, i) => `$${i + 1}`).join(", ");
+    const result = await client.query(
+      `SELECT wallet_address, nama, whatsapp, kota FROM user_profiles WHERE wallet_address IN (${placeholders})`,
+      lowerAddresses
+    );
+    const profiles = new Map<string, UserProfile>();
+    result.rows.forEach((row: any) => {
+      profiles.set(row.wallet_address, {
+        walletAddress: row.wallet_address,
+        nama: row.nama,
+        whatsapp: row.whatsapp,
+        kota: row.kota,
+      });
+    });
+    return profiles;
+  } finally {
+    client.release();
+  }
+}
+
 export default getPool;
