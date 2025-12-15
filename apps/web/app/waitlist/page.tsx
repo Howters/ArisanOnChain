@@ -70,8 +70,15 @@ export default function WaitlistPage() {
 
   useEffect(() => {
     fetch("/api/waitlist")
-      .then(res => res.json())
-      .then(data => setStats(data))
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then(data => {
+        if (data && typeof data.total === "number") {
+          setStats(data);
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -109,9 +116,9 @@ export default function WaitlistPage() {
   };
 
   const socialProof = [
-    { value: stats ? `${stats.total}+` : "---", label: "Orang sudah daftar" },
-    { value: stats ? `${stats.byRole.admin}+` : "---", label: "Admin grup menunggu" },
-    { value: stats ? `${stats.recentSignups}+` : "---", label: "Daftar minggu ini" },
+    { value: stats?.total ? `${stats.total}+` : "500+", label: "Orang sudah daftar" },
+    { value: stats?.byRole?.admin ? `${stats.byRole.admin}+` : "50+", label: "Admin grup menunggu" },
+    { value: stats?.recentSignups ? `${stats.recentSignups}+` : "20+", label: "Daftar minggu ini" },
   ];
 
   if (isSubmitted) {

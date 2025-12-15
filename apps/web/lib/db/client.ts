@@ -1,12 +1,22 @@
 import { Pool } from "pg";
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-});
+let pool: Pool | null = null;
+
+function getPool(): Pool {
+  if (!pool) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL is not configured");
+    }
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+    });
+  }
+  return pool;
+}
 
 export async function initWaitlistTable() {
-  const client = await pool.connect();
+  const client = await getPool().connect();
   try {
     await client.query(`
       CREATE TABLE IF NOT EXISTS waitlist (
@@ -37,7 +47,7 @@ export interface WaitlistEntry {
 }
 
 export async function addToWaitlist(entry: WaitlistEntry): Promise<{ success: boolean; id?: number; error?: string }> {
-  const client = await pool.connect();
+  const client = await getPool().connect();
   try {
     await initWaitlistTable();
     
@@ -65,7 +75,7 @@ export async function getWaitlistStats(): Promise<{
   byCity: Record<string, number>;
   recentSignups: number;
 }> {
-  const client = await pool.connect();
+  const client = await getPool().connect();
   try {
     await initWaitlistTable();
     
@@ -110,7 +120,4 @@ export async function getWaitlistStats(): Promise<{
   }
 }
 
-export default pool;
-
-
-
+export default getPool;
