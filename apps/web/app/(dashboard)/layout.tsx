@@ -1,7 +1,7 @@
 "use client";
 
 import { useActiveAccount, useAutoConnect } from "thirdweb/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
@@ -30,20 +30,34 @@ export default function DashboardLayout({
 }) {
   const account = useActiveAccount();
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileChecked, setProfileChecked] = useState(false);
   
-  // Auto-connect with the same wallet config as login
   const { isLoading: isAutoConnecting } = useAutoConnect({
     client,
     wallets,
   });
 
   useEffect(() => {
-    // Only redirect after auto-connect is done and no account
     if (!isAutoConnecting && !account) {
       router.push("/login");
     }
   }, [isAutoConnecting, account, router]);
+
+  useEffect(() => {
+    if (!account?.address || pathname === "/profile" || profileChecked) return;
+    
+    fetch(`/api/profile?address=${account.address}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.profile) {
+          router.push(`/profile?returnTo=${encodeURIComponent(pathname)}`);
+        }
+        setProfileChecked(true);
+      })
+      .catch(() => setProfileChecked(true));
+  }, [account?.address, pathname, router, profileChecked]);
 
   // Show loading while auto-connecting
   if (isAutoConnecting) {

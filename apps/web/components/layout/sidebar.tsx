@@ -20,7 +20,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
   { name: "Arisan", href: "/circles", icon: CircleDot, exact: false },
   { name: "Riwayat", href: "/history", icon: History, exact: false },
-  { name: "Profil", href: "/profile/me", icon: User, exact: false },
+  { name: "Profil", href: "/profile", icon: User, exact: true },
   { name: "Pengaturan", href: "/settings", icon: Settings, exact: false },
 ];
 
