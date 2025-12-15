@@ -37,7 +37,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { formatIDR, formatAddress } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { 
   usePool, 
   useApproveMember, 
@@ -96,31 +96,13 @@ export default function CirclePage() {
   const [showVouchModal, setShowVouchModal] = useState(false);
   const [vouchTarget, setVouchTarget] = useState<{ address: string; name: string } | null>(null);
   const [vouchAmount, setVouchAmount] = useState("");
-  const [memberProfiles, setMemberProfiles] = useState<Record<string, { nama: string; whatsapp: string }>>({});
 
-  useEffect(() => {
-    if (!pool?.members) return;
-    const addresses = pool.members.map((m: any) => m.address);
-    if (addresses.length === 0) return;
-    
-    fetch("/api/profile/batch", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ addresses }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.profiles) {
-          setMemberProfiles(data.profiles);
-        }
-      })
-      .catch(() => {});
-  }, [pool?.members]);
+  const memberProfiles = pool?.memberProfiles || {};
 
   const sendWhatsAppReminder = (memberAddress: string) => {
     const profile = memberProfiles[memberAddress.toLowerCase()];
     if (!profile?.whatsapp) {
-      toast.error("Anggota belum mengisi nomor WhatsApp");
+      toast.error("Anggota belum mengisi nomor WhatsApp di profil");
       return;
     }
     

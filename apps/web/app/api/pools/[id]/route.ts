@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { queryIndexer, QUERIES } from "@/lib/graphql/client";
 import { publicClient, CONTRACTS } from "@/lib/contracts/client";
 import { ArisanFactoryAbi, ArisanPoolAbi } from "@/lib/contracts/abis";
+import { getProfilesByAddresses } from "@/lib/db/client";
 
 const USE_INDEXER = process.env.NEXT_PUBLIC_USE_INDEXER === "true";
 const STATUS_MAP = ["Pending", "Active", "Completed", "Cancelled"];
@@ -111,6 +112,17 @@ async function getPoolDetailFromIndexer(poolId: string, userAddress: string | nu
       completed: !!w.claimedAt,
     }));
 
+    const allMemberAddresses = [...formattedMembers, ...pendingMembers].map((m: any) => m.address);
+    let memberProfiles: Record<string, { nama: string; whatsapp: string }> = {};
+    try {
+      const profiles = await getProfilesByAddresses(allMemberAddresses);
+      profiles.forEach((profile, address) => {
+        memberProfiles[address] = { nama: profile.nama, whatsapp: profile.whatsapp };
+      });
+    } catch (e) {
+      console.log("[Pool Detail API] Could not fetch profiles:", e);
+    }
+
     console.log(`[Pool Detail API] ✅ Indexer returned pool ${poolId}`);
 
     return NextResponse.json({
@@ -137,6 +149,7 @@ async function getPoolDetailFromIndexer(poolId: string, userAddress: string | nu
       isAdmin,
       userMember,
       roundHistory,
+      memberProfiles,
     });
   } catch (error) {
     console.error("Indexer error, falling back to RPC:", error);
@@ -389,6 +402,17 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     }
   }
 
+  const allMemberAddresses = [...members, ...pendingMembers].map((m: any) => m.address);
+  let memberProfiles: Record<string, { nama: string; whatsapp: string }> = {};
+  try {
+    const profiles = await getProfilesByAddresses(allMemberAddresses);
+    profiles.forEach((profile, address) => {
+      memberProfiles[address] = { nama: profile.nama, whatsapp: profile.whatsapp };
+    });
+  } catch (e) {
+    console.log("[Pool Detail API] Could not fetch profiles:", e);
+  }
+
   return NextResponse.json({
     id: poolId,
     address: poolAddress,
@@ -412,5 +436,6 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     isAdmin,
     userMember,
     roundHistory,
+    memberProfiles,
   });
 }
