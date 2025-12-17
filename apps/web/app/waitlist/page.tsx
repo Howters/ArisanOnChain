@@ -140,7 +140,7 @@ export default function WaitlistPage() {
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="relative z-10 max-w-md w-full text-center p-8 rounded-2xl bg-white/5 border border-white/40 backdrop-blur-sm"
+          className="relative z-10 max-w-md w-full text-center p-8 rounded-2xl bg-white/5 border border-primary/40 backdrop-blur-sm"
         >
           <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-primary" />
@@ -231,7 +231,7 @@ export default function WaitlistPage() {
         <section className="max-w-6xl mx-auto px-6 pb-24">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <FadeContent blur duration={600} delay={200}>
-              <div className="p-8 rounded-2xl bg-white/5 border border-white/40 backdrop-blur-sm">
+              <div className="p-8 rounded-2xl bg-white/5 border border-primary/40 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary" />
@@ -258,7 +258,7 @@ export default function WaitlistPage() {
                       onChange={handleChange}
                       required
                       placeholder="Masukkan nama lengkap"
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
 
@@ -274,7 +274,7 @@ export default function WaitlistPage() {
                       onChange={handleChange}
                       required
                       placeholder="contoh@email.com"
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
 
@@ -290,7 +290,7 @@ export default function WaitlistPage() {
                       onChange={handleChange}
                       required
                       placeholder="08xxxxxxxxxx"
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
 
@@ -306,7 +306,7 @@ export default function WaitlistPage() {
                       onChange={handleChange}
                       required
                       placeholder="Jakarta, Bandung, Surabaya, dll"
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
 
@@ -320,7 +320,7 @@ export default function WaitlistPage() {
                       value={formData.peran}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                     >
                       <option value="" className="bg-background">Pilih peran</option>
                       <option value="Admin/Ketua Arisan" className="bg-background">Admin/Ketua Arisan</option>
@@ -343,7 +343,7 @@ export default function WaitlistPage() {
                         name="ukuranGrup"
                         value={formData.ukuranGrup}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                       >
                         <option value="" className="bg-background">Pilih ukuran</option>
                         <option value="5-10 orang" className="bg-background">5-10 orang</option>
@@ -365,7 +365,7 @@ export default function WaitlistPage() {
                       onChange={handleChange}
                       placeholder="Ceritakan pengalaman arisanmu atau fitur yang kamu inginkan..."
                       rows={3}
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 resize-none"
                     />
                   </div>
 
@@ -404,7 +404,7 @@ export default function WaitlistPage() {
 
               {benefits.map((benefit, i) => (
                 <FadeContent key={i} blur duration={600} delay={400 + i * 100}>
-                  <div className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-white/40 hover:bg-white/[0.08] transition-all">
+                  <div className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-primary/40 hover:bg-white/[0.08] transition-all">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <benefit.icon className="w-6 h-6 text-primary" />
                     </div>
@@ -427,7 +427,7 @@ export default function WaitlistPage() {
               </FadeContent>
 
               <FadeContent blur duration={600} delay={900}>
-                <div className="p-5 rounded-xl bg-white/5 border border-white/40">
+                <div className="p-5 rounded-xl bg-white/5 border border-primary/40">
                   <p className="text-sm text-muted-foreground">
                     💡 <strong className="text-foreground">Tips:</strong> Share halaman ini ke teman-teman arisan kamu agar bisa dapat akses bareng saat launch!
                   </p>
@@ -472,7 +472,7 @@ export default function WaitlistPage() {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.1 }}
-                      className="p-5 rounded-xl bg-white/5 border border-white/40"
+                      className="p-5 rounded-xl bg-white/5 border border-primary/40"
                     >
                       <div className="text-3xl mb-3">
                         {typeof item.icon === "string" ? item.icon : <item.icon className="w-8 h-8 text-primary mx-auto" />}
