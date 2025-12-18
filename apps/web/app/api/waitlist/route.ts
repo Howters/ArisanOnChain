@@ -58,7 +58,11 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const stats = await getWaitlistStats();
-    return NextResponse.json(stats);
+    return NextResponse.json(stats, {
+      headers: {
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      },
+    });
   } catch (error) {
     console.error("Waitlist stats error:", error);
     return NextResponse.json(
@@ -67,6 +71,7 @@ export async function GET() {
     );
   }
 }
+
 
 
 

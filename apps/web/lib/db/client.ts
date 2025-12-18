@@ -72,49 +72,29 @@ export async function addToWaitlist(entry: WaitlistEntry): Promise<{ success: bo
 export async function getWaitlistStats(): Promise<{
   total: number;
   byRole: { admin: number; member: number };
-  byCity: Record<string, number>;
   recentSignups: number;
 }> {
   const client = await getPool().connect();
   try {
-    await initWaitlistTable();
-    
-    const totalResult = await client.query("SELECT COUNT(*) FROM waitlist");
-    const total = parseInt(totalResult.rows[0].count, 10);
-    
-    const roleResult = await client.query(`
-      SELECT peran, COUNT(*) as count 
-      FROM waitlist 
-      GROUP BY peran
+    const result = await client.query(`
+      SELECT 
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE LOWER(peran) LIKE '%admin%' OR LOWER(peran) LIKE '%keduanya%') as admin_count,
+        COUNT(*) FILTER (WHERE peran = 'Anggota') as member_count,
+        COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days') as recent_count
+      FROM waitlist
     `);
-    const byRole = { admin: 0, member: 0 };
-    roleResult.rows.forEach((row: any) => {
-      if (row.peran.toLowerCase().includes("admin")) {
-        byRole.admin = parseInt(row.count, 10);
-      } else {
-        byRole.member = parseInt(row.count, 10);
-      }
-    });
     
-    const cityResult = await client.query(`
-      SELECT kota, COUNT(*) as count 
-      FROM waitlist 
-      GROUP BY kota 
-      ORDER BY count DESC 
-      LIMIT 10
-    `);
-    const byCity: Record<string, number> = {};
-    cityResult.rows.forEach((row: any) => {
-      byCity[row.kota] = parseInt(row.count, 10);
-    });
+    const row = result.rows[0];
     
-    const recentResult = await client.query(`
-      SELECT COUNT(*) FROM waitlist 
-      WHERE created_at > NOW() - INTERVAL '7 days'
-    `);
-    const recentSignups = parseInt(recentResult.rows[0].count, 10);
-    
-    return { total, byRole, byCity, recentSignups };
+    return {
+      total: parseInt(row.total, 10),
+      byRole: {
+        admin: parseInt(row.admin_count, 10),
+        member: parseInt(row.member_count, 10),
+      },
+      recentSignups: parseInt(row.recent_count, 10),
+    };
   } finally {
     client.release();
   }
