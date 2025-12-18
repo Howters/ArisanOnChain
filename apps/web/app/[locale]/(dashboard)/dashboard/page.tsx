@@ -32,7 +32,6 @@ export default function DashboardPage() {
   const myPools = poolsData?.pools || [];
   const debts = debtData?.debts || [];
   
-  // Calculate locked balance from all pools the user is in
   const totalLocked = myPools.reduce((acc: bigint, pool: any) => {
     const userLockedStake = pool.userLockedStake ? BigInt(pool.userLockedStake) : BigInt(0);
     return acc + userLockedStake;
@@ -248,9 +247,9 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-
         </div>
       </div>
     </div>
   );
 }
+

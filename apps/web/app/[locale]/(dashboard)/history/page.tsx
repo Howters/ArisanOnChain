@@ -126,17 +126,3 @@ export default function HistoryPage() {
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-

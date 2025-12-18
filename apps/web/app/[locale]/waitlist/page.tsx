@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import Image from "next/image";
 import { 
   ArrowRight, 
@@ -23,29 +22,9 @@ import Particles from "@/components/Particles";
 import GradientText from "@/components/GradientText";
 import FadeContent from "@/components/FadeContent";
 import { motion } from "framer-motion";
-
-const benefits = [
-  {
-    icon: Gift,
-    title: "Akses Awal Eksklusif",
-    desc: "Jadilah yang pertama mencoba ArisanAman sebelum publik",
-  },
-  {
-    icon: Shield,
-    title: "Zero Platform Fee",
-    desc: "Gratis biaya platform selama 3 bulan pertama untuk early adopters",
-  },
-  {
-    icon: Bell,
-    title: "Update Langsung",
-    desc: "Notifikasi langsung saat fitur baru diluncurkan",
-  },
-  {
-    icon: Users,
-    title: "Komunitas Prioritas",
-    desc: "Bergabung dengan grup WhatsApp eksklusif early adopters",
-  },
-];
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface WaitlistStats {
   total: number;
@@ -54,6 +33,9 @@ interface WaitlistStats {
 }
 
 export default function WaitlistPage() {
+  const t = useTranslations("waitlist");
+  const tc = useTranslations("common");
+  
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
@@ -67,6 +49,29 @@ export default function WaitlistPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [stats, setStats] = useState<WaitlistStats | null>(null);
+
+  const benefits = [
+    {
+      icon: Gift,
+      title: t("benefits.earlyAccess.title"),
+      desc: t("benefits.earlyAccess.desc"),
+    },
+    {
+      icon: Shield,
+      title: t("benefits.zeroFee.title"),
+      desc: t("benefits.zeroFee.desc"),
+    },
+    {
+      icon: Bell,
+      title: t("benefits.updates.title"),
+      desc: t("benefits.updates.desc"),
+    },
+    {
+      icon: Users,
+      title: t("benefits.community.title"),
+      desc: t("benefits.community.desc"),
+    },
+  ];
 
   useEffect(() => {
     fetch("/api/waitlist")
@@ -116,9 +121,9 @@ export default function WaitlistPage() {
   };
 
   const socialProof = [
-    { value: stats?.total ? `${stats.total}+` : "500+", label: "Orang sudah daftar" },
-    { value: stats?.byRole?.admin ? `${stats.byRole.admin}+` : "50+", label: "Admin grup menunggu" },
-    { value: stats?.recentSignups ? `${stats.recentSignups}+` : "20+", label: "Daftar minggu ini" },
+    { value: stats?.total ? `${stats.total}+` : "500+", label: t("stats.registered") },
+    { value: stats?.byRole?.admin ? `${stats.byRole.admin}+` : "50+", label: t("stats.adminsWaiting") },
+    { value: stats?.recentSignups ? `${stats.recentSignups}+` : "20+", label: t("stats.thisWeek") },
   ];
 
   if (isSubmitted) {
@@ -145,18 +150,17 @@ export default function WaitlistPage() {
           <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold mb-4">Terima Kasih! 🎉</h1>
+          <h1 className="text-2xl font-bold mb-4">{t("success.title")}</h1>
           <p className="text-muted-foreground mb-6">
-            Kamu sudah terdaftar di waiting list ArisanAman. 
-            Kami akan menghubungi kamu melalui WhatsApp atau email saat platform siap diluncurkan.
+            {t("success.desc")}
           </p>
           <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-6">
             <p className="text-sm">
-              <strong className="text-primary">Tips:</strong> Share halaman ini ke teman-teman arisan kamu!
+              <strong className="text-primary">Tips:</strong> {t("success.tip")}
             </p>
           </div>
           <Button asChild>
-            <Link href="/">Kembali ke Beranda</Link>
+            <Link href="/">{tc("backToHome")}</Link>
           </Button>
         </motion.div>
       </div>
@@ -184,9 +188,12 @@ export default function WaitlistPage() {
           <Link href="/" className="text-xl font-bold tracking-tight">
             <Image src="/KelasRutin.jpeg" alt="ArisanAman" width={140} height={90} />
           </Link>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/">← Beranda</Link>
-          </Button>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">← {tc("home")}</Link>
+            </Button>
+          </div>
         </nav>
       </header>
 
@@ -196,22 +203,20 @@ export default function WaitlistPage() {
             <div className="text-center max-w-2xl mx-auto">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-6">
                 <Sparkles className="w-4 h-4" />
-                Segera Hadir
+                {t("badge")}
               </div>
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
-                Gabung{" "}
+                {t("title")}{" "}
                 <GradientText
                   colors={["#22c55e", "#10b981", "#22c55e"]}
                   animationSpeed={6}
                   className="text-4xl sm:text-5xl font-bold"
                 >
-                  Waiting List
+                  {t("titleHighlight")}
                 </GradientText>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                ArisanAman sedang dalam tahap pengembangan. Daftarkan dirimu sekarang 
-                untuk jadi yang <strong className="text-foreground">pertama</strong> mencoba 
-                platform arisan on-chain pertama di Indonesia.
+                {t("desc")}
               </p>
             </div>
           </FadeContent>
@@ -236,7 +241,7 @@ export default function WaitlistPage() {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Users className="w-6 h-6 text-primary" />
                   </div>
-                  <h2 className="text-xl font-bold">Daftar Waiting List</h2>
+                  <h2 className="text-xl font-bold">{t("form.title")}</h2>
                 </div>
 
                 {error && (
@@ -249,7 +254,7 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <User className="w-4 h-4 text-muted-foreground" />
-                      Nama Lengkap
+                      {t("form.name")}
                     </label>
                     <input
                       type="text"
@@ -257,7 +262,7 @@ export default function WaitlistPage() {
                       value={formData.nama}
                       onChange={handleChange}
                       required
-                      placeholder="Masukkan nama lengkap"
+                      placeholder={t("form.namePlaceholder")}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
@@ -265,7 +270,7 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <Mail className="w-4 h-4 text-muted-foreground" />
-                      Email
+                      {t("form.email")}
                     </label>
                     <input
                       type="email"
@@ -273,7 +278,7 @@ export default function WaitlistPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      placeholder="contoh@email.com"
+                      placeholder={t("form.emailPlaceholder")}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
@@ -281,7 +286,7 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <Phone className="w-4 h-4 text-muted-foreground" />
-                      Nomor WhatsApp
+                      {t("form.whatsapp")}
                     </label>
                     <input
                       type="tel"
@@ -289,7 +294,7 @@ export default function WaitlistPage() {
                       value={formData.whatsapp}
                       onChange={handleChange}
                       required
-                      placeholder="08xxxxxxxxxx"
+                      placeholder={t("form.whatsappPlaceholder")}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
@@ -297,7 +302,7 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <MapPin className="w-4 h-4 text-muted-foreground" />
-                      Kota Domisili
+                      {t("form.city")}
                     </label>
                     <input
                       type="text"
@@ -305,7 +310,7 @@ export default function WaitlistPage() {
                       value={formData.kota}
                       onChange={handleChange}
                       required
-                      placeholder="Jakarta, Bandung, Surabaya, dll"
+                      placeholder={t("form.cityPlaceholder")}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                     />
                   </div>
@@ -313,7 +318,7 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <Users className="w-4 h-4 text-muted-foreground" />
-                      Peran di Arisan
+                      {t("form.role")}
                     </label>
                     <select
                       name="peran"
@@ -322,10 +327,10 @@ export default function WaitlistPage() {
                       required
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                     >
-                      <option value="" className="bg-background">Pilih peran</option>
-                      <option value="Admin/Ketua Arisan" className="bg-background">Admin/Ketua Arisan</option>
-                      <option value="Anggota" className="bg-background">Anggota</option>
-                      <option value="Keduanya" className="bg-background">Keduanya (Admin & Anggota)</option>
+                      <option value="" className="bg-background">{t("form.rolePlaceholder")}</option>
+                      <option value="Admin/Ketua Arisan" className="bg-background">{t("form.roleAdmin")}</option>
+                      <option value="Anggota" className="bg-background">{t("form.roleMember")}</option>
+                      <option value="Keduanya" className="bg-background">{t("form.roleBoth")}</option>
                     </select>
                   </div>
 
@@ -337,7 +342,7 @@ export default function WaitlistPage() {
                     >
                       <label className="flex items-center gap-2 text-sm font-medium mb-2">
                         <Users className="w-4 h-4 text-muted-foreground" />
-                        Ukuran Grup Arisan
+                        {t("form.groupSize")}
                       </label>
                       <select
                         name="ukuranGrup"
@@ -345,11 +350,11 @@ export default function WaitlistPage() {
                         onChange={handleChange}
                         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                       >
-                        <option value="" className="bg-background">Pilih ukuran</option>
-                        <option value="5-10 orang" className="bg-background">5-10 orang</option>
-                        <option value="11-20 orang" className="bg-background">11-20 orang</option>
-                        <option value="21-50 orang" className="bg-background">21-50 orang</option>
-                        <option value="50+ orang" className="bg-background">50+ orang</option>
+                        <option value="" className="bg-background">{t("form.groupSizePlaceholder")}</option>
+                        <option value="5-10 orang" className="bg-background">{t("form.groupSize5")}</option>
+                        <option value="11-20 orang" className="bg-background">{t("form.groupSize11")}</option>
+                        <option value="21-50 orang" className="bg-background">{t("form.groupSize21")}</option>
+                        <option value="50+ orang" className="bg-background">{t("form.groupSize50")}</option>
                       </select>
                     </motion.div>
                   )}
@@ -357,13 +362,13 @@ export default function WaitlistPage() {
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium mb-2">
                       <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                      Apa yang kamu harapkan dari ArisanAman? (opsional)
+                      {t("form.reason")}
                     </label>
                     <textarea
                       name="alasan"
                       value={formData.alasan}
                       onChange={handleChange}
-                      placeholder="Ceritakan pengalaman arisanmu atau fitur yang kamu inginkan..."
+                      placeholder={t("form.reasonPlaceholder")}
                       rows={3}
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-primary/40 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 resize-none"
                     />
@@ -378,18 +383,18 @@ export default function WaitlistPage() {
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        Mendaftarkan...
+                        {t("form.submitting")}
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
-                        Daftar Sekarang
+                        {t("form.submit")}
                         <ArrowRight className="w-4 h-4" />
                       </span>
                     )}
                   </Button>
 
                   <p className="text-xs text-muted-foreground text-center">
-                    Data kamu aman dan tidak akan dibagikan ke pihak ketiga.
+                    {t("form.privacy")}
                   </p>
                 </form>
               </div>
@@ -398,7 +403,7 @@ export default function WaitlistPage() {
             <div className="space-y-6">
               <FadeContent blur duration={600} delay={300}>
                 <h2 className="text-2xl font-bold mb-6">
-                  Keuntungan Early Adopter 🚀
+                  {t("benefits.title")}
                 </h2>
               </FadeContent>
 
@@ -418,10 +423,9 @@ export default function WaitlistPage() {
 
               <FadeContent blur duration={600} delay={800}>
                 <div className="p-6 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/20">
-                  <h3 className="font-semibold mb-2">🎯 Target Launch: Q1 2026</h3>
+                  <h3 className="font-semibold mb-2">{t("launch.title")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Kami sedang dalam tahap final development. Kamu akan jadi yang pertama 
-                    tahu saat ArisanAman siap digunakan.
+                    {t("launch.desc")}
                   </p>
                 </div>
               </FadeContent>
@@ -429,7 +433,7 @@ export default function WaitlistPage() {
               <FadeContent blur duration={600} delay={900}>
                 <div className="p-5 rounded-xl bg-white/5 border border-primary/40">
                   <p className="text-sm text-muted-foreground">
-                    💡 <strong className="text-foreground">Tips:</strong> Share halaman ini ke teman-teman arisan kamu agar bisa dapat akses bareng saat launch!
+                    {t("shareTip")}
                   </p>
                 </div>
               </FadeContent>
@@ -442,29 +446,28 @@ export default function WaitlistPage() {
             <FadeContent blur duration={600}>
               <div className="text-center max-w-2xl mx-auto">
                 <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
-                  Kenapa harus ArisanAman?
+                  {t("why.title")}
                 </h2>
                 <p className="text-muted-foreground mb-8">
-                  Arisan tradisional punya risiko besar: anggota kabur setelah dapat giliran, 
-                  tidak ada jaminan, dan tidak ada rekam jejak. ArisanAman hadir untuk menyelesaikan masalah ini.
+                  {t("why.desc")}
                 </p>
                 
                 <div className="grid sm:grid-cols-3 gap-6">
                   {[
                     {
                       icon: Shield,
-                      title: "Security Deposit",
-                      desc: "Setiap anggota wajib menyetorkan jaminan sebelum ikut",
+                      title: t("why.securityDeposit.title"),
+                      desc: t("why.securityDeposit.desc"),
                     },
                     {
                       icon: "📜",
-                      title: "On-Chain Record",
-                      desc: "Rekam jejak permanen di blockchain, tidak bisa dihapus",
+                      title: t("why.onChainRecord.title"),
+                      desc: t("why.onChainRecord.desc"),
                     },
                     {
                       icon: "⚡",
-                      title: "Tanpa Ribet",
-                      desc: "Login dengan Google, tanpa perlu setup crypto wallet",
+                      title: t("why.noHassle.title"),
+                      desc: t("why.noHassle.desc"),
                     },
                   ].map((item, i) => (
                     <motion.div
@@ -491,9 +494,9 @@ export default function WaitlistPage() {
       <footer className="border-t border-white/10 relative z-10">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p>© 2024 ArisanAman. Built for Indonesia 🇮🇩</p>
+            <p>{t("footer")}</p>
             <Link href="/" className="hover:text-foreground transition-colors">
-              Kembali ke Beranda
+              {tc("backToHome")}
             </Link>
           </div>
         </div>
@@ -501,3 +504,4 @@ export default function WaitlistPage() {
     </div>
   );
 }
+

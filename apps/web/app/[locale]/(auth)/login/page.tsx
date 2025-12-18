@@ -3,10 +3,10 @@
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { client, liskSepolia } from "@/lib/thirdweb/client";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
+import { Link } from "@/i18n/routing";
 
 const wallets = [
   inAppWallet({
@@ -115,3 +115,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

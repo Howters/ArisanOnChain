@@ -1,0 +1,301 @@
+{
+  "common": {
+    "home": "Home",
+    "login": "Login",
+    "getStarted": "Get Started",
+    "openApp": "Open App",
+    "launchApp": "Launch App",
+    "viewOnGitHub": "View on GitHub",
+    "features": "Features",
+    "howItWorks": "How it Works",
+    "security": "Security",
+    "faq": "FAQ",
+    "waitingList": "Waiting List",
+    "backToHome": "Back to Home"
+  },
+  "landing": {
+    "badge": "Built on Lisk L2 • Gasless Transactions",
+    "heroLine1": "Traditional arisan,",
+    "heroLine2": "zero scam risk",
+    "heroDesc": "The first on-chain ROSCA for Indonesia. Security deposits protect every member. Defaulters are penalized. Your savings are safe.",
+    "checkSecurity": "Security deposits required",
+    "checkReputation": "On-chain reputation",
+    "checkNoCrypto": "No crypto knowledge needed",
+    "startCircle": "Start Your Circle",
+    "seeHowItWorks": "See How It Works",
+    "stats": {
+      "protectedVolume": "Protected Volume",
+      "activeCircles": "Active Circles",
+      "defaultRate": "Default Rate",
+      "platformFee": "Platform Fee Only"
+    },
+    "problem": {
+      "badge": "The Problem",
+      "title": "Traditional arisan is",
+      "titleHighlight": "risky",
+      "desc": "Billions of rupiah circulate in informal arisan groups every year. When trust breaks, everyone loses.",
+      "traditional": "Traditional Arisan",
+      "traditionalItems": {
+        "runAway": "Members can run away after receiving pot",
+        "noCollateral": "No collateral or security deposit",
+        "noRecord": "No record of past defaults",
+        "trustOnly": "Relies purely on personal trust"
+      },
+      "arisanaman": "ArisanAman",
+      "arisanamanItems": {
+        "depositLock": "Security deposit locks prevent runaways",
+        "loseDeposit": "Defaulters lose deposit + get Debt NFT",
+        "onChainRep": "On-chain reputation follows forever",
+        "smartContract": "Smart contract enforced rules"
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "desc": "Simple 5-step process. Everything happens on-chain, transparently.",
+      "steps": {
+        "step1": {
+          "num": "01",
+          "title": "Create or Join Circle",
+          "desc": "Admin creates a pool with contribution amount, security deposit, and member limit. Others request to join."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Lock Security Deposit",
+          "desc": "Each approved member locks their security deposit. This protects the pool from defaulters."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Monthly Contributions",
+          "desc": "Every month, all members contribute. 7-day grace period ensures everyone has time to pay."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Winner Takes Pool",
+          "desc": "Admin determines the winner. Winner claims the pooled amount minus 1.5% platform fee."
+        },
+        "step5": {
+          "num": "05",
+          "title": "Withdraw & Complete",
+          "desc": "After all rounds, members withdraw their security deposit. Reputation updated on-chain."
+        }
+      }
+    },
+    "features": {
+      "title": "Built for safety",
+      "desc": "Multiple layers of protection ensure your arisan is secure and fair.",
+      "items": {
+        "securityDeposit": {
+          "highlight": "Anti-scam protection",
+          "title": "Security Deposit System",
+          "desc": "Every member locks collateral before joining. Defaulters lose their deposit, protecting other members."
+        },
+        "socialVouching": {
+          "highlight": "Community trust layer",
+          "title": "Social Vouching",
+          "desc": "Trusted members can vouch for newcomers by staking their own funds. Creates community accountability."
+        },
+        "gasless": {
+          "highlight": "Zero crypto knowledge needed",
+          "title": "Gasless Experience",
+          "desc": "No wallet setup, no gas fees. Login with Google and start immediately. Web2 simplicity, Web3 security."
+        },
+        "debtNft": {
+          "highlight": "On-chain credit history",
+          "title": "Debt NFT Records",
+          "desc": "Defaulters receive a permanent on-chain record. Their reputation follows them across all pools."
+        },
+        "reputation": {
+          "highlight": "Trustless credit scoring",
+          "title": "Reputation System",
+          "desc": "Build your on-chain credit score. Completed pools and zero defaults unlock premium features."
+        },
+        "transparentFees": {
+          "highlight": "Fair & transparent",
+          "title": "Transparent Fees",
+          "desc": "Only 1.5% fee on winning payout. No hidden charges. Pool creation, joining, and withdrawals are FREE."
+        }
+      }
+    },
+    "security": {
+      "badge": "Security Architecture",
+      "title": "4 layers of protection",
+      "desc": "We don't just rely on trust. Every member is protected by multiple security mechanisms enforced by smart contracts on the blockchain.",
+      "layers": {
+        "layer1": {
+          "title": "Security Deposit",
+          "desc": "Collateral locked before participation"
+        },
+        "layer2": {
+          "title": "Social Vouching",
+          "desc": "Community members stake for newcomers"
+        },
+        "layer3": {
+          "title": "Debt NFT",
+          "desc": "Permanent record of defaults"
+        },
+        "layer4": {
+          "title": "Reputation Score",
+          "desc": "On-chain credit history"
+        }
+      },
+      "defaultTitle": "What happens when someone defaults?",
+      "defaultSteps": {
+        "step1": "Admin reports the default after 7-day grace period",
+        "step2": "Security deposit is automatically liquidated",
+        "step3": "Any vouches received are also liquidated",
+        "step4": "Recovered funds compensate the pool",
+        "step5": "Defaulter receives Debt NFT (permanent record)"
+      }
+    },
+    "comparison": {
+      "title": "Traditional vs ArisanAman",
+      "feature": "Feature",
+      "traditional": "Traditional",
+      "items": {
+        "scamProtection": "Scam Protection",
+        "transparentRecords": "Transparent Records",
+        "defaultAccountability": "Default Accountability",
+        "creditHistory": "Credit History",
+        "noSetupFee": "No Setup Fee",
+        "communityTrust": "Community Trust"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "desc": "Everything you need to know about ArisanAman",
+      "items": {
+        "q1": {
+          "q": "What happens if someone doesn't pay?",
+          "a": "If a member misses their contribution after the 7-day grace period, the admin can report them as defaulted. Their security deposit is liquidated to compensate the pool, and they receive a Debt NFT marking their default on-chain. Any vouches they received are also liquidated."
+        },
+        "q2": {
+          "q": "How is the winner determined?",
+          "a": "The admin triggers winner determination after all members have contributed. An on-chain random selection picks from eligible members (those who haven't won yet). The selection uses block data for randomness and is fully transparent."
+        },
+        "q3": {
+          "q": "When can I withdraw my security deposit?",
+          "a": "Security deposits can only be withdrawn after the pool is completed (all rounds finished) or cancelled (before activation). Active members in completed pools get their full deposit back."
+        },
+        "q4": {
+          "q": "What is social vouching?",
+          "a": "Active members with good reputation (completed pools, zero defaults) can vouch for new joiners by locking their own funds. If the vouchee defaults, the voucher loses their stake. This creates social accountability and helps newcomers join pools."
+        },
+        "q5": {
+          "q": "Do I need cryptocurrency knowledge?",
+          "a": "No! ArisanAman is designed for everyone. Just login with Google, and everything happens behind the scenes. No wallet setup, no gas fees to worry about. It feels like a regular app."
+        },
+        "q6": {
+          "q": "What are the fees?",
+          "a": "Creating pools: FREE. Joining pools: FREE. Monthly contributions: 0% fee. Withdrawals: FREE. The only fee is 1.5% on the winning payout when you claim your prize."
+        },
+        "q7": {
+          "q": "What is a Debt NFT?",
+          "a": "When someone defaults, they receive a non-transferable NFT that permanently records their default on the blockchain. This serves as an on-chain credit record that other pool admins can check before approving members."
+        },
+        "q8": {
+          "q": "How many members do I need to start?",
+          "a": "A minimum of 3 active members (who have locked their security deposit) is required to activate a pool. The maximum is set by the pool creator."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to start your safe arisan?",
+      "desc": "Create your first circle in under 2 minutes. No wallet setup, no gas fees. Just login with Google and invite your community."
+    },
+    "footer": {
+      "brand": "arisan",
+      "brandHighlight": "aman",
+      "desc": "The first on-chain ROSCA for Indonesia. Bringing trust to traditional community savings through blockchain technology.",
+      "product": "Product",
+      "links": "Links",
+      "builtFor": "Built for Indonesia 🇮🇩 • Lisk Hackathon 2024",
+      "contracts": "Smart contracts on Lisk Sepolia"
+    }
+  },
+  "waitlist": {
+    "badge": "Coming Soon",
+    "title": "Join the",
+    "titleHighlight": "Waiting List",
+    "desc": "ArisanAman is currently in development. Register now to be the first to try Indonesia's first on-chain arisan platform.",
+    "first": "first",
+    "stats": {
+      "registered": "People registered",
+      "adminsWaiting": "Group admins waiting",
+      "thisWeek": "Registered this week"
+    },
+    "form": {
+      "title": "Join Waiting List",
+      "name": "Full Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "whatsapp": "WhatsApp Number",
+      "whatsappPlaceholder": "08xxxxxxxxxx",
+      "city": "City",
+      "cityPlaceholder": "Jakarta, Bandung, Surabaya, etc",
+      "role": "Role in Arisan",
+      "rolePlaceholder": "Select role",
+      "roleAdmin": "Admin/Group Leader",
+      "roleMember": "Member",
+      "roleBoth": "Both (Admin & Member)",
+      "groupSize": "Arisan Group Size",
+      "groupSizePlaceholder": "Select size",
+      "groupSize5": "5-10 people",
+      "groupSize11": "11-20 people",
+      "groupSize21": "21-50 people",
+      "groupSize50": "50+ people",
+      "reason": "What do you expect from ArisanAman? (optional)",
+      "reasonPlaceholder": "Tell us about your arisan experience or features you want...",
+      "submit": "Register Now",
+      "submitting": "Registering...",
+      "privacy": "Your data is safe and will not be shared with third parties."
+    },
+    "benefits": {
+      "title": "Early Adopter Benefits 🚀",
+      "earlyAccess": {
+        "title": "Exclusive Early Access",
+        "desc": "Be the first to try ArisanAman before public launch"
+      },
+      "zeroFee": {
+        "title": "Zero Platform Fee",
+        "desc": "Free platform fee for the first 3 months for early adopters"
+      },
+      "updates": {
+        "title": "Direct Updates",
+        "desc": "Get notified immediately when new features launch"
+      },
+      "community": {
+        "title": "Priority Community",
+        "desc": "Join exclusive WhatsApp group for early adopters"
+      }
+    },
+    "launch": {
+      "title": "🎯 Target Launch: Q1 2026",
+      "desc": "We're in the final development stage. You'll be the first to know when ArisanAman is ready to use."
+    },
+    "shareTip": "💡 Tip: Share this page with your arisan friends so you can get access together at launch!",
+    "why": {
+      "title": "Why ArisanAman?",
+      "desc": "Traditional arisan has big risks: members running away after getting their turn, no collateral, and no track record. ArisanAman solves these problems.",
+      "securityDeposit": {
+        "title": "Security Deposit",
+        "desc": "Every member must deposit collateral before joining"
+      },
+      "onChainRecord": {
+        "title": "On-Chain Record",
+        "desc": "Permanent track record on blockchain, cannot be deleted"
+      },
+      "noHassle": {
+        "title": "No Hassle",
+        "desc": "Login with Google, no need to setup crypto wallet"
+      }
+    },
+    "success": {
+      "title": "Thank You! 🎉",
+      "desc": "You're now registered on the ArisanAman waiting list. We'll contact you via WhatsApp or email when the platform is ready to launch.",
+      "tip": "Tip: Share this page with your arisan friends!"
+    },
+    "footer": "© 2024 ArisanAman. Built for Indonesia 🇮🇩"
+  }
+}
+

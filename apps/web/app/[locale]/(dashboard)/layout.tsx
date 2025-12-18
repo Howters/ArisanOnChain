@@ -46,7 +46,7 @@ export default function DashboardLayout({
   }, [isAutoConnecting, account, router]);
 
   useEffect(() => {
-    if (!account?.address || pathname === "/profile" || profileChecked) return;
+    if (!account?.address || pathname.includes("/profile") || profileChecked) return;
     
     fetch(`/api/profile?address=${account.address}`)
       .then(res => res.json())
@@ -59,7 +59,6 @@ export default function DashboardLayout({
       .catch(() => setProfileChecked(true));
   }, [account?.address, pathname, router, profileChecked]);
 
-  // Show loading while auto-connecting
   if (isAutoConnecting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -92,3 +91,4 @@ export default function DashboardLayout({
     </div>
   );
 }
+

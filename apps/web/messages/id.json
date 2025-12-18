@@ -1,0 +1,301 @@
+{
+  "common": {
+    "home": "Beranda",
+    "login": "Masuk",
+    "getStarted": "Mulai Sekarang",
+    "openApp": "Buka Aplikasi",
+    "launchApp": "Buka Aplikasi",
+    "viewOnGitHub": "Lihat di GitHub",
+    "features": "Fitur",
+    "howItWorks": "Cara Kerja",
+    "security": "Keamanan",
+    "faq": "FAQ",
+    "waitingList": "Waiting List",
+    "backToHome": "Kembali ke Beranda"
+  },
+  "landing": {
+    "badge": "Dibangun di Lisk L2 • Transaksi Tanpa Gas",
+    "heroLine1": "Arisan tradisional,",
+    "heroLine2": "tanpa risiko penipuan",
+    "heroDesc": "ROSCA on-chain pertama di Indonesia. Deposit keamanan melindungi setiap anggota. Pelanggar dikenai sanksi. Uang Anda aman.",
+    "checkSecurity": "Deposit keamanan wajib",
+    "checkReputation": "Reputasi on-chain",
+    "checkNoCrypto": "Tanpa pengetahuan crypto",
+    "startCircle": "Mulai Circle Anda",
+    "seeHowItWorks": "Lihat Cara Kerja",
+    "stats": {
+      "protectedVolume": "Volume Dilindungi",
+      "activeCircles": "Circle Aktif",
+      "defaultRate": "Tingkat Gagal Bayar",
+      "platformFee": "Biaya Platform Saja"
+    },
+    "problem": {
+      "badge": "Masalahnya",
+      "title": "Arisan tradisional itu",
+      "titleHighlight": "berisiko",
+      "desc": "Miliaran rupiah beredar di grup arisan informal setiap tahun. Ketika kepercayaan rusak, semua rugi.",
+      "traditional": "Arisan Tradisional",
+      "traditionalItems": {
+        "runAway": "Anggota bisa kabur setelah dapat giliran",
+        "noCollateral": "Tidak ada jaminan atau deposit keamanan",
+        "noRecord": "Tidak ada catatan gagal bayar sebelumnya",
+        "trustOnly": "Hanya mengandalkan kepercayaan personal"
+      },
+      "arisanaman": "ArisanAman",
+      "arisanamanItems": {
+        "depositLock": "Deposit keamanan mencegah kabur",
+        "loseDeposit": "Pelanggar kehilangan deposit + dapat Debt NFT",
+        "onChainRep": "Reputasi on-chain selamanya",
+        "smartContract": "Aturan ditegakkan smart contract"
+      }
+    },
+    "howItWorks": {
+      "title": "Cara kerjanya",
+      "desc": "Proses 5 langkah sederhana. Semua terjadi di blockchain, transparan.",
+      "steps": {
+        "step1": {
+          "num": "01",
+          "title": "Buat atau Gabung Circle",
+          "desc": "Admin membuat pool dengan jumlah kontribusi, deposit keamanan, dan batas anggota. Yang lain meminta bergabung."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Kunci Deposit Keamanan",
+          "desc": "Setiap anggota yang disetujui mengunci deposit keamanan mereka. Ini melindungi pool dari pelanggar."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Kontribusi Bulanan",
+          "desc": "Setiap bulan, semua anggota berkontribusi. Masa tenggang 7 hari memastikan semua punya waktu bayar."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Pemenang Dapat Pool",
+          "desc": "Admin menentukan pemenang. Pemenang klaim jumlah pool dikurangi 1.5% biaya platform."
+        },
+        "step5": {
+          "num": "05",
+          "title": "Tarik & Selesai",
+          "desc": "Setelah semua putaran, anggota menarik deposit keamanan mereka. Reputasi diperbarui di blockchain."
+        }
+      }
+    },
+    "features": {
+      "title": "Dibangun untuk keamanan",
+      "desc": "Berbagai lapisan perlindungan memastikan arisan Anda aman dan adil.",
+      "items": {
+        "securityDeposit": {
+          "highlight": "Perlindungan anti-penipuan",
+          "title": "Sistem Deposit Keamanan",
+          "desc": "Setiap anggota mengunci jaminan sebelum bergabung. Pelanggar kehilangan deposit mereka, melindungi anggota lain."
+        },
+        "socialVouching": {
+          "highlight": "Lapisan kepercayaan komunitas",
+          "title": "Vouching Sosial",
+          "desc": "Anggota terpercaya bisa menjamin pendatang baru dengan mempertaruhkan dana mereka sendiri. Menciptakan akuntabilitas komunitas."
+        },
+        "gasless": {
+          "highlight": "Tanpa pengetahuan crypto",
+          "title": "Pengalaman Tanpa Gas",
+          "desc": "Tanpa setup wallet, tanpa biaya gas. Login dengan Google dan mulai segera. Kemudahan Web2, keamanan Web3."
+        },
+        "debtNft": {
+          "highlight": "Riwayat kredit on-chain",
+          "title": "Catatan Debt NFT",
+          "desc": "Pelanggar menerima catatan permanen on-chain. Reputasi mereka mengikuti di semua pool."
+        },
+        "reputation": {
+          "highlight": "Penilaian kredit tanpa kepercayaan",
+          "title": "Sistem Reputasi",
+          "desc": "Bangun skor kredit on-chain Anda. Pool selesai dan tanpa gagal bayar membuka fitur premium."
+        },
+        "transparentFees": {
+          "highlight": "Adil & transparan",
+          "title": "Biaya Transparan",
+          "desc": "Hanya 1.5% biaya dari pembayaran kemenangan. Tanpa biaya tersembunyi. Pembuatan pool, bergabung, dan penarikan GRATIS."
+        }
+      }
+    },
+    "security": {
+      "badge": "Arsitektur Keamanan",
+      "title": "4 lapisan perlindungan",
+      "desc": "Kami tidak hanya mengandalkan kepercayaan. Setiap anggota dilindungi oleh beberapa mekanisme keamanan yang ditegakkan oleh smart contract di blockchain.",
+      "layers": {
+        "layer1": {
+          "title": "Deposit Keamanan",
+          "desc": "Jaminan dikunci sebelum partisipasi"
+        },
+        "layer2": {
+          "title": "Vouching Sosial",
+          "desc": "Anggota komunitas mempertaruhkan untuk pendatang baru"
+        },
+        "layer3": {
+          "title": "Debt NFT",
+          "desc": "Catatan permanen gagal bayar"
+        },
+        "layer4": {
+          "title": "Skor Reputasi",
+          "desc": "Riwayat kredit on-chain"
+        }
+      },
+      "defaultTitle": "Apa yang terjadi ketika seseorang gagal bayar?",
+      "defaultSteps": {
+        "step1": "Admin melaporkan gagal bayar setelah masa tenggang 7 hari",
+        "step2": "Deposit keamanan otomatis dilikuidasi",
+        "step3": "Setiap vouch yang diterima juga dilikuidasi",
+        "step4": "Dana yang dipulihkan mengkompensasi pool",
+        "step5": "Pelanggar menerima Debt NFT (catatan permanen)"
+      }
+    },
+    "comparison": {
+      "title": "Tradisional vs ArisanAman",
+      "feature": "Fitur",
+      "traditional": "Tradisional",
+      "items": {
+        "scamProtection": "Perlindungan Penipuan",
+        "transparentRecords": "Catatan Transparan",
+        "defaultAccountability": "Akuntabilitas Gagal Bayar",
+        "creditHistory": "Riwayat Kredit",
+        "noSetupFee": "Tanpa Biaya Setup",
+        "communityTrust": "Kepercayaan Komunitas"
+      }
+    },
+    "faq": {
+      "title": "Pertanyaan yang sering diajukan",
+      "desc": "Semua yang perlu Anda ketahui tentang ArisanAman",
+      "items": {
+        "q1": {
+          "q": "Apa yang terjadi jika seseorang tidak bayar?",
+          "a": "Jika anggota melewatkan kontribusi setelah masa tenggang 7 hari, admin bisa melaporkan mereka sebagai gagal bayar. Deposit keamanan mereka dilikuidasi untuk mengkompensasi pool, dan mereka menerima Debt NFT yang menandai gagal bayar mereka di blockchain. Setiap vouch yang mereka terima juga dilikuidasi."
+        },
+        "q2": {
+          "q": "Bagaimana pemenang ditentukan?",
+          "a": "Admin memicu penentuan pemenang setelah semua anggota berkontribusi. Pemilihan acak on-chain memilih dari anggota yang memenuhi syarat (yang belum menang). Pemilihan menggunakan data blok untuk keacakan dan sepenuhnya transparan."
+        },
+        "q3": {
+          "q": "Kapan saya bisa menarik deposit keamanan saya?",
+          "a": "Deposit keamanan hanya bisa ditarik setelah pool selesai (semua putaran selesai) atau dibatalkan (sebelum aktivasi). Anggota aktif di pool yang selesai mendapatkan deposit penuh mereka kembali."
+        },
+        "q4": {
+          "q": "Apa itu social vouching?",
+          "a": "Anggota aktif dengan reputasi baik (pool selesai, tanpa gagal bayar) bisa menjamin pendatang baru dengan mengunci dana mereka sendiri. Jika yang dijamin gagal bayar, penjamin kehilangan taruhan mereka. Ini menciptakan akuntabilitas sosial dan membantu pendatang baru bergabung pool."
+        },
+        "q5": {
+          "q": "Apakah saya perlu pengetahuan cryptocurrency?",
+          "a": "Tidak! ArisanAman dirancang untuk semua orang. Cukup login dengan Google, dan semuanya terjadi di balik layar. Tanpa setup wallet, tanpa biaya gas yang perlu dikhawatirkan. Rasanya seperti aplikasi biasa."
+        },
+        "q6": {
+          "q": "Berapa biayanya?",
+          "a": "Membuat pool: GRATIS. Bergabung pool: GRATIS. Kontribusi bulanan: 0% biaya. Penarikan: GRATIS. Satu-satunya biaya adalah 1.5% dari pembayaran kemenangan saat Anda klaim hadiah."
+        },
+        "q7": {
+          "q": "Apa itu Debt NFT?",
+          "a": "Ketika seseorang gagal bayar, mereka menerima NFT yang tidak bisa ditransfer yang secara permanen mencatat gagal bayar mereka di blockchain. Ini berfungsi sebagai catatan kredit on-chain yang bisa diperiksa admin pool lain sebelum menyetujui anggota."
+        },
+        "q8": {
+          "q": "Berapa anggota yang dibutuhkan untuk memulai?",
+          "a": "Minimal 3 anggota aktif (yang sudah mengunci deposit keamanan) diperlukan untuk mengaktifkan pool. Maksimum ditentukan oleh pembuat pool."
+        }
+      }
+    },
+    "cta": {
+      "title": "Siap memulai arisan aman Anda?",
+      "desc": "Buat circle pertama Anda dalam waktu kurang dari 2 menit. Tanpa setup wallet, tanpa biaya gas. Cukup login dengan Google dan undang komunitas Anda."
+    },
+    "footer": {
+      "brand": "arisan",
+      "brandHighlight": "aman",
+      "desc": "ROSCA on-chain pertama untuk Indonesia. Membawa kepercayaan ke tabungan komunitas tradisional melalui teknologi blockchain.",
+      "product": "Produk",
+      "links": "Tautan",
+      "builtFor": "Dibangun untuk Indonesia 🇮🇩 • Lisk Hackathon 2024",
+      "contracts": "Smart contracts di Lisk Sepolia"
+    }
+  },
+  "waitlist": {
+    "badge": "Segera Hadir",
+    "title": "Gabung",
+    "titleHighlight": "Waiting List",
+    "desc": "ArisanAman sedang dalam tahap pengembangan. Daftarkan dirimu sekarang untuk jadi yang pertama mencoba platform arisan on-chain pertama di Indonesia.",
+    "first": "pertama",
+    "stats": {
+      "registered": "Orang sudah daftar",
+      "adminsWaiting": "Admin grup menunggu",
+      "thisWeek": "Daftar minggu ini"
+    },
+    "form": {
+      "title": "Daftar Waiting List",
+      "name": "Nama Lengkap",
+      "namePlaceholder": "Masukkan nama lengkap",
+      "email": "Email",
+      "emailPlaceholder": "contoh@email.com",
+      "whatsapp": "Nomor WhatsApp",
+      "whatsappPlaceholder": "08xxxxxxxxxx",
+      "city": "Kota Domisili",
+      "cityPlaceholder": "Jakarta, Bandung, Surabaya, dll",
+      "role": "Peran di Arisan",
+      "rolePlaceholder": "Pilih peran",
+      "roleAdmin": "Admin/Ketua Arisan",
+      "roleMember": "Anggota",
+      "roleBoth": "Keduanya (Admin & Anggota)",
+      "groupSize": "Ukuran Grup Arisan",
+      "groupSizePlaceholder": "Pilih ukuran",
+      "groupSize5": "5-10 orang",
+      "groupSize11": "11-20 orang",
+      "groupSize21": "21-50 orang",
+      "groupSize50": "50+ orang",
+      "reason": "Apa yang kamu harapkan dari ArisanAman? (opsional)",
+      "reasonPlaceholder": "Ceritakan pengalaman arisanmu atau fitur yang kamu inginkan...",
+      "submit": "Daftar Sekarang",
+      "submitting": "Mendaftarkan...",
+      "privacy": "Data kamu aman dan tidak akan dibagikan ke pihak ketiga."
+    },
+    "benefits": {
+      "title": "Keuntungan Early Adopter 🚀",
+      "earlyAccess": {
+        "title": "Akses Awal Eksklusif",
+        "desc": "Jadilah yang pertama mencoba ArisanAman sebelum publik"
+      },
+      "zeroFee": {
+        "title": "Zero Platform Fee",
+        "desc": "Gratis biaya platform selama 3 bulan pertama untuk early adopters"
+      },
+      "updates": {
+        "title": "Update Langsung",
+        "desc": "Notifikasi langsung saat fitur baru diluncurkan"
+      },
+      "community": {
+        "title": "Komunitas Prioritas",
+        "desc": "Bergabung dengan grup WhatsApp eksklusif early adopters"
+      }
+    },
+    "launch": {
+      "title": "🎯 Target Launch: Q1 2026",
+      "desc": "Kami sedang dalam tahap final development. Kamu akan jadi yang pertama tahu saat ArisanAman siap digunakan."
+    },
+    "shareTip": "💡 Tips: Share halaman ini ke teman-teman arisan kamu agar bisa dapat akses bareng saat launch!",
+    "why": {
+      "title": "Kenapa harus ArisanAman?",
+      "desc": "Arisan tradisional punya risiko besar: anggota kabur setelah dapat giliran, tidak ada jaminan, dan tidak ada rekam jejak. ArisanAman hadir untuk menyelesaikan masalah ini.",
+      "securityDeposit": {
+        "title": "Security Deposit",
+        "desc": "Setiap anggota wajib menyetorkan jaminan sebelum ikut"
+      },
+      "onChainRecord": {
+        "title": "On-Chain Record",
+        "desc": "Rekam jejak permanen di blockchain, tidak bisa dihapus"
+      },
+      "noHassle": {
+        "title": "Tanpa Ribet",
+        "desc": "Login dengan Google, tanpa perlu setup crypto wallet"
+      }
+    },
+    "success": {
+      "title": "Terima Kasih! 🎉",
+      "desc": "Kamu sudah terdaftar di waiting list ArisanAman. Kami akan menghubungi kamu melalui WhatsApp atau email saat platform siap diluncurkan.",
+      "tip": "Tips: Share halaman ini ke teman-teman arisan kamu!"
+    },
+    "footer": "© 2024 ArisanAman. Built for Indonesia 🇮🇩"
+  }
+}
+
