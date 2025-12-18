@@ -1,12 +1,13 @@
 "use client";
 
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { client, liskSepolia } from "@/lib/thirdweb/client";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 const wallets = [
   inAppWallet({
@@ -23,6 +24,8 @@ const wallets = [
 ];
 
 export default function LoginPage() {
+  const t = useTranslations("login");
+  const tc = useTranslations("common");
   const account = useActiveAccount();
   const router = useRouter();
 
@@ -40,7 +43,7 @@ export default function LoginPage() {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          {tc("back")}
         </Link>
       </header>
 
@@ -53,9 +56,9 @@ export default function LoginPage() {
             >
               arisan<span className="text-primary">aman</span>
             </Link>
-            <h1 className="text-xl font-medium mb-2">Welcome back</h1>
+            <h1 className="text-xl font-medium mb-2">{t("welcomeBack")}</h1>
             <p className="text-sm text-muted-foreground">
-              Sign in to access your circles
+              {t("signInDesc")}
             </p>
           </div>
 
@@ -71,7 +74,7 @@ export default function LoginPage() {
               }}
               theme="dark"
               connectButton={{
-                label: "Continue with Google",
+                label: t("continueGoogle"),
                 style: {
                   backgroundColor: "#22c55e",
                   color: "white",
@@ -87,27 +90,27 @@ export default function LoginPage() {
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            By continuing, you agree to our{" "}
+            {t("agreeTerms")}{" "}
             <Link
               href="/terms"
               className="underline hover:text-foreground transition-colors"
             >
-              Terms
+              {t("terms")}
             </Link>{" "}
-            and{" "}
+            {t("and")}{" "}
             <Link
               href="/privacy"
               className="underline hover:text-foreground transition-colors"
             >
-              Privacy Policy
+              {t("privacy")}
             </Link>
           </p>
 
           <div className="mt-8 p-4 rounded-xl bg-white/5 border border-white/10">
             <p className="text-xs text-muted-foreground text-center">
-              🔐 Your wallet is created automatically.
+              {t("walletAuto")}
               <br />
-              No seed phrases, no gas fees needed.
+              {t("noSeedPhrase")}
             </p>
           </div>
         </div>
@@ -115,4 +118,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

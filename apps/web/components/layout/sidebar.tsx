@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -11,18 +10,11 @@ import {
   User,
   Settings,
   Plus,
-  Sparkles,
   X,
   History,
 } from "lucide-react";
-
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-  { name: "Arisan", href: "/circles", icon: CircleDot, exact: false },
-  { name: "Riwayat", href: "/history", icon: History, exact: false },
-  { name: "Profil", href: "/profile", icon: User, exact: true },
-  { name: "Pengaturan", href: "/settings", icon: Settings, exact: false },
-];
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface SidebarProps {
   open: boolean;
@@ -30,13 +22,23 @@ interface SidebarProps {
 }
 
 export function Sidebar({ open, onClose }: SidebarProps) {
+  const t = useTranslations("sidebar");
   const pathname = usePathname();
 
+  const navigation = [
+    { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard, exact: true },
+    { name: t("arisan"), href: "/circles", icon: CircleDot, exact: false },
+    { name: t("history"), href: "/history", icon: History, exact: false },
+    { name: t("profile"), href: "/profile", icon: User, exact: true },
+    { name: t("settings"), href: "/settings", icon: Settings, exact: false },
+  ];
+
   const isActiveLink = (item: typeof navigation[0]) => {
+    const cleanPath = pathname.replace(/^\/(id|en)/, "");
     if (item.exact) {
-      return pathname === item.href;
+      return cleanPath === item.href;
     }
-    return pathname === item.href || pathname.startsWith(item.href + "/");
+    return cleanPath === item.href || cleanPath.startsWith(item.href + "/");
   };
 
   return (
@@ -80,7 +82,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               <Button asChild className="w-full justify-start" size="lg">
                 <Link href="/dashboard/new">
                   <Plus className="mr-2 h-4 w-4" />
-                  Buat Arisan Baru
+                  {t("createNew")}
                 </Link>
               </Button>
             </div>
@@ -90,7 +92,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 const isActive = isActiveLink(item);
                 return (
                   <Link
-                    key={item.name}
+                    key={item.href}
                     href={item.href}
                     onClick={onClose}
                     className={cn(
@@ -111,10 +113,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <div className="border-t p-4">
             <div className="rounded-lg bg-primary/10 p-4">
               <p className="text-xs text-muted-foreground mb-2">
-                🔐 Powered by Blockchain
+                {t("poweredBy")}
               </p>
               <p className="text-xs text-muted-foreground">
-                Semua transaksi tercatat di Lisk L2. Aman, transparan, dan tanpa biaya gas.
+                {t("secureNote")}
               </p>
             </div>
           </div>

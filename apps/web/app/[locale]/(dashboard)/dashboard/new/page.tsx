@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,31 +15,34 @@ import {
   Shield,
   CheckCircle2,
   Loader2,
-  Info,
   AlertTriangle,
   HandshakeIcon
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { formatIDR } from "@/lib/utils";
 import { useCreatePool } from "@/lib/hooks/use-contracts";
 import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 const PRESET_AMOUNTS = [100000, 200000, 500000, 1000000];
 const PRESET_MEMBERS = [5, 8, 10, 12];
-const DEPOSIT_MULTIPLIERS = [
-  { value: 1, label: "1x", desc: "Grup terpercaya" },
-  { value: 1.5, label: "1.5x", desc: "Semi-terpercaya" },
-  { value: 2, label: "2x", desc: "Campuran" },
-  { value: 3, label: "3x", desc: "Keamanan maksimal" },
-];
 
 export default function CreateCirclePage() {
+  const t = useTranslations("create");
+  const tc = useTranslations("common");
   const router = useRouter();
   const walletAddress = useWalletAddress();
   const createPool = useCreatePool();
   const queryClient = useQueryClient();
+
+  const DEPOSIT_MULTIPLIERS = [
+    { value: 1, label: "1x", desc: t("step3.multipliers.1x") },
+    { value: 1.5, label: "1.5x", desc: t("step3.multipliers.1.5x") },
+    { value: 2, label: "2x", desc: t("step3.multipliers.2x") },
+    { value: 3, label: "3x", desc: t("step3.multipliers.3x") },
+  ];
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -68,9 +71,7 @@ export default function CreateCirclePage() {
 
   const handleSubmit = async () => {
     if (!walletAddress) {
-      toast.error("Wallet tidak tersedia", {
-        description: "Silakan tunggu beberapa saat atau refresh halaman",
-      });
+      toast.error(tc("error"));
       return;
     }
 
@@ -84,13 +85,12 @@ export default function CreateCirclePage() {
         vouchRequired: formData.vouchRequired,
       });
       
-      toast.success("Arisan berhasil dibuat! 🎉", {
-        description: `${formData.name || "Arisan baru"} telah dibuat. Silakan undang anggota.`,
+      toast.success(t("success"), {
+        description: t("successDesc", { name: formData.name || "Arisan" }),
       });
       
       queryClient.invalidateQueries({ queryKey: ["pools"] });
       
-      // Redirect to the newly created pool
       if (result?.poolId) {
         router.push(`/circle/${result.poolId}`);
       } else {
@@ -98,8 +98,8 @@ export default function CreateCirclePage() {
       }
     } catch (error: any) {
       console.error("Failed to create pool:", error);
-      toast.error("Gagal membuat arisan", {
-        description: error.message || "Terjadi kesalahan, silakan coba lagi",
+      toast.error(t("failed"), {
+        description: t("failedDesc"),
       });
     } finally {
       setIsSubmitting(false);
@@ -117,9 +117,9 @@ export default function CreateCirclePage() {
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">Buat Arisan Baru</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Atur detail arisan dan undang anggota
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -148,24 +148,24 @@ export default function CreateCirclePage() {
                   <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle>Detail Arisan</CardTitle>
-                  <CardDescription>Nama dan jumlah anggota</CardDescription>
+                  <CardTitle>{t("step1.title")}</CardTitle>
+                  <CardDescription>{t("step1.desc")}</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nama Arisan</Label>
+                <Label htmlFor="name">{t("step1.name")}</Label>
                 <Input
                   id="name"
-                  placeholder="contoh: Arisan Keluarga Besar"
+                  placeholder={t("step1.namePlaceholder")}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
               </div>
 
               <div className="space-y-3">
-                <Label>Jumlah Anggota Maksimal</Label>
+                <Label>{t("step1.maxMembers")}</Label>
                 <div className="grid grid-cols-4 gap-2">
                   {PRESET_MEMBERS.map((count) => (
                     <Button
@@ -174,7 +174,7 @@ export default function CreateCirclePage() {
                       className="h-12"
                       onClick={() => setFormData({ ...formData, maxMembers: count })}
                     >
-                      {count} orang
+                      {count} {t("step1.people")}
                     </Button>
                   ))}
                 </div>
@@ -190,12 +190,12 @@ export default function CreateCirclePage() {
                     })}
                     className="w-24"
                   />
-                  <span className="text-sm text-muted-foreground">orang (min. 3, maks. 50)</span>
+                  <span className="text-sm text-muted-foreground">{t("step1.people")} {t("step1.minMax")}</span>
                 </div>
                 {(formData.maxMembers < 3 || formData.maxMembers > 50) && (
                   <p className="text-sm text-destructive flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" />
-                    Jumlah anggota harus antara 3-50 orang
+                    {t("step1.memberError")}
                   </p>
                 )}
               </div>
@@ -205,7 +205,7 @@ export default function CreateCirclePage() {
                 onClick={() => setStep(2)}
                 disabled={!formData.name.trim() || formData.maxMembers < 3 || formData.maxMembers > 50}
               >
-                Lanjutkan
+                {tc("continue")}
               </Button>
             </CardContent>
           </Card>
@@ -225,14 +225,14 @@ export default function CreateCirclePage() {
                   <Coins className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle>Iuran Bulanan</CardTitle>
-                  <CardDescription>Jumlah yang dibayarkan setiap periode</CardDescription>
+                  <CardTitle>{t("step2.title")}</CardTitle>
+                  <CardDescription>{t("step2.desc")}</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
-                <Label>Pilih Nominal Iuran</Label>
+                <Label>{t("step2.selectAmount")}</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {PRESET_AMOUNTS.map((amount) => (
                     <Button
@@ -242,12 +242,12 @@ export default function CreateCirclePage() {
                       onClick={() => setFormData({ ...formData, contributionAmount: amount })}
                     >
                       <span className="font-bold">{formatIDR(amount)}</span>
-                      <span className="text-xs opacity-70">/bulan</span>
+                      <span className="text-xs opacity-70">{tc("perMonth")}</span>
                     </Button>
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Atau masukkan nominal:</span>
+                  <span className="text-sm text-muted-foreground">{t("step2.orEnter")}</span>
                   <Input
                     type="number"
                     min={50000}
@@ -261,9 +261,9 @@ export default function CreateCirclePage() {
               </div>
 
               <div className="space-y-3">
-                <Label>Tanggal Pembayaran</Label>
+                <Label>{t("step2.paymentDate")}</Label>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Setiap tanggal</span>
+                  <span className="text-sm text-muted-foreground">{t("step2.everyDate")}</span>
                   <Input
                     type="number"
                     min={1}
@@ -275,30 +275,30 @@ export default function CreateCirclePage() {
                     })}
                     className="w-20"
                   />
-                  <span className="text-sm text-muted-foreground">setiap bulan</span>
+                  <span className="text-sm text-muted-foreground">{t("step2.everyMonth")}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Maksimal tanggal 28 untuk menghindari masalah dengan bulan pendek
+                  {t("step2.maxDateNote")}
                 </p>
               </div>
 
               <div className="p-4 rounded-lg bg-muted/50 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Total Payout per Giliran</span>
+                  <span className="text-muted-foreground">{t("step2.totalPayout")}</span>
                   <span className="font-medium">{formatIDR(totalPayout)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Durasi Arisan</span>
-                  <span className="font-medium">{formData.maxMembers} bulan</span>
+                  <span className="text-muted-foreground">{t("step2.duration")}</span>
+                  <span className="font-medium">{formData.maxMembers} {tc("month")}</span>
                 </div>
               </div>
 
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
-                  Kembali
+                  {tc("back")}
                 </Button>
                 <Button onClick={() => setStep(3)} className="flex-1">
-                  Lanjutkan
+                  {tc("continue")}
                 </Button>
               </div>
             </CardContent>
@@ -319,14 +319,14 @@ export default function CreateCirclePage() {
                   <Shield className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <CardTitle>Keamanan</CardTitle>
-                  <CardDescription>Deposit keamanan dan pengaturan vouch</CardDescription>
+                  <CardTitle>{t("step3.title")}</CardTitle>
+                  <CardDescription>{t("step3.desc")}</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
-                <Label>Multiplier Uang Jaminan</Label>
+                <Label>{t("step3.depositMultiplier")}</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {DEPOSIT_MULTIPLIERS.map((m) => (
                     <Button
@@ -335,34 +335,34 @@ export default function CreateCirclePage() {
                       className="h-16 flex-col"
                       onClick={() => setFormData({ ...formData, depositMultiplier: m.value })}
                     >
-                      <span className="font-bold">{m.label} Iuran</span>
+                      <span className="font-bold">{m.label}</span>
                       <span className="text-xs opacity-70">{m.desc}</span>
                     </Button>
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Uang jaminan: <span className="font-medium">{formatIDR(securityDeposit)}</span>
+                  {t("step3.depositAmount")}: <span className="font-medium">{formatIDR(securityDeposit)}</span>
                 </p>
               </div>
 
               <div className="space-y-3">
-                <Label>Wajib Vouch?</Label>
+                <Label>{t("step3.vouchRequired")}</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant={!formData.vouchRequired ? "default" : "outline"}
                     className="h-14 flex-col"
                     onClick={() => setFormData({ ...formData, vouchRequired: false })}
                   >
-                    <span className="font-bold">Tidak Wajib</span>
-                    <span className="text-xs opacity-70">Untuk grup terpercaya</span>
+                    <span className="font-bold">{t("step3.vouchNo")}</span>
+                    <span className="text-xs opacity-70">{t("step3.vouchNoDesc")}</span>
                   </Button>
                   <Button
                     variant={formData.vouchRequired ? "default" : "outline"}
                     className="h-14 flex-col"
                     onClick={() => setFormData({ ...formData, vouchRequired: true })}
                   >
-                    <span className="font-bold">Wajib Vouch</span>
-                    <span className="text-xs opacity-70">Keamanan ekstra</span>
+                    <span className="font-bold">{t("step3.vouchYes")}</span>
+                    <span className="text-xs opacity-70">{t("step3.vouchYesDesc")}</span>
                   </Button>
                 </div>
               </div>
@@ -372,12 +372,12 @@ export default function CreateCirclePage() {
                   <div className="flex gap-3">
                     <Shield className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-blue-500 mb-2">Tentang Uang Jaminan</p>
+                      <p className="font-medium text-blue-500 mb-2">{t("step3.depositInfo.title")}</p>
                       <ul className="text-muted-foreground space-y-1 list-disc list-inside">
-                        <li>Uang jaminan dikunci selama arisan berlangsung</li>
-                        <li>Jika anggota gagal bayar iuran, jaminan akan disita</li>
-                        <li>Jaminan dikembalikan penuh setelah arisan selesai</li>
-                        <li>Semakin tinggi multiplier = semakin aman pool</li>
+                        <li>{t("step3.depositInfo.item1")}</li>
+                        <li>{t("step3.depositInfo.item2")}</li>
+                        <li>{t("step3.depositInfo.item3")}</li>
+                        <li>{t("step3.depositInfo.item4")}</li>
                       </ul>
                     </div>
                   </div>
@@ -387,12 +387,12 @@ export default function CreateCirclePage() {
                   <div className="flex gap-3">
                     <HandshakeIcon className="h-5 w-5 text-purple-500 shrink-0 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-purple-500 mb-2">Tentang Vouch (Jaminan Sosial)</p>
+                      <p className="font-medium text-purple-500 mb-2">{t("step3.vouchInfo.title")}</p>
                       <ul className="text-muted-foreground space-y-1 list-disc list-inside">
-                        <li>Anggota lama menjamin anggota baru dengan dana</li>
-                        <li>Jika yang dijamin default, voucher juga kena penalti</li>
-                        <li>Menciptakan tekanan sosial untuk membayar tepat waktu</li>
-                        <li>Cocok untuk pool campuran (ada yang belum kenal)</li>
+                        <li>{t("step3.vouchInfo.item1")}</li>
+                        <li>{t("step3.vouchInfo.item2")}</li>
+                        <li>{t("step3.vouchInfo.item3")}</li>
+                        <li>{t("step3.vouchInfo.item4")}</li>
                       </ul>
                     </div>
                   </div>
@@ -401,10 +401,10 @@ export default function CreateCirclePage() {
 
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setStep(2)} className="flex-1">
-                  Kembali
+                  {tc("back")}
                 </Button>
                 <Button onClick={() => setStep(4)} className="flex-1">
-                  Lanjutkan
+                  {tc("continue")}
                 </Button>
               </div>
             </CardContent>
@@ -421,57 +421,57 @@ export default function CreateCirclePage() {
         >
           <Card>
             <CardHeader>
-              <CardTitle>Ringkasan Arisan</CardTitle>
+              <CardTitle>{t("step4.title")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Nama</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.name")}</p>
                   <p className="font-medium">{formData.name || "-"}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Anggota</p>
-                  <p className="font-medium">{formData.maxMembers} orang</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.members")}</p>
+                  <p className="font-medium">{formData.maxMembers} {t("step1.people")}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Iuran/Bulan</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.contribution")}</p>
                   <p className="font-medium">{formatIDR(formData.contributionAmount)}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Payout</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.payout")}</p>
                   <p className="font-medium">{formatIDR(totalPayout)}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Uang Jaminan</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.deposit")}</p>
                   <p className="font-medium">{formatIDR(securityDeposit)}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm text-muted-foreground mb-1">Tanggal Bayar</p>
-                  <p className="font-medium">Setiap tanggal {formData.paymentDay}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.paymentDate")}</p>
+                  <p className="font-medium">{t("step2.everyDate")} {formData.paymentDay}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50 col-span-2">
-                  <p className="text-sm text-muted-foreground mb-1">Vouch Wajib</p>
-                  <p className="font-medium">{formData.vouchRequired ? "Ya - Anggota baru harus dijamin" : "Tidak - Semua bisa langsung gabung"}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t("step4.vouchRequired")}</p>
+                  <p className="font-medium">{formData.vouchRequired ? t("step4.vouchYes") : t("step4.vouchNo")}</p>
                 </div>
               </div>
 
               <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Total yang perlu Anda siapkan</p>
+                    <p className="text-sm text-muted-foreground">{t("step4.totalPrepare")}</p>
                     <p className="text-xl font-bold">
                       {formatIDR(formData.contributionAmount + securityDeposit)}
                     </p>
                   </div>
                   <Badge variant="secondary">
-                    Iuran + Jaminan
+                    {t("step4.contributionDeposit")}
                   </Badge>
                 </div>
               </div>
 
               <div className="flex gap-2 pt-4">
                 <Button variant="outline" onClick={() => setStep(3)} className="flex-1">
-                  Kembali
+                  {tc("back")}
                 </Button>
                 <Button 
                   onClick={handleSubmit} 
@@ -481,12 +481,12 @@ export default function CreateCirclePage() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Membuat...
+                      {t("step4.creating")}
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Buat Arisan
+                      {t("step4.createArisan")}
                     </>
                   )}
                 </Button>

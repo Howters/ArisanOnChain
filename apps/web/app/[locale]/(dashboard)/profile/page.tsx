@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
 import { Loader2, User, Phone, MapPin, Check, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ProfileData {
   nama: string;
@@ -17,6 +18,8 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
+  const t = useTranslations("profile");
+  const tc = useTranslations("common");
   const router = useRouter();
   const walletAddress = useWalletAddress();
   const [isLoading, setIsLoading] = useState(true);
@@ -71,19 +74,19 @@ export default function ProfilePage() {
       const data = await res.json();
       
       if (!res.ok) {
-        toast.error(data.error || "Gagal menyimpan profil");
+        toast.error(data.error || tc("error"));
         return;
       }
       
-      toast.success("Profil berhasil disimpan!");
+      toast.success(tc("success"));
       setHasExistingProfile(true);
       
       const returnTo = new URLSearchParams(window.location.search).get("returnTo");
       if (returnTo) {
-        router.push(returnTo);
+        router.push(returnTo as any);
       }
     } catch {
-      toast.error("Terjadi kesalahan koneksi");
+      toast.error(tc("error"));
     } finally {
       setIsSaving(false);
     }
@@ -109,21 +112,18 @@ export default function ProfilePage() {
     <div className="max-w-xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          {hasExistingProfile ? "Edit Profil" : "Lengkapi Profil"}
+          {hasExistingProfile ? t("editTitle") : t("completeTitle")}
         </h1>
         <p className="text-muted-foreground">
-          {hasExistingProfile 
-            ? "Perbarui informasi profil Anda"
-            : "Lengkapi profil Anda untuk menggunakan fitur notifikasi WhatsApp"
-          }
+          {hasExistingProfile ? t("editDesc") : t("completeDesc")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Informasi Pribadi</CardTitle>
+          <CardTitle className="text-lg">{t("personalInfo")}</CardTitle>
           <CardDescription>
-            Data ini digunakan untuk komunikasi dan notifikasi arisan
+            {t("personalInfoDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -131,14 +131,14 @@ export default function ProfilePage() {
             <div className="space-y-2">
               <Label htmlFor="nama" className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
-                Nama Lengkap
+                {t("fullName")}
               </Label>
               <Input
                 id="nama"
                 name="nama"
                 value={formData.nama}
                 onChange={handleChange}
-                placeholder="Masukkan nama lengkap"
+                placeholder={t("fullNamePlaceholder")}
                 required
               />
             </div>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
             <div className="space-y-2">
               <Label htmlFor="whatsapp" className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                Nomor WhatsApp
+                {t("whatsapp")}
               </Label>
               <Input
                 id="whatsapp"
@@ -154,25 +154,25 @@ export default function ProfilePage() {
                 type="tel"
                 value={formData.whatsapp}
                 onChange={handleChange}
-                placeholder="08xxxxxxxxxx"
+                placeholder={t("whatsappPlaceholder")}
                 required
               />
               <p className="text-xs text-muted-foreground">
-                Nomor ini digunakan untuk menerima reminder pembayaran
+                {t("whatsappNote")}
               </p>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="kota" className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                Kota (Opsional)
+                {t("city")}
               </Label>
               <Input
                 id="kota"
                 name="kota"
                 value={formData.kota}
                 onChange={handleChange}
-                placeholder="Jakarta, Bandung, dll"
+                placeholder={t("cityPlaceholder")}
               />
             </div>
 
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                 ) : (
                   <ArrowRight className="mr-2 h-4 w-4" />
                 )}
-                {hasExistingProfile ? "Simpan Perubahan" : "Simpan & Lanjutkan"}
+                {hasExistingProfile ? t("saveChanges") : t("saveContinue")}
               </Button>
             </div>
           </form>
@@ -195,14 +195,12 @@ export default function ProfilePage() {
       <Card className="border-blue-500/20 bg-blue-500/5">
         <CardContent className="p-4">
           <p className="text-sm text-muted-foreground">
-            💡 <strong className="text-foreground">Kenapa perlu WhatsApp?</strong>
+            💡 <strong className="text-foreground">{t("whyWhatsapp")}</strong>
             <br />
-            Admin arisan dapat mengirim reminder pembayaran langsung ke WhatsApp Anda.
-            Data Anda aman dan tidak dibagikan ke pihak ketiga.
+            {t("whyWhatsappDesc")}
           </p>
         </CardContent>
       </Card>
     </div>
   );
 }
-

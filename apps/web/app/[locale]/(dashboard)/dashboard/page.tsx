@@ -15,14 +15,17 @@ import {
   RefreshCw,
   AlertTriangle
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useUserStore } from "@/stores/user-store";
 import { usePools, useBalance, useDebtNFTs } from "@/lib/hooks/use-contracts";
 import { useSocialProfile } from "@/lib/hooks/use-social-profile";
 import { formatIDR } from "@/lib/utils";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function DashboardPage() {
+  const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
   const { balances, setBalances } = useUserStore();
   const { data: poolsData, isLoading: poolsLoading, refetch: refetchPools, isRefetching } = usePools();
   const { data: balanceData } = useBalance();
@@ -48,7 +51,7 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      label: "Saldo Tersedia",
+      label: t("availableBalance"),
       value: formatIDR(Number(balances.liquid)),
       sublabel: "IDRX",
       icon: Wallet,
@@ -56,9 +59,9 @@ export default function DashboardPage() {
       bgColor: "bg-primary/10",
     },
     {
-      label: "Dana Terkunci",
+      label: t("lockedFunds"),
       value: formatIDR(Number(balances.locked)),
-      sublabel: "Uang jaminan",
+      sublabel: t("securityDeposit"),
       icon: Lock,
       color: "text-warning",
       bgColor: "bg-warning/10",
@@ -70,16 +73,16 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold font-display">
-            Selamat datang{profile.name ? `, ${profile.name}` : ""}! 👋
+            {t("welcome")}{profile.name ? `, ${profile.name}` : ""}! 👋
           </h1>
           <p className="text-muted-foreground">
-            Kelola arisan digital Anda dengan mudah dan aman
+            {t("subtitle")}
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/new">
             <Plus className="mr-2 h-4 w-4" />
-            Buat Arisan Baru
+            {t("createNew")}
           </Link>
         </Button>
       </div>
@@ -96,12 +99,12 @@ export default function DashboardPage() {
                   <AlertTriangle className="h-5 w-5 text-destructive" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-destructive">Anda memiliki {debts.length} Debt NFT</p>
+                  <p className="font-medium text-destructive">{t("debtWarning", { count: debts.length })}</p>
                   <p className="text-sm text-muted-foreground">
-                    Total utang: {formatIDR(debts.reduce((acc: number, d: any) => acc + Number(d.defaultedAmount), 0))} IDRX
+                    {t("totalDebt")}: {formatIDR(debts.reduce((acc: number, d: any) => acc + Number(d.defaultedAmount), 0))} IDRX
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Lunasi utang untuk mengembalikan reputasi Anda.
+                    {t("payDebt")}
                   </p>
                 </div>
               </div>
@@ -141,8 +144,8 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Arisan Saya</CardTitle>
-                <CardDescription>Arisan yang Anda ikuti</CardDescription>
+                <CardTitle>{t("myArisan")}</CardTitle>
+                <CardDescription>{t("myArisanDesc")}</CardDescription>
               </div>
               <Button 
                 variant="ghost" 
@@ -162,12 +165,12 @@ export default function DashboardPage() {
                 <div className="text-center py-8">
                   <CircleDot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground mb-4">
-                    Anda belum bergabung dengan arisan manapun
+                    {t("noArisan")}
                   </p>
                   <Button asChild>
                     <Link href="/dashboard/new">
                       <Plus className="mr-2 h-4 w-4" />
-                      Buat Arisan Baru
+                      {t("createNew")}
                     </Link>
                   </Button>
                 </div>
@@ -198,17 +201,17 @@ export default function DashboardPage() {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              {formatIDR(Number(pool.contributionAmount))}/bulan • {pool.memberCount} anggota
+                              {formatIDR(Number(pool.contributionAmount))}{tc("perMonth")} • {pool.memberCount} {tc("members")}
                             </p>
                           </div>
                           <div className="text-right shrink-0">
                             <Badge 
                               variant={pool.status === "Active" ? "success" : pool.status === "Pending" ? "warning" : "secondary"}
                             >
-                              {pool.status === "Active" ? "Aktif" : pool.status === "Pending" ? "Menunggu" : pool.status}
+                              {pool.status === "Active" ? tc("active") : pool.status === "Pending" ? tc("pending") : pool.status}
                             </Badge>
                             <p className="text-xs text-muted-foreground mt-1">
-                              Periode {pool.currentRound}/{pool.totalRounds}
+                              {tc("period")} {pool.currentRound}/{pool.totalRounds}
                             </p>
                           </div>
                         </div>
@@ -224,22 +227,22 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Info Cepat</CardTitle>
+              <CardTitle>{t("quickInfo")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Total Arisan</span>
+                  <span className="text-muted-foreground">{t("totalArisan")}</span>
                   <span className="font-medium">{myPools.length}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Arisan Aktif</span>
+                  <span className="text-muted-foreground">{t("activeArisan")}</span>
                   <span className="font-medium">
                     {myPools.filter((p: any) => p.status === "Active").length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Sebagai Admin</span>
+                  <span className="text-muted-foreground">{t("asAdmin")}</span>
                   <span className="font-medium">
                     {myPools.filter((p: any) => p.isAdmin).length}
                   </span>
@@ -252,4 +255,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

@@ -14,19 +14,22 @@ import {
 import { Menu, Wallet, LogOut, User, Settings, RefreshCw, Loader2, Copy, Check } from "lucide-react";
 import { formatAddress, formatIDR } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { TopUpDialog } from "@/components/topup/topup-dialog";
 import { FaucetButton } from "@/components/faucet/faucet-button";
 import { useBalance } from "@/lib/hooks/use-contracts";
 import { useEffect, useState } from "react";
 import { useSocialProfile } from "@/lib/hooks/use-social-profile";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
+  const t = useTranslations("header");
   const account = useActiveAccount();
   const wallet = useActiveWallet();
   const { disconnect } = useDisconnect();
@@ -68,7 +71,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     if (walletAddress) {
       navigator.clipboard.writeText(walletAddress);
       setCopied(true);
-      toast.success("Alamat wallet disalin!");
+      toast.success(t("addressCopied"));
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -86,18 +89,20 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <LanguageSwitcher />
+        
         <div className="hidden sm:flex items-center gap-2 bg-muted rounded-lg px-4 py-2">
           <Wallet className="h-4 w-4 text-muted-foreground" />
           <div className="text-sm">
             {!walletReady ? (
               <span className="text-muted-foreground flex items-center gap-2">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                Menyiapkan wallet...
+                {t("preparingWallet")}
               </span>
             ) : (
               <>
-                <span className="text-muted-foreground">Saldo: </span>
+                <span className="text-muted-foreground">{t("balance")}: </span>
                 <span className="font-semibold">
                   {formatIDR(Number(balances.liquid))} IDRX
                 </span>
@@ -139,7 +144,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 ) : profileLoading ? (
                   <p className="text-sm text-muted-foreground flex items-center gap-1">
                     <Loader2 className="h-3 w-3 animate-spin" />
-                    Memuat profil...
+                    {t("loadingProfile")}
                   </p>
                 ) : null}
                 {profile.email && (
@@ -169,22 +174,22 @@ export function Header({ onMenuClick }: HeaderProps) {
                 {!walletAddress && (
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
                     <Loader2 className="h-3 w-3 animate-spin" />
-                    Membuat wallet...
+                    {t("creatingWallet")}
                   </p>
                 )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/profile/me" className="cursor-pointer">
+              <Link href="/profile" className="cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
-                Profil
+                {t("profile")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/settings" className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
-                Pengaturan
+                {t("settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -193,7 +198,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               className="text-destructive cursor-pointer"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Keluar
+              {t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

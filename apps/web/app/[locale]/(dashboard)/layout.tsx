@@ -1,13 +1,15 @@
 "use client";
 
 import { useActiveAccount, useAutoConnect } from "thirdweb/react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/routing";
+import { usePathname as useNextPathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { Loader2 } from "lucide-react";
 import { client, liskSepolia } from "@/lib/thirdweb/client";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
+import { useTranslations } from "next-intl";
 
 const wallets = [
   inAppWallet({
@@ -28,9 +30,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const tc = useTranslations("common");
   const account = useActiveAccount();
   const router = useRouter();
   const pathname = usePathname();
+  const nextPathname = useNextPathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileChecked, setProfileChecked] = useState(false);
   
@@ -46,7 +50,7 @@ export default function DashboardLayout({
   }, [isAutoConnecting, account, router]);
 
   useEffect(() => {
-    if (!account?.address || pathname.includes("/profile") || profileChecked) return;
+    if (!account?.address || nextPathname.includes("/profile") || profileChecked) return;
     
     fetch(`/api/profile?address=${account.address}`)
       .then(res => res.json())
@@ -57,14 +61,14 @@ export default function DashboardLayout({
         setProfileChecked(true);
       })
       .catch(() => setProfileChecked(true));
-  }, [account?.address, pathname, router, profileChecked]);
+  }, [account?.address, nextPathname, pathname, router, profileChecked]);
 
   if (isAutoConnecting) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">Memuat sesi...</p>
+          <p className="text-sm text-muted-foreground">{tc("loading")}</p>
         </div>
       </div>
     );
@@ -75,7 +79,7 @@ export default function DashboardLayout({
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">Mengalihkan ke login...</p>
+          <p className="text-sm text-muted-foreground">{tc("loading")}</p>
         </div>
       </div>
     );
@@ -91,4 +95,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-

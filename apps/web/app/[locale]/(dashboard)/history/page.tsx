@@ -16,16 +16,19 @@ import {
 } from "lucide-react";
 import { useTransactionHistory } from "@/lib/hooks/use-contracts";
 import { formatIDR, formatAddress } from "@/lib/utils";
-
-const TX_TYPE_CONFIG: Record<string, { label: string; icon: any; color: string; bgColor: string }> = {
-  faucet: { label: "Faucet", icon: Droplets, color: "text-blue-500", bgColor: "bg-blue-500/10" },
-  topup: { label: "Top Up", icon: CreditCard, color: "text-green-500", bgColor: "bg-green-500/10" },
-  receive: { label: "Diterima", icon: ArrowDownLeft, color: "text-emerald-500", bgColor: "bg-emerald-500/10" },
-  send: { label: "Dikirim", icon: ArrowUpRight, color: "text-orange-500", bgColor: "bg-orange-500/10" },
-};
+import { useTranslations, useLocale } from "next-intl";
 
 export default function HistoryPage() {
+  const t = useTranslations("history");
+  const locale = useLocale();
   const { data, isLoading, refetch, isRefetching } = useTransactionHistory();
+
+  const TX_TYPE_CONFIG: Record<string, { label: string; icon: any; color: string; bgColor: string }> = {
+    faucet: { label: t("types.faucet"), icon: Droplets, color: "text-blue-500", bgColor: "bg-blue-500/10" },
+    topup: { label: t("types.topup"), icon: CreditCard, color: "text-green-500", bgColor: "bg-green-500/10" },
+    receive: { label: t("types.receive"), icon: ArrowDownLeft, color: "text-emerald-500", bgColor: "bg-emerald-500/10" },
+    send: { label: t("types.send"), icon: ArrowUpRight, color: "text-orange-500", bgColor: "bg-orange-500/10" },
+  };
 
   const transactions = data?.transactions || [];
 
@@ -33,9 +36,9 @@ export default function HistoryPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-display">Riwayat Transaksi</h1>
+          <h1 className="text-2xl font-bold font-display">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Riwayat semua transaksi IDRX Anda
+            {t("subtitle")}
           </p>
         </div>
         <Button 
@@ -57,14 +60,14 @@ export default function HistoryPage() {
           <CardContent className="py-12">
             <div className="text-center">
               <History className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Belum ada transaksi</p>
+              <p className="text-muted-foreground">{t("noTransactions")}</p>
             </div>
           </CardContent>
         </Card>
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Transaksi Terbaru</CardTitle>
+            <CardTitle>{t("recentTransactions")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {transactions.map((tx: any, index: number) => {
@@ -88,12 +91,12 @@ export default function HistoryPage() {
                       <div className="flex items-center gap-2">
                         <p className="font-medium">{config.label}</p>
                         <Badge variant="outline" className="text-xs">
-                          {tx.type === "receive" && tx.from ? `dari ${formatAddress(tx.from)}` : ""}
-                          {tx.type === "send" && tx.to ? `ke ${formatAddress(tx.to)}` : ""}
+                          {tx.type === "receive" && tx.from ? `${t("from")} ${formatAddress(tx.from)}` : ""}
+                          {tx.type === "send" && tx.to ? `${t("to")} ${formatAddress(tx.to)}` : ""}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {date.toLocaleDateString("id-ID", { 
+                        {date.toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { 
                           day: "numeric", 
                           month: "short", 
                           year: "numeric",
@@ -125,4 +128,3 @@ export default function HistoryPage() {
     </div>
   );
 }
-
