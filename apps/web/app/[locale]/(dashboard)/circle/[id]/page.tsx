@@ -75,9 +75,9 @@ export default function CirclePage() {
   const { data: pool, isLoading, refetch, isRefetching } = usePool(poolId);
   const { data: balanceData } = useBalance();
   const userBalance = balanceData?.liquid || BigInt(0);
-  const { data: debtData } = useDebtNFTs();
+  const { data: debtData, isLoading: debtLoading } = useDebtNFTs();
   const debts = debtData?.debts || [];
-  const hasDebtNFT = debts.length > 0;
+  const hasDebtNFT = !debtLoading && debts.length > 0;
   
   const poolAddress = pool?.address;
   const approveMember = useApproveMember(poolAddress);

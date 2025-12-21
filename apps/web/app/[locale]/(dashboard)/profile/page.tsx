@@ -25,7 +25,7 @@ export default function ProfilePage() {
   const th = useTranslations("header");
   const router = useRouter();
   const walletAddress = useWalletAddress();
-  const { data: debtData } = useDebtNFTs();
+  const { data: debtData, isLoading: debtLoading } = useDebtNFTs();
   const debts = debtData?.debts || [];
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           <h1 className="text-2xl font-bold">
             {hasExistingProfile ? t("editTitle") : t("completeTitle")}
           </h1>
-          {debts.length > 0 && (
+          {!debtLoading && debts.length > 0 && (
             <Badge variant="destructive" className="gap-1">
               <AlertTriangle className="h-3 w-3" />
               {th("debtNFTBadge", { count: debts.length })}

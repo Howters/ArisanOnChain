@@ -37,12 +37,11 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { balances, setBalances } = useUserStore();
   const { data: balanceData, refetch: refetchBalance, isRefetching } = useBalance();
   const { profile, address, isLoading: profileLoading } = useSocialProfile();
-  const { data: debtData } = useDebtNFTs();
-  const debts = debtData?.debts || [];
-  const hasDebtNFT = debts.length > 0;
-  const [copied, setCopied] = useState(false);
-
   const walletAddress = account?.address;
+  const { data: debtData, isLoading: debtLoading } = useDebtNFTs();
+  const debts = debtData?.debts || [];
+  const hasDebtNFT = !debtLoading && debts.length > 0;
+  const [copied, setCopied] = useState(false);
   const walletReady = !!account;
   
   const displayName = profile.name || (walletAddress ? formatAddress(walletAddress) : "User");
@@ -198,8 +197,8 @@ export function Header({ onMenuClick }: HeaderProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {hasDebtNFT && (
-              <DropdownMenuItem asChild>
-                <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-md cursor-default">
+              <DropdownMenuItem disabled className="cursor-default">
+                <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-md w-full">
                   <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-destructive">
