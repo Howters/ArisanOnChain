@@ -62,11 +62,6 @@ import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { useDebtNFTs } from "@/lib/hooks/use-contracts";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 export default function CirclePage() {
   const t = useTranslations("circle");
@@ -282,7 +277,7 @@ export default function CirclePage() {
     if (!vouchTarget || !vouchAmount) return;
     
     // Check if user already vouched for this member
-    const member = pendingMembers.find(m => 
+    const member = pendingMembers.find((m: any) => 
       m.address.toLowerCase() === vouchTarget.address.toLowerCase()
     );
     const existingVouches = member?.vouches || [];
@@ -506,7 +501,7 @@ export default function CirclePage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{tm("vouch.title")}</DialogTitle>
-            <DialogDescription>{tm("vouch.desc", { name: vouchTarget?.name })}</DialogDescription>
+            <DialogDescription>{tm("vouch.desc", { name: vouchTarget?.name || "" })}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -515,7 +510,7 @@ export default function CirclePage() {
               <p className="text-xs text-muted-foreground">{tm("vouch.minimum", { amount: formatIDR(Number(pool.contributionAmount)) })}</p>
             </div>
             <div className="p-3 rounded-lg bg-warning/10 border border-warning/20 text-sm">
-              <p className="text-muted-foreground">{tm("vouch.warning", { name: vouchTarget?.name })}</p>
+              <p className="text-muted-foreground">{tm("vouch.warning", { name: vouchTarget?.name || "" })}</p>
             </div>
           </div>
           <DialogFooter>
@@ -541,7 +536,7 @@ export default function CirclePage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-destructive">{tm("reportDefault.title")}</DialogTitle>
-            <DialogDescription>{tm("reportDefault.desc", { name: defaultTarget?.name })}</DialogDescription>
+            <DialogDescription>{tm("reportDefault.desc", { name: defaultTarget?.name || "" })}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-sm space-y-2">
@@ -556,7 +551,7 @@ export default function CirclePage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowReportDefaultModal(false)}>{tc("cancel")}</Button>
-            <Button variant="destructive" onClick={handleReportDefault} disabled={defaultTarget && isActionLoading(`reportDefault-${defaultTarget.address}`)}>
+            <Button variant="destructive" onClick={handleReportDefault} disabled={!!defaultTarget && isActionLoading(`reportDefault-${defaultTarget.address}`)}>
               {defaultTarget && isActionLoading(`reportDefault-${defaultTarget.address}`) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <AlertTriangle className="mr-2 h-4 w-4" />}
               {tm("reportDefault.reportNow")}
             </Button>
@@ -777,17 +772,15 @@ export default function CirclePage() {
                               
                               if (!canVouch) {
                                 return (
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button size="sm" variant="outline" className="flex-1" disabled>
-                                        <HandshakeIcon className="mr-1 h-3 w-3" />
-                                        {t("vouch")}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
+                                  <div className="flex-1">
+                                    <Button size="sm" variant="outline" className="w-full" disabled>
+                                      <HandshakeIcon className="mr-1 h-3 w-3" />
+                                      {t("vouch")}
+                                    </Button>
+                                    <p className="text-xs text-muted-foreground mt-1">
                                       {hasDebtNFT ? t("cannotVouchDebtNFT") : alreadyVouched ? t("alreadyVouched") : t("cannotVouchEligibility")}
-                                    </TooltipContent>
-                                  </Tooltip>
+                                    </p>
+                                  </div>
                                 );
                               }
                               
