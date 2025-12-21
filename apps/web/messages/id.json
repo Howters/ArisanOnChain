@@ -36,7 +36,9 @@
     "profile": "Profil",
     "settings": "Pengaturan",
     "logout": "Keluar",
-    "addressCopied": "Alamat wallet disalin!"
+    "addressCopied": "Alamat wallet disalin!",
+    "debtNFTBadge": "{count} Debt NFT",
+    "debtNFTTooltip": "Tidak dapat menjamin anggota"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -134,6 +136,10 @@
     "needVouch": "Perlu dijamin dulu sebelum bisa disetujui",
     "vouched": "Dijamin {count} orang",
     "noVouch": "Belum ada yang menjamin",
+    "alreadyVouched": "Anda sudah menjamin anggota ini sebelumnya",
+    "cannotVouchDebtNFT": "Anda memiliki Debt NFT, tidak dapat menjamin anggota",
+    "cannotVouchEligibility": "Anda belum memenuhi syarat untuk menjamin (perlu menyelesaikan minimal 1 pool tanpa default)",
+    "vouching": "Menjamin...",
     "currentPeriod": "Periode Saat Ini",
     "winner": "Pemenang Periode",
     "status": "Status",
@@ -194,9 +200,10 @@
       "reportNow": "Laporkan Default"
     }
   },
-  "create": {
+    "create": {
     "title": "Buat Arisan Baru",
     "subtitle": "Atur detail arisan dan undang anggota",
+    "redirecting": "Mengalihkan ke halaman arisan...",
     "step1": {
       "title": "Detail Arisan",
       "desc": "Nama dan jumlah anggota",

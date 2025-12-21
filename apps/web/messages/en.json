@@ -36,7 +36,9 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
-    "addressCopied": "Wallet address copied!"
+    "addressCopied": "Wallet address copied!",
+    "debtNFTBadge": "{count} Debt NFT",
+    "debtNFTTooltip": "Cannot vouch for members"
   },
   "sidebar": {
     "dashboard": "Dashboard",
@@ -134,6 +136,10 @@
     "needVouch": "Needs vouch before approval",
     "vouched": "Vouched by {count} people",
     "noVouch": "No vouches yet",
+    "alreadyVouched": "You have already vouched for this member",
+    "cannotVouchDebtNFT": "You have Debt NFT, cannot vouch for members",
+    "cannotVouchEligibility": "You don't meet requirements to vouch (need to complete at least 1 pool with zero defaults)",
+    "vouching": "Vouching...",
     "currentPeriod": "Current Period",
     "winner": "Period Winner",
     "status": "Status",
@@ -194,9 +200,10 @@
       "reportNow": "Report Default"
     }
   },
-  "create": {
+    "create": {
     "title": "Create New Circle",
     "subtitle": "Set up circle details and invite members",
+    "redirecting": "Redirecting to circle page...",
     "step1": {
       "title": "Circle Details",
       "desc": "Name and member count",

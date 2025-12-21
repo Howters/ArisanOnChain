@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Wallet, LogOut, User, Settings, RefreshCw, Loader2, Copy, Check } from "lucide-react";
+import { Menu, Wallet, LogOut, User, Settings, RefreshCw, Loader2, Copy, Check, AlertTriangle } from "lucide-react";
 import { formatAddress, formatIDR } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
 import { Link } from "@/i18n/routing";
@@ -23,6 +23,8 @@ import { useSocialProfile } from "@/lib/hooks/use-social-profile";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { useDebtNFTs } from "@/lib/hooks/use-contracts";
+import { AlertTriangle } from "lucide-react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -36,6 +38,9 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { balances, setBalances } = useUserStore();
   const { data: balanceData, refetch: refetchBalance, isRefetching } = useBalance();
   const { profile, address, isLoading: profileLoading } = useSocialProfile();
+  const { data: debtData } = useDebtNFTs();
+  const debts = debtData?.debts || [];
+  const hasDebtNFT = debts.length > 0;
   const [copied, setCopied] = useState(false);
 
   const walletAddress = account?.address;
@@ -193,6 +198,22 @@ export function Header({ onMenuClick }: HeaderProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            {hasDebtNFT && (
+              <DropdownMenuItem asChild>
+                <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-md cursor-default">
+                  <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-destructive">
+                      {t("debtNFTBadge", { count: debts.length })}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("debtNFTTooltip")}
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+            )}
+            {hasDebtNFT && <DropdownMenuSeparator />}
             <DropdownMenuItem
               onClick={handleLogout}
               className="text-destructive cursor-pointer"

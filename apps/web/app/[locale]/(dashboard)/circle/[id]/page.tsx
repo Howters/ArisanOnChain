@@ -61,6 +61,12 @@ import { Label } from "@/components/ui/label";
 import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useDebtNFTs } from "@/lib/hooks/use-contracts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function CirclePage() {
   const t = useTranslations("circle");
@@ -74,6 +80,9 @@ export default function CirclePage() {
   const { data: pool, isLoading, refetch, isRefetching } = usePool(poolId);
   const { data: balanceData } = useBalance();
   const userBalance = balanceData?.liquid || BigInt(0);
+  const { data: debtData } = useDebtNFTs();
+  const debts = debtData?.debts || [];
+  const hasDebtNFT = debts.length > 0;
   
   const poolAddress = pool?.address;
   const approveMember = useApproveMember(poolAddress);
@@ -271,6 +280,24 @@ export default function CirclePage() {
 
   const handleVouch = () => {
     if (!vouchTarget || !vouchAmount) return;
+    
+    // Check if user already vouched for this member
+    const member = pendingMembers.find(m => 
+      m.address.toLowerCase() === vouchTarget.address.toLowerCase()
+    );
+    const existingVouches = member?.vouches || [];
+    const alreadyVouched = existingVouches.some((v: any) => 
+      v.voucher.toLowerCase() === userAddress
+    );
+    
+    if (alreadyVouched) {
+      toast.error(t("alreadyVouched"));
+      setShowVouchModal(false);
+      setVouchTarget(null);
+      setVouchAmount("");
+      return;
+    }
+    
     const amount = BigInt(parseFloat(vouchAmount) || 0);
     if (amount <= 0 || amount > userBalance) {
       toast.error(tc("error"));
@@ -426,7 +453,7 @@ export default function CirclePage() {
                   {formatIDR(Number(userBalance))} IDRX
                 </span>
               </div>
-            </div>
+              </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowContributeModal(false)}>{tc("cancel")}</Button>
@@ -494,8 +521,17 @@ export default function CirclePage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowVouchModal(false)}>{tc("cancel")}</Button>
             <Button onClick={handleVouch} disabled={(vouchTarget && isActionLoading(`vouch-${vouchTarget.address}`)) || !vouchAmount || parseFloat(vouchAmount) < Number(pool.contributionAmount) || parseFloat(vouchAmount) > Number(userBalance)}>
-              {vouchTarget && isActionLoading(`vouch-${vouchTarget.address}`) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <HandshakeIcon className="mr-2 h-4 w-4" />}
-              {tm("vouch.vouchNow")}
+              {vouchTarget && isActionLoading(`vouch-${vouchTarget.address}`) ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("vouching")}
+                </>
+              ) : (
+                <>
+                  <HandshakeIcon className="mr-2 h-4 w-4" />
+                  {tm("vouch.vouchNow")}
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -735,7 +771,43 @@ export default function CirclePage() {
                       <div className="flex gap-2">
                         {pool.vouchRequired ? (
                           <>
-                            {userMember?.status === "Active" && <Button size="sm" variant="outline" className="flex-1" onClick={() => openVouchModal(member)} disabled={isAnyActionLoading("vouch-")}><HandshakeIcon className="mr-1 h-3 w-3" />{t("vouch")}</Button>}
+                            {userMember?.status === "Active" && (() => {
+                              const alreadyVouched = member.vouches?.some((v: any) => v.voucher.toLowerCase() === userAddress);
+                              const canVouch = !hasDebtNFT && !alreadyVouched;
+                              
+                              if (!canVouch) {
+                                return (
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button size="sm" variant="outline" className="flex-1" disabled>
+                                        <HandshakeIcon className="mr-1 h-3 w-3" />
+                                        {t("vouch")}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {hasDebtNFT ? t("cannotVouchDebtNFT") : alreadyVouched ? t("alreadyVouched") : t("cannotVouchEligibility")}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                );
+                              }
+                              
+                              return (
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1" 
+                                  onClick={() => openVouchModal(member)} 
+                                  disabled={isAnyActionLoading("vouch-")}
+                                >
+                                  {isAnyActionLoading("vouch-") ? (
+                                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                  ) : (
+                                    <HandshakeIcon className="mr-1 h-3 w-3" />
+                                  )}
+                                  {t("vouch")}
+                                </Button>
+                              );
+                            })()}
                             {isAdmin && member.vouches && member.vouches.length > 0 && (
                               <>
                                 <Button size="sm" className="flex-1" onClick={() => handleApprove(member.address)} disabled={isActionLoading(`approve-${member.address}`) || isActionLoading(`reject-${member.address}`)}>
@@ -746,12 +818,12 @@ export default function CirclePage() {
                             )}
                           </>
                         ) : isAdmin && (
-                          <>
+                            <>
                             <Button size="sm" className="flex-1" onClick={() => handleApprove(member.address)} disabled={isActionLoading(`approve-${member.address}`) || isActionLoading(`reject-${member.address}`)}>
                               {isActionLoading(`approve-${member.address}`) ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Check className="mr-1 h-3 w-3" />{t("approve")}</>}
-                            </Button>
+                              </Button>
                             <Button size="sm" variant="destructive" onClick={() => handleReject(member.address)} disabled={isActionLoading(`approve-${member.address}`) || isActionLoading(`reject-${member.address}`)}><X className="h-3 w-3" /></Button>
-                          </>
+                            </>
                         )}
                       </div>
                       {isAdmin && pool.vouchRequired && (!member.vouches || member.vouches.length === 0) && <p className="text-xs text-warning">{t("needVouch")}</p>}

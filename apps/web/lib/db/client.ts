@@ -82,7 +82,7 @@ export async function getWaitlistStats(): Promise<{
         COUNT(*) FILTER (WHERE LOWER(peran) LIKE '%admin%' OR LOWER(peran) LIKE '%keduanya%') as admin_count,
         COUNT(*) FILTER (WHERE peran = 'Anggota') as member_count,
         COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days') as recent_count
-      FROM waitlist
+      FROM waitlist 
     `);
     
     const row = result.rows[0];

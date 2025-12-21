@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
-import { Loader2, User, Phone, MapPin, Check, ArrowRight } from "lucide-react";
+import { Loader2, User, Phone, MapPin, Check, ArrowRight, AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useDebtNFTs } from "@/lib/hooks/use-contracts";
+import { Badge } from "@/components/ui/badge";
 
 interface ProfileData {
   nama: string;
@@ -20,8 +22,11 @@ interface ProfileData {
 export default function ProfilePage() {
   const t = useTranslations("profile");
   const tc = useTranslations("common");
+  const th = useTranslations("header");
   const router = useRouter();
   const walletAddress = useWalletAddress();
+  const { data: debtData } = useDebtNFTs();
+  const debts = debtData?.debts || [];
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasExistingProfile, setHasExistingProfile] = useState(false);
@@ -111,9 +116,17 @@ export default function ProfilePage() {
   return (
     <div className="max-w-xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">
-          {hasExistingProfile ? t("editTitle") : t("completeTitle")}
-        </h1>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-2xl font-bold">
+            {hasExistingProfile ? t("editTitle") : t("completeTitle")}
+          </h1>
+          {debts.length > 0 && (
+            <Badge variant="destructive" className="gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              {th("debtNFTBadge", { count: debts.length })}
+            </Badge>
+          )}
+        </div>
         <p className="text-muted-foreground">
           {hasExistingProfile ? t("editDesc") : t("completeDesc")}
         </p>

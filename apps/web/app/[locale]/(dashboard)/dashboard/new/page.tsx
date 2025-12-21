@@ -92,6 +92,9 @@ export default function CreateCirclePage() {
       queryClient.invalidateQueries({ queryKey: ["pools"] });
       
       if (result?.poolId) {
+        // Wait for indexer to process the new pool
+        toast.info(t("redirecting"));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         router.push(`/circle/${result.poolId}`);
       } else {
         router.push("/dashboard");
