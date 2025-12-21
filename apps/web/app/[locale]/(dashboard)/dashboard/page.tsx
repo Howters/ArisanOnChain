@@ -191,7 +191,7 @@ export default function DashboardPage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="font-medium truncate">
-                                {pool.name || `Arisan #${pool.id}`}
+                                {pool.poolName || pool.name || `Arisan #${pool.id}`}
                               </p>
                               {pool.isAdmin && (
                                 <Badge variant="secondary" className="shrink-0">

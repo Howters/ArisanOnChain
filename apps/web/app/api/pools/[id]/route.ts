@@ -228,15 +228,26 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
   ]);
 
   const [status, currentRound, totalRounds, activeMembers, deadline] = poolStatus as [number, bigint, bigint, bigint, bigint];
-  const poolConfig = config as { 
-    contributionAmount: bigint; 
-    securityDepositAmount: bigint; 
-    maxMembers: bigint;
-    paymentDay: number;
-    vouchRequired: boolean;
-    rotationPeriod: number;
-    poolName: string;
-    category: string;
+  const [
+    contributionAmount,
+    securityDepositAmount,
+    maxMembers,
+    paymentDay,
+    vouchRequired,
+    rotationPeriod,
+    poolName,
+    category
+  ] = config as unknown as [bigint, bigint, bigint, number, boolean, number, string, string];
+  
+  const poolConfig = {
+    contributionAmount,
+    securityDepositAmount,
+    maxMembers,
+    paymentDay,
+    vouchRequired,
+    rotationPeriod,
+    poolName,
+    category
   };
 
   let currentWinner: string | null = null;

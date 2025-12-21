@@ -133,15 +133,26 @@ async function getPoolsFromRPC(address: string | null) {
       ]);
 
       const [status, currentRound, totalRounds, activeMembers, deadline] = poolStatus as [number, bigint, bigint, bigint, bigint];
-      const poolConfig = config as { 
-        contributionAmount: bigint; 
-        securityDepositAmount: bigint; 
-        maxMembers: bigint;
-        paymentDay: number;
-        vouchRequired: boolean;
-        rotationPeriod: number;
-        poolName: string;
-        category: string;
+      const [
+        contributionAmount,
+        securityDepositAmount,
+        maxMembers,
+        paymentDay,
+        vouchRequired,
+        rotationPeriod,
+        poolName,
+        category
+      ] = config as unknown as [bigint, bigint, bigint, number, boolean, number, string, string];
+      
+      const poolConfig = {
+        contributionAmount,
+        securityDepositAmount,
+        maxMembers,
+        paymentDay,
+        vouchRequired,
+        rotationPeriod,
+        poolName,
+        category
       };
 
       const admin = await publicClient.readContract({
@@ -165,7 +176,7 @@ async function getPoolsFromRPC(address: string | null) {
             address: poolAddress,
             abi: ArisanPoolAbi,
             functionName: "getMemberInfo",
-            args: [address],
+            args: [address as `0x${string}`],
           });
           const info = memberInfo as {
             status: number;
@@ -184,8 +195,8 @@ async function getPoolsFromRPC(address: string | null) {
 
       pools.push({
         id: i.toString(),
-        address: poolAddress,
-        admin,
+        address: poolAddress as `0x${string}`,
+        admin: admin as `0x${string}`,
         poolName: poolConfig.poolName,
         category: poolConfig.category,
         rotationPeriod: poolConfig.rotationPeriod === 0 ? "Weekly" : "Monthly",

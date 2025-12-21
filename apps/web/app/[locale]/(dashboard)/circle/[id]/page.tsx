@@ -135,7 +135,7 @@ export default function CirclePage() {
     }
     
     const memberName = profile.nama || formatAddress(memberAddress);
-    const poolName = pool?.name || "Arisan";
+    const poolName = pool?.poolName || pool?.name || "Arisan";
     const amount = formatIDR(Number(pool?.contributionAmount || 0));
     const round = pool?.currentRound || 1;
     
@@ -360,7 +360,7 @@ export default function CirclePage() {
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-bold font-display">{pool.name || `Arisan #${pool.id}`}</h1>
+            <h1 className="text-2xl font-bold font-display">{pool.poolName || pool.name || `Arisan #${pool.id}`}</h1>
             <Badge variant={pool.status === "Active" ? "success" : pool.status === "Pending" ? "warning" : pool.status === "Completed" ? "secondary" : "destructive"}>
               {pool.status === "Active" ? tc("active") : pool.status === "Pending" ? tc("pending") : pool.status === "Completed" ? tc("completed") : pool.status}
             </Badge>
