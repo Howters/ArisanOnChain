@@ -603,6 +603,19 @@ export function useDebtNFTs() {
   });
 }
 
+export function useDebtNFTsForAddress(address: string | undefined) {
+  return useQuery({
+    queryKey: ["debts", address],
+    queryFn: async () => {
+      if (!address) return { debts: [] };
+      
+      const res = await fetch(`/api/debt?address=${address}`);
+      return res.json();
+    },
+    enabled: !!address,
+  });
+}
+
 export function useTransactionHistory() {
   const walletAddress = useWalletAddress();
 

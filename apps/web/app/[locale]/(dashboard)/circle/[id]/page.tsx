@@ -61,7 +61,27 @@ import { Label } from "@/components/ui/label";
 import { useWalletAddress } from "@/lib/hooks/use-wallet-address";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { useDebtNFTs } from "@/lib/hooks/use-contracts";
+import { useDebtNFTs, useDebtNFTsForAddress } from "@/lib/hooks/use-contracts";
+
+function MemberDebtBadge({ address }: { address: string }) {
+  const t = useTranslations("circle");
+  const { data: memberDebtData } = useDebtNFTsForAddress(address);
+  const memberDebts = memberDebtData?.debts || [];
+  const hasDebt = memberDebts.length > 0;
+  const totalDebtAmount = memberDebts.reduce((sum: bigint, debt: any) => sum + BigInt(debt.defaultedAmount || 0), BigInt(0));
+  
+  if (!hasDebt) return null;
+  
+  return (
+    <Badge variant="destructive" className="gap-1 text-xs">
+      <AlertTriangle className="h-3 w-3" />
+      {t("debtNFTBadge", { count: memberDebts.length })}
+      {totalDebtAmount > 0 && (
+        <span className="ml-1">({formatIDR(Number(totalDebtAmount))})</span>
+      )}
+    </Badge>
+  );
+}
 
 export default function CirclePage() {
   const t = useTranslations("circle");
@@ -759,7 +779,10 @@ export default function CirclePage() {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8"><AvatarFallback className="text-xs">{member.address.slice(2, 4).toUpperCase()}</AvatarFallback></Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate font-mono">{formatAddress(member.address)}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-sm truncate font-mono">{formatAddress(member.address)}</p>
+                            <MemberDebtBadge address={member.address} />
+                          </div>
                           {member.vouches?.length > 0 ? <p className="text-xs text-success">{t("vouched", { count: member.vouches.length })}</p> : pool.vouchRequired ? <p className="text-xs text-warning">{t("noVouch")}</p> : null}
                         </div>
                       </div>
