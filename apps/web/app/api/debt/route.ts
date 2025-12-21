@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const tokenIds = await publicClient.readContract({
       address: CONTRACTS.DEBT_NFT,
       abi: DebtNFTAbi,
-      functionName: "getUserDebts",
+      functionName: "getUserDebtTokens",
       args: [address],
     });
 
@@ -29,21 +29,15 @@ export async function GET(req: NextRequest) {
           abi: DebtNFTAbi,
           functionName: "debtRecords",
           args: [tokenId],
-        });
+        }) as readonly [bigint, bigint, bigint];
 
-        const debtRecord = record as {
-          poolId: bigint;
-          defaultedAmount: bigint;
-          timestamp: bigint;
-          isSettled: boolean;
-        };
+        const [poolId, defaultedAmount, timestamp] = record;
 
         debts.push({
           tokenId: tokenId.toString(),
-          poolId: debtRecord.poolId.toString(),
-          defaultedAmount: debtRecord.defaultedAmount.toString(),
-          timestamp: Number(debtRecord.timestamp),
-          isSettled: debtRecord.isSettled,
+          poolId: poolId.toString(),
+          defaultedAmount: defaultedAmount.toString(),
+          timestamp: Number(timestamp),
         });
       } catch (err) {
         console.error(`Error fetching debt ${tokenId}:`, err);
