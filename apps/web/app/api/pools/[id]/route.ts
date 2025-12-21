@@ -129,10 +129,12 @@ async function getPoolDetailFromIndexer(poolId: string, userAddress: string | nu
       id: poolId,
       address: pool.address,
       admin: pool.admin,
-      name: pool.name,
-      poolName: pool.name,
-      category: pool.category,
-      rotationPeriod: pool.rotationPeriod,
+      name: pool.poolName || pool.name || null,
+      poolName: pool.poolName || pool.name || null,
+      category: pool.category || null,
+      rotationPeriod: typeof pool.rotationPeriod === "number" 
+        ? (pool.rotationPeriod === 0 ? "Weekly" : "Monthly")
+        : pool.rotationPeriod,
       status: pool.status,
       contributionAmount: pool.contributionAmount?.toString() || "0",
       securityDeposit: pool.securityDeposit?.toString() || "0",
@@ -189,7 +191,7 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     return NextResponse.json({ error: "Pool not found" }, { status: 404 });
   }
 
-  const [poolStatus, config, admin, memberList, pendingList, rotationOrder, roundDeadline] = await Promise.all([
+  const [poolStatus, config, admin, memberList, pendingList, rotationOrder, roundDeadline, poolName, category] = await Promise.all([
     publicClient.readContract({
       address: poolAddress,
       abi: ArisanPoolAbi,
@@ -225,6 +227,16 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
       abi: ArisanPoolAbi,
       functionName: "getRoundDeadline",
     }),
+    publicClient.readContract({
+      address: poolAddress,
+      abi: ArisanPoolAbi,
+      functionName: "poolName" as any,
+    }),
+    publicClient.readContract({
+      address: poolAddress,
+      abi: ArisanPoolAbi,
+      functionName: "category" as any,
+    }),
   ]);
 
   const [status, currentRound, totalRounds, activeMembers, deadline] = poolStatus as [number, bigint, bigint, bigint, bigint];
@@ -234,10 +246,12 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     maxMembers,
     paymentDay,
     vouchRequired,
-    rotationPeriod,
-    poolName,
-    category
-  ] = config as unknown as [bigint, bigint, bigint, number, boolean, number, string, string];
+    rotationPeriod
+  ] = config as unknown as [bigint, bigint, bigint, number, boolean, number];
+  
+  // poolName and category are read separately as public variables
+  const poolNameStr = (poolName as string) || "";
+  const categoryStr = (category as string) || "";
   
   const poolConfig = {
     contributionAmount,
@@ -246,8 +260,8 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     paymentDay,
     vouchRequired,
     rotationPeriod,
-    poolName,
-    category
+    poolName: poolNameStr,
+    category: categoryStr
   };
 
   let currentWinner: string | null = null;
@@ -434,10 +448,10 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     id: poolId,
     address: poolAddress,
     admin,
-    poolName: poolConfig.poolName,
-    name: poolConfig.poolName,
-    category: poolConfig.category,
-    rotationPeriod: poolConfig.rotationPeriod === 0 ? "Weekly" : "Monthly",
+    poolName: poolNameStr || poolConfig.poolName || null,
+    name: poolNameStr || poolConfig.poolName || null,
+    category: categoryStr || poolConfig.category || null,
+    rotationPeriod: poolConfig.rotationPeriod === 0 ? "Weekly" : poolConfig.rotationPeriod === 1 ? "Monthly" : "Monthly",
     status: STATUS_MAP[status] || "Unknown",
     contributionAmount: poolConfig.contributionAmount.toString(),
     securityDeposit: poolConfig.securityDepositAmount.toString(),
