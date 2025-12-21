@@ -24,7 +24,6 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useDebtNFTs } from "@/lib/hooks/use-contracts";
-import { AlertTriangle } from "lucide-react";
 
 interface HeaderProps {
   onMenuClick: () => void;

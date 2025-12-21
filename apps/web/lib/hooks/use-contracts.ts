@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { getPoolContract, getMockIdrxContract, getArisanFactoryContract } from "@/lib/thirdweb/contracts";
+import { decodeEventLog } from "viem";
+import { publicClient } from "@/lib/contracts/client";
+import { ArisanFactoryAbi } from "@/lib/contracts/abis";
 
 function useWalletAddress() {
   const account = useActiveAccount();
@@ -114,19 +117,60 @@ export function useCreatePool() {
 
       const result = await sendTx(tx);
       
-      // Parse PoolCreated event from logs to get poolId
-      // Event signature: PoolCreated(uint256 indexed poolId, address indexed poolAddress, address indexed admin, ...)
-      const poolCreatedTopic = "0x" + "PoolCreated".padEnd(64, "0"); // Simplified - we'll get poolId from API
+      // Get transaction hash from result (thirdweb may return different formats)
+      let txHash: `0x${string}` | undefined;
+      let receipt: any;
       
-      // For now, fetch the latest pool from the API after creation
-      const res = await fetch(`/api/pools?address=${account.address}`);
-      const data = await res.json();
-      const pools = data.pools || [];
-      const latestPool = pools[pools.length - 1];
+      if (typeof result === "string") {
+        // If result is directly a transaction hash string
+        txHash = result as `0x${string}`;
+        receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
+      } else if ((result as any).transactionHash) {
+        // If result has transactionHash property
+        txHash = (result as any).transactionHash as `0x${string}`;
+        receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
+      } else if ((result as any).receipt) {
+        // If result already contains receipt (smart account transactions)
+        receipt = (result as any).receipt;
+        txHash = receipt.transactionHash as `0x${string}`;
+      } else {
+        throw new Error("Failed to get transaction hash from result");
+      }
+      
+      if (!receipt || !txHash) {
+        throw new Error("Failed to get transaction receipt");
+      }
+      
+      // Parse PoolCreated event from logs to get poolId
+      let poolId = "0";
+      let poolAddress = "0x0";
+      
+      for (const log of receipt.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: ArisanFactoryAbi,
+            data: log.data,
+            topics: log.topics,
+          });
+
+          if (decoded.eventName === "PoolCreated") {
+            const args = decoded.args as { poolId: bigint; poolAddress: `0x${string}` };
+            poolId = args.poolId.toString();
+            poolAddress = args.poolAddress;
+            break;
+          }
+        } catch {
+          // Skip logs that don't match
+        }
+      }
+      
+      if (poolId === "0") {
+        throw new Error("PoolCreated event not found in transaction receipt");
+      }
       
       return { 
-        poolId: latestPool?.id?.toString() || "1", 
-        poolAddress: latestPool?.address || "" 
+        poolId, 
+        poolAddress 
       };
     },
     onSuccess: () => {
