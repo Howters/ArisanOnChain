@@ -130,6 +130,9 @@ async function getPoolDetailFromIndexer(poolId: string, userAddress: string | nu
       address: pool.address,
       admin: pool.admin,
       name: pool.name,
+      poolName: pool.name,
+      category: pool.category,
+      rotationPeriod: pool.rotationPeriod,
       status: pool.status,
       contributionAmount: pool.contributionAmount?.toString() || "0",
       securityDeposit: pool.securityDeposit?.toString() || "0",
@@ -231,6 +234,9 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     maxMembers: bigint;
     paymentDay: number;
     vouchRequired: boolean;
+    rotationPeriod: number;
+    poolName: string;
+    category: string;
   };
 
   let currentWinner: string | null = null;
@@ -417,6 +423,10 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     id: poolId,
     address: poolAddress,
     admin,
+    poolName: poolConfig.poolName,
+    name: poolConfig.poolName,
+    category: poolConfig.category,
+    rotationPeriod: poolConfig.rotationPeriod === 0 ? "Weekly" : "Monthly",
     status: STATUS_MAP[status] || "Unknown",
     contributionAmount: poolConfig.contributionAmount.toString(),
     securityDeposit: poolConfig.securityDepositAmount.toString(),

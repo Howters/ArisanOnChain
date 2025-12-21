@@ -26,10 +26,17 @@ export async function GET(req: NextRequest) {
       args: [address],
     });
 
-    return NextResponse.json({
-      liquid: balance.toString(),
-      locked: "0",
-    });
+    return NextResponse.json(
+      {
+        liquid: balance.toString(),
+        locked: "0",
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Balance error:", error);
     return NextResponse.json({

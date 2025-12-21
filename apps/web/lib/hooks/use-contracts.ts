@@ -98,12 +98,18 @@ export function useCreatePool() {
       maxMembers,
       paymentDay,
       vouchRequired,
+      rotationPeriod,
+      poolName,
+      category,
     }: { 
       contributionAmount: bigint; 
       securityDeposit: bigint; 
       maxMembers: number;
       paymentDay: number;
       vouchRequired: boolean;
+      rotationPeriod: number;
+      poolName: string;
+      category: string;
     }): Promise<{ poolId: string; poolAddress: string }> => {
       if (!account) throw new Error("Wallet not connected");
 
@@ -111,8 +117,8 @@ export function useCreatePool() {
       
       const tx = prepareContractCall({
         contract: factoryContract,
-        method: "function createPool(uint256 contributionAmount, uint256 securityDepositAmount, uint256 maxMembers, uint8 paymentDay, bool vouchRequired) returns (uint256, address)",
-        params: [contributionAmount, securityDeposit, BigInt(maxMembers), paymentDay, vouchRequired],
+        method: "function createPool(uint256 contributionAmount, uint256 securityDepositAmount, uint256 maxMembers, uint8 paymentDay, bool vouchRequired, uint8 rotationPeriod, string poolName, string category) returns (uint256, address)",
+        params: [contributionAmount, securityDeposit, BigInt(maxMembers), paymentDay, vouchRequired, rotationPeriod, poolName, category],
       });
 
       const result = await sendTx(tx);

@@ -31,7 +31,10 @@ contract ArisanFactory is Ownable {
         uint256 securityDeposit,
         uint256 maxMembers,
         uint8 paymentDay,
-        bool vouchRequired
+        bool vouchRequired,
+        uint8 rotationPeriod,
+        string poolName,
+        string category
     );
 
     event PlatformWalletUpdated(address indexed oldWallet, address indexed newWallet);
@@ -54,12 +57,21 @@ contract ArisanFactory is Ownable {
         uint256 securityDepositAmount,
         uint256 maxMembers,
         uint8 paymentDay,
-        bool vouchRequired
+        bool vouchRequired,
+        uint8 rotationPeriod,
+        string memory poolName,
+        string memory category
     ) external returns (uint256, address) {
         require(contributionAmount > 0, "Contribution must be positive");
         require(securityDepositAmount > 0, "Security deposit must be positive");
         require(maxMembers >= 3, "Need at least 3 members");
-        require(paymentDay >= 1 && paymentDay <= 28, "Payment day must be 1-28");
+        require(rotationPeriod <= 1, "Invalid rotation period");
+        
+        if (rotationPeriod == 0) {
+            require(paymentDay >= 0 && paymentDay <= 6, "Day of week must be 0-6");
+        } else {
+            require(paymentDay >= 1 && paymentDay <= 28, "Day of month must be 1-28");
+        }
 
         poolCount++;
         uint256 newPoolId = poolCount;
@@ -78,7 +90,10 @@ contract ArisanFactory is Ownable {
                 securityDepositAmount: securityDepositAmount,
                 maxMembers: maxMembers,
                 paymentDay: paymentDay,
-                vouchRequired: vouchRequired
+                vouchRequired: vouchRequired,
+                rotationPeriod: rotationPeriod,
+                poolName: poolName,
+                category: category
             })
         );
 
@@ -97,7 +112,10 @@ contract ArisanFactory is Ownable {
             securityDepositAmount,
             maxMembers,
             paymentDay,
-            vouchRequired
+            vouchRequired,
+            rotationPeriod,
+            poolName,
+            category
         );
 
         return (newPoolId, poolClone);

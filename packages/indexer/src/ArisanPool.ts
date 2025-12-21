@@ -199,7 +199,6 @@ ponder.on("ArisanPool:WinnerDetermined", async ({ event, context }) => {
       round: event.args.round,
       winnerAddress: winnerAddress,
       payoutAmount: 0n,
-      platformFee: 0n,
       claimedAt: null,
     });
 
@@ -224,7 +223,6 @@ ponder.on("ArisanPool:PayoutClaimed", async ({ event, context }) => {
     .update(winnerHistory, { id: `${poolId}-${currentRound}` })
     .set({
       payoutAmount: event.args.amount,
-      platformFee: event.args.platformFee,
       claimedAt: event.block.timestamp,
     });
 

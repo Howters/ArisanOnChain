@@ -54,7 +54,10 @@ async function main() {
     1_000_000,
     5,
     1,
-    false
+    false,
+    1,
+    "Test Arisan Pool",
+    "padukuhan"
   );
   const receipt = await tx.wait();
   console.log("Test pool created!");

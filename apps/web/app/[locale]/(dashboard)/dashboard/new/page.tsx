@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   ArrowLeft,
   Users,
@@ -16,7 +19,10 @@ import {
   CheckCircle2,
   Loader2,
   AlertTriangle,
-  HandshakeIcon
+  HandshakeIcon,
+  HelpCircle,
+  Calendar,
+  Tag
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { formatIDR } from "@/lib/utils";
@@ -47,10 +53,12 @@ export default function CreateCirclePage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
+    category: "padukuhan",
     contributionAmount: 500000,
     depositMultiplier: 2,
     maxMembers: 10,
     paymentDay: 1,
+    rotationPeriod: "monthly",
     vouchRequired: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,9 +72,15 @@ export default function CreateCirclePage() {
   };
 
   const validatePaymentDay = (value: number) => {
-    if (value < 1) return 1;
-    if (value > 28) return 28;
-    return value;
+    if (formData.rotationPeriod === "weekly") {
+      if (value < 0) return 0;
+      if (value > 6) return 6;
+      return value;
+    } else {
+      if (value < 1) return 1;
+      if (value > 28) return 28;
+      return value;
+    }
   };
 
   const handleSubmit = async () => {
@@ -83,6 +97,9 @@ export default function CreateCirclePage() {
         maxMembers: formData.maxMembers,
         paymentDay: formData.paymentDay,
         vouchRequired: formData.vouchRequired,
+        rotationPeriod: formData.rotationPeriod === "weekly" ? 0 : 1,
+        poolName: formData.name || "Arisan Pool",
+        category: formData.category,
       });
       
       toast.success(t("success"), {
@@ -164,6 +181,73 @@ export default function CreateCirclePage() {
                 />
               </div>
 
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <Label htmlFor="category" className="flex items-center gap-1">
+                    {t("step1.category")}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>{t("tooltips.category")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Label>
+                </div>
+                <Select value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="padukuhan">{t("step1.categories.padukuhan")}</SelectItem>
+                    <SelectItem value="ibu">{t("step1.categories.ibu")}</SelectItem>
+                    <SelectItem value="satpam">{t("step1.categories.satpam")}</SelectItem>
+                    <SelectItem value="olahraga">{t("step1.categories.olahraga")}</SelectItem>
+                    <SelectItem value="kantor">{t("step1.categories.kantor")}</SelectItem>
+                    <SelectItem value="lainnya">{t("step1.categories.lainnya")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Label className="flex items-center gap-1">
+                    {t("step1.rotationPeriod")}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>{t("tooltips.rotation")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Label>
+                </div>
+                <RadioGroup value={formData.rotationPeriod} onValueChange={(v) => setFormData({...formData, rotationPeriod: v})}>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="monthly" id="monthly" />
+                    <Label htmlFor="monthly" className="flex-1 cursor-pointer">
+                      <div className="font-medium">{t("step1.monthly")}</div>
+                      <div className="text-xs text-muted-foreground">{t("step1.monthlyDesc")}</div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="weekly" id="weekly" />
+                    <Label htmlFor="weekly" className="flex-1 cursor-pointer">
+                      <div className="font-medium">{t("step1.weekly")}</div>
+                      <div className="text-xs text-muted-foreground">{t("step1.weeklyDesc")}</div>
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
               <div className="space-y-3">
                 <Label>{t("step1.maxMembers")}</Label>
                 <div className="grid grid-cols-4 gap-2">
@@ -232,7 +316,19 @@ export default function CreateCirclePage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
-                <Label>{t("step2.selectAmount")}</Label>
+                <Label className="flex items-center gap-1">
+                  {t("step2.selectAmount")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{t("tooltips.contribution")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
                   {PRESET_AMOUNTS.map((amount) => (
                     <Button
@@ -326,7 +422,19 @@ export default function CreateCirclePage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
-                <Label>{t("step3.depositMultiplier")}</Label>
+                <Label className="flex items-center gap-1">
+                  {t("step3.depositMultiplier")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{t("tooltips.deposit")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
                   {DEPOSIT_MULTIPLIERS.map((m) => (
                     <Button
@@ -346,7 +454,19 @@ export default function CreateCirclePage() {
               </div>
 
               <div className="space-y-3">
-                <Label>{t("step3.vouchRequired")}</Label>
+                <Label className="flex items-center gap-1">
+                  {t("step3.vouchRequired")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{t("tooltips.vouch")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant={!formData.vouchRequired ? "default" : "outline"}
@@ -430,8 +550,16 @@ export default function CreateCirclePage() {
                   <p className="font-medium">{formData.name || "-"}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
+                  <p className="text-sm text-muted-foreground mb-1">{t("step1.category")}</p>
+                  <p className="font-medium">{t(`step1.categories.${formData.category}`)}</p>
+                </div>
+                <div className="p-4 rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground mb-1">{t("step4.members")}</p>
                   <p className="font-medium">{formData.maxMembers} {t("step1.people")}</p>
+                </div>
+                <div className="p-4 rounded-lg bg-muted/50">
+                  <p className="text-sm text-muted-foreground mb-1">{t("step1.rotationPeriod")}</p>
+                  <p className="font-medium">{t(`step1.${formData.rotationPeriod}`)}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground mb-1">{t("step4.contribution")}</p>

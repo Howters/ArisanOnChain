@@ -18,6 +18,7 @@ contract ArisanPool is ReentrancyGuard {
 
     enum PoolStatus { Pending, Active, Completed, Cancelled }
     enum MemberStatus { None, Pending, Approved, Active, Defaulted, Removed }
+    enum RotationPeriod { Weekly, Monthly }
 
     struct MemberInfo {
         MemberStatus status;
@@ -39,12 +40,16 @@ contract ArisanPool is ReentrancyGuard {
         uint256 maxMembers;
         uint8 paymentDay;
         bool vouchRequired;
+        RotationPeriod rotationPeriod;
+        string poolName;
+        string category;
     }
 
     uint256 public constant GRACE_PERIOD = 7 days;
-    uint256 public constant PLATFORM_FEE_BPS = 150;
 
     uint256 public poolId;
+    string public poolName;
+    string public category;
     address public admin;
     address public factory;
     IERC20 public token;
@@ -81,7 +86,7 @@ contract ArisanPool is ReentrancyGuard {
     event MemberReportedDefault(uint256 indexed poolId, address indexed member, address indexed reportedBy);
     event DefaultResolved(uint256 indexed poolId, address indexed member, uint256 recoveredAmount);
     event WinnerDetermined(uint256 indexed poolId, uint256 indexed round, address indexed winner);
-    event PayoutClaimed(uint256 indexed poolId, address indexed winner, uint256 amount, uint256 platformFee);
+    event PayoutClaimed(uint256 indexed poolId, address indexed winner, uint256 amount);
     event PoolActivated(uint256 indexed poolId, uint256 totalRounds);
     event PoolCompleted(uint256 indexed poolId);
     event PoolCancelled(uint256 indexed poolId);
@@ -122,14 +127,25 @@ contract ArisanPool is ReentrancyGuard {
         uint256 maxMembers;
         uint8 paymentDay;
         bool vouchRequired;
+        uint8 rotationPeriod;
+        string poolName;
+        string category;
     }
 
     function initialize(InitParams calldata params) external {
         require(factory == address(0), "Already initialized");
-        require(params.paymentDay >= 1 && params.paymentDay <= 28, "Invalid payment day");
+        
+        RotationPeriod period = RotationPeriod(params.rotationPeriod);
+        if (period == RotationPeriod.Weekly) {
+            require(params.paymentDay >= 0 && params.paymentDay <= 6, "Invalid day of week (0-6)");
+        } else {
+            require(params.paymentDay >= 1 && params.paymentDay <= 28, "Invalid day of month (1-28)");
+        }
         
         factory = msg.sender;
         poolId = params.poolId;
+        poolName = params.poolName;
+        category = params.category;
         admin = params.admin;
         token = IERC20(params.token);
         debtNFT = DebtNFT(params.debtNFT);
@@ -141,7 +157,10 @@ contract ArisanPool is ReentrancyGuard {
             securityDepositAmount: params.securityDepositAmount,
             maxMembers: params.maxMembers,
             paymentDay: params.paymentDay,
-            vouchRequired: params.vouchRequired
+            vouchRequired: params.vouchRequired,
+            rotationPeriod: period,
+            poolName: params.poolName,
+            category: params.category
         });
 
         status = PoolStatus.Pending;
@@ -348,18 +367,12 @@ contract ArisanPool is ReentrancyGuard {
         require(!member.hasClaimedPayout, "Already claimed");
         require(roundWinners[currentRound] == msg.sender, "Not winner of current round");
 
-        uint256 grossPayout = roundPayouts[currentRound];
-        uint256 platformFee = (grossPayout * PLATFORM_FEE_BPS) / 10000;
-        uint256 netPayout = grossPayout - platformFee;
+        uint256 payout = roundPayouts[currentRound];
 
         member.hasClaimedPayout = true;
-        member.liquidBalance += netPayout;
+        member.liquidBalance += payout;
 
-        if (platformFee > 0) {
-            token.safeTransfer(platformWallet, platformFee);
-        }
-
-        emit PayoutClaimed(poolId, msg.sender, netPayout, platformFee);
+        emit PayoutClaimed(poolId, msg.sender, payout);
 
         if (currentRound >= totalRounds) {
             _completePool();
@@ -478,7 +491,15 @@ contract ArisanPool is ReentrancyGuard {
     }
 
     function _calculateDeadline() internal view returns (uint256) {
-        return roundStartedAt + GRACE_PERIOD;
+        if (config.rotationPeriod == RotationPeriod.Weekly) {
+            uint256 currentDayOfWeek = ((block.timestamp / 1 days) + 4) % 7;
+            uint256 targetDay = uint256(config.paymentDay);
+            uint256 daysUntil = (targetDay + 7 - currentDayOfWeek) % 7;
+            if (daysUntil == 0) daysUntil = 7;
+            return roundStartedAt + (daysUntil * 1 days) + GRACE_PERIOD;
+        } else {
+            return roundStartedAt + GRACE_PERIOD;
+        }
     }
 
     function _countActiveMembers() internal view returns (uint256) {

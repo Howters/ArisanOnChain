@@ -538,12 +538,12 @@ export default function CirclePage() {
             <Button onClick={handleVouch} disabled={(vouchTarget && isActionLoading(`vouch-${vouchTarget.address}`)) || !vouchAmount || parseFloat(vouchAmount) < Number(pool.contributionAmount) || parseFloat(vouchAmount) > Number(userBalance)}>
               {vouchTarget && isActionLoading(`vouch-${vouchTarget.address}`) ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t("vouching")}
                 </>
               ) : (
                 <>
-                  <HandshakeIcon className="mr-2 h-4 w-4" />
+                <HandshakeIcon className="mr-2 h-4 w-4" />
                   {tm("vouch.vouchNow")}
                 </>
               )}
@@ -808,18 +808,18 @@ export default function CirclePage() {
                               }
                               
                               return (
-                                <Button 
-                                  size="sm" 
-                                  variant="outline" 
-                                  className="flex-1" 
-                                  onClick={() => openVouchModal(member)} 
-                                  disabled={isAnyActionLoading("vouch-")}
-                                >
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => openVouchModal(member)}
+                                disabled={isAnyActionLoading("vouch-")}
+                              >
                                   {isAnyActionLoading("vouch-") ? (
                                     <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                                   ) : (
-                                    <HandshakeIcon className="mr-1 h-3 w-3" />
-                                  )}
+                                <HandshakeIcon className="mr-1 h-3 w-3" />
+                            )}
                                   {t("vouch")}
                                 </Button>
                               );

@@ -22,6 +22,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 type FilterType = "all" | "admin" | "member" | "public";
+type CategoryType = "all" | "padukuhan" | "ibu" | "satpam" | "olahraga" | "kantor" | "lainnya";
 
 export default function CirclesPage() {
   const t = useTranslations("circles");
@@ -29,6 +30,7 @@ export default function CirclesPage() {
   const { data: poolsData, isLoading, refetch, isRefetching } = usePools();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryType>("all");
 
   const myPools = poolsData?.pools || [];
   const allPools = poolsData?.allPools || myPools;
@@ -37,9 +39,12 @@ export default function CirclesPage() {
     const matchesSearch = 
       pool.id.toString().includes(search) ||
       (pool.name && pool.name.toLowerCase().includes(search.toLowerCase())) ||
+      (pool.poolName && pool.poolName.toLowerCase().includes(search.toLowerCase())) ||
       `arisan #${pool.id}`.toLowerCase().includes(search.toLowerCase());
     
     if (!matchesSearch) return false;
+    
+    if (categoryFilter !== "all" && pool.category !== categoryFilter) return false;
     
     if (filter === "admin") return pool.isAdmin;
     if (filter === "member") return pool.isUserMember && !pool.isAdmin;
@@ -123,6 +128,58 @@ export default function CirclesPage() {
         </div>
       </div>
 
+      <div className="flex gap-2 flex-wrap">
+        <Button 
+          variant={categoryFilter === "all" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("all")}
+        >
+          {t("allCategories")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "padukuhan" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("padukuhan")}
+        >
+          {t("categories.padukuhan")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "ibu" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("ibu")}
+        >
+          {t("categories.ibu")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "satpam" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("satpam")}
+        >
+          {t("categories.satpam")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "olahraga" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("olahraga")}
+        >
+          {t("categories.olahraga")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "kantor" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("kantor")}
+        >
+          {t("categories.kantor")}
+        </Button>
+        <Button 
+          variant={categoryFilter === "lainnya" ? "default" : "outline"} 
+          size="sm"
+          onClick={() => setCategoryFilter("lainnya")}
+        >
+          {t("categories.lainnya")}
+        </Button>
+      </div>
+
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -165,7 +222,7 @@ export default function CirclesPage() {
                         </div>
                         <div>
                           <CardTitle className="text-base">
-                            {pool.name || `Arisan #${pool.id}`}
+                            {pool.poolName || pool.name || `Arisan #${pool.id}`}
                           </CardTitle>
                           <CardDescription>
                             {pool.memberCount} {tc("members")}

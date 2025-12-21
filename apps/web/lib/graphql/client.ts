@@ -31,6 +31,9 @@ export const QUERIES = {
           address
           admin
           name
+          poolName
+          category
+          rotationPeriod
           contributionAmount
           securityDeposit
           maxMembers
@@ -67,6 +70,9 @@ export const QUERIES = {
         address
         admin
         name
+        poolName
+        category
+        rotationPeriod
         contributionAmount
         securityDeposit
         maxMembers

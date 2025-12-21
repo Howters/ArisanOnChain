@@ -1,5 +1,8 @@
 import { createConfig } from "ponder";
 import { http } from "viem";
+import { config as dotenvConfig } from "dotenv";
+
+dotenvConfig({ path: ".env.local" });
 
 import { ArisanFactoryAbi } from "./abis/ArisanFactory";
 import { ArisanPoolAbi } from "./abis/ArisanPool";
@@ -9,7 +12,7 @@ import { ReputationRegistryAbi } from "./abis/ReputationRegistry";
 
 const isProduction = !!process.env.DATABASE_URL;
 
-export default createConfig({
+const config: ReturnType<typeof createConfig> = createConfig({
   database: isProduction
     ? { kind: "postgres", connectionString: process.env.DATABASE_URL }
     : { kind: "pglite" },
@@ -23,35 +26,38 @@ export default createConfig({
     ArisanFactory: {
       network: "liskSepolia",
       abi: ArisanFactoryAbi,
-      address: (process.env.FACTORY_ADDRESS || "0x408B766445DE60601Ef91948D64600781Bf1205e") as `0x${string}`,
-      startBlock: Number(process.env.START_BLOCK) || 22066941,
+      address: process.env.FACTORY_ADDRESS as `0x${string}`,
+      startBlock: Number(process.env.START_BLOCK),
     },
     ArisanPool: {
       network: "liskSepolia",
       abi: ArisanPoolAbi,
+      startBlock: Number(process.env.START_BLOCK),
       factory: {
-        address: (process.env.FACTORY_ADDRESS || "0x408B766445DE60601Ef91948D64600781Bf1205e") as `0x${string}`,
-        event: ArisanFactoryAbi[0],
+        address: process.env.FACTORY_ADDRESS as `0x${string}`,
+        event: ArisanFactoryAbi.find((item: any) => item.type === "event" && item.name === "PoolCreated"),
         parameter: "poolAddress",
       },
-    },
+    } as any,
     MockIDRX: {
       network: "liskSepolia",
       abi: MockIDRXAbi,
-      address: (process.env.MOCK_IDRX_ADDRESS || "0x6447b2e746a4f3a8b9aE17BB622aeA5e384d350e") as `0x${string}`,
-      startBlock: Number(process.env.START_BLOCK) || 22066941,
+      address: process.env.MOCK_IDRX_ADDRESS as `0x${string}`,
+      startBlock: Number(process.env.START_BLOCK),
     },
     DebtNFT: {
       network: "liskSepolia",
       abi: DebtNFTAbi,
-      address: (process.env.DEBT_NFT_ADDRESS || "0x9023c80a46Ff25e58e82A5a4A172c795A88C3056") as `0x${string}`,
-      startBlock: Number(process.env.START_BLOCK) || 22066941,
+      address: process.env.DEBT_NFT_ADDRESS as `0x${string}`,
+      startBlock: Number(process.env.START_BLOCK),
     },
     ReputationRegistry: {
       network: "liskSepolia",
       abi: ReputationRegistryAbi,
-      address: (process.env.REPUTATION_REGISTRY_ADDRESS || "0x3e096083653664fC0FEac7ac836Cd649781e4376") as `0x${string}`,
-      startBlock: Number(process.env.START_BLOCK) || 22066941,
+      address: process.env.REPUTATION_REGISTRY_ADDRESS as `0x${string}`,
+      startBlock: Number(process.env.START_BLOCK),
     },
   },
 });
+
+export default config;

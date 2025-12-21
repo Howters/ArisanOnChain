@@ -56,6 +56,9 @@ async function getPoolsFromIndexer(address: string | null) {
         id: p.id,
         address: p.address,
         admin: p.admin,
+        poolName: p.poolName || p.name || `Arisan #${p.id}`,
+        category: p.category || "lainnya",
+        rotationPeriod: p.rotationPeriod === 0 ? "Weekly" : "Monthly",
         status: p.status,
         contributionAmount: p.contributionAmount.toString(),
         securityDeposit: p.securityDeposit.toString(),
@@ -136,6 +139,9 @@ async function getPoolsFromRPC(address: string | null) {
         maxMembers: bigint;
         paymentDay: number;
         vouchRequired: boolean;
+        rotationPeriod: number;
+        poolName: string;
+        category: string;
       };
 
       const admin = await publicClient.readContract({
@@ -180,6 +186,9 @@ async function getPoolsFromRPC(address: string | null) {
         id: i.toString(),
         address: poolAddress,
         admin,
+        poolName: poolConfig.poolName,
+        category: poolConfig.category,
+        rotationPeriod: poolConfig.rotationPeriod === 0 ? "Weekly" : "Monthly",
         status: STATUS_MAP[status] || "Unknown",
         contributionAmount: poolConfig.contributionAmount.toString(),
         securityDeposit: poolConfig.securityDepositAmount.toString(),

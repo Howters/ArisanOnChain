@@ -5,11 +5,14 @@ export const pool = onchainTable("pool", (t) => ({
   address: t.text().notNull(),
   admin: t.text().notNull(),
   name: t.text(),
+  poolName: t.text(),
+  category: t.text(),
   contributionAmount: t.bigint().notNull(),
   securityDeposit: t.bigint().notNull(),
   maxMembers: t.integer().notNull(),
   paymentDay: t.integer().notNull(),
   vouchRequired: t.boolean().notNull(),
+  rotationPeriod: t.integer().notNull(),
   currentRound: t.integer().notNull(),
   totalRounds: t.integer().notNull(),
   status: t.text().notNull(),
@@ -64,7 +67,6 @@ export const winnerHistory = onchainTable("winner_history", (t) => ({
   round: t.bigint().notNull(),
   winnerAddress: t.text().notNull(),
   payoutAmount: t.bigint().notNull(),
-  platformFee: t.bigint().notNull(),
   claimedAt: t.bigint(),
 }));
 

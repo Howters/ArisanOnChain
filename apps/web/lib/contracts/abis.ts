@@ -153,6 +153,9 @@ export const ArisanFactoryAbi = [
       { name: "maxMembers", type: "uint256" },
       { name: "paymentDay", type: "uint8" },
       { name: "vouchRequired", type: "bool" },
+      { name: "rotationPeriod", type: "uint8" },
+      { name: "poolName", type: "string" },
+      { name: "category", type: "string" },
     ],
     outputs: [
       { name: "", type: "uint256" },
@@ -235,6 +238,9 @@ export const ArisanFactoryAbi = [
       { indexed: false, name: "maxMembers", type: "uint256" },
       { indexed: false, name: "paymentDay", type: "uint8" },
       { indexed: false, name: "vouchRequired", type: "bool" },
+      { indexed: false, name: "rotationPeriod", type: "uint8" },
+      { indexed: false, name: "poolName", type: "string" },
+      { indexed: false, name: "category", type: "string" },
     ],
   },
   {
