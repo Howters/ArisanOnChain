@@ -44,6 +44,7 @@
     "dashboard": "Dashboard",
     "arisan": "Arisan",
     "history": "Riwayat",
+    "faq": "Bantuan & FAQ",
     "profile": "Profil",
     "settings": "Pengaturan",
     "createNew": "Buat Arisan Baru",
@@ -637,6 +638,152 @@
       "tip": "Tips: Share halaman ini ke teman-teman arisan kamu!"
     },
     "footer": "© 2024 ArisanAman. Built for Indonesia 🇮🇩"
+  },
+  "faqPage": {
+    "title": "Bantuan & FAQ",
+    "subtitle": "Semua yang perlu Anda ketahui untuk menggunakan ArisanAman dengan aman dan mudah",
+    "basicTitle": "Memulai - Dasar-Dasar",
+    "moneyTitle": "Uang & Pembayaran",
+    "securityTitle": "Keamanan & Kepercayaan",
+    "techTitle": "Pertanyaan Teknis",
+    "glossaryTitle": "Glosarium - Istilah Penting",
+    "glossarySubtitle": "Penjelasan sederhana istilah-istilah yang akan Anda temui di ArisanAman",
+    "stillHaveQuestions": "Masih ada pertanyaan?",
+    "contactSupport": "Hubungi tim support kami via WhatsApp atau email. Kami siap membantu!",
+    "basic": {
+      "q1": {
+        "q": "Apa itu ArisanAman?",
+        "a": "ArisanAman adalah aplikasi arisan digital yang lebih aman dan terorganisir. Seperti arisan biasa dengan tetangga atau PKK, tapi semua catatan tersimpan digital sehingga tidak bisa dimanipulasi atau hilang."
+      },
+      "q2": {
+        "q": "Bedanya apa dengan arisan biasa?",
+        "a": "Kalau arisan biasa, catatannya sering cuma di buku tulis dan berdasarkan kepercayaan saja. Dengan ArisanAman, semua tercatat digital dan transparan. Kalau ada yang tidak bayar, ada sistem keamanan otomatis yang melindungi anggota lain."
+      },
+      "q3": {
+        "q": "Apakah saya harus mengerti teknologi atau cryptocurrency?",
+        "a": "Tidak sama sekali! ArisanAman dirancang semudah WhatsApp. Anda cukup login pakai akun Google, sisanya otomatis. Tidak perlu mengerti blockchain, wallet, atau hal-hal teknis lainnya."
+      },
+      "q4": {
+        "q": "Bagaimana cara memulai?",
+        "a": "Sangat mudah! 1) Login dengan akun Google, 2) Isi profil Anda (nama, nomor HP, kota), 3) Buat grup arisan baru atau gabung yang sudah ada. Selesai!"
+      },
+      "q5": {
+        "q": "Bisa dipakai untuk grup PKK/RT/RW saya?",
+        "a": "Tentu saja! ArisanAman cocok untuk grup PKK, RT/RW, kantor, teman-teman, atau komunitas apapun yang mau arisan dengan aman."
+      },
+      "q6": {
+        "q": "Bagaimana kalau saya kurang bisa pakai HP/aplikasi?",
+        "a": "Jangan khawatir! ArisanAman dirancang sangat sederhana. Tampilannya dalam bahasa Indonesia dan mudah dipahami. Anda juga bisa minta bantuan anak atau teman yang lebih muda untuk setup awal."
+      },
+      "q7": {
+        "q": "Bisa dipakai di HP?",
+        "a": "Bisa! ArisanAman bisa dipakai di HP, tablet, maupun komputer. Anda bisa akses lewat browser HP (Chrome, Safari, dll)."
+      },
+      "q8": {
+        "q": "Ada tutorial atau panduannya?",
+        "a": "Ada! Setelah login, ada panduan langkah demi langkah yang mudah. Anda juga bisa lihat halaman Bantuan ini kapan saja dari menu samping."
+      }
+    },
+    "money": {
+      "q1": {
+        "q": "Berapa biaya pakai ArisanAman?",
+        "a": "Buat grup arisan: GRATIS. Gabung grup: GRATIS. Bayar iuran bulanan: GRATIS (0% biaya). Biaya hanya 1.5% saat Anda menerima uang arisan. Contoh: terima Rp 1.000.000, biayanya cuma Rp 15.000."
+      },
+      "q2": {
+        "q": "Apa itu Deposit Keamanan dan kenapa perlu?",
+        "a": "Deposit Keamanan itu seperti 'uang jaminan' yang harus dibayar semua anggota di awal. Uang ini akan dikembalikan utuh di akhir arisan. Tujuannya supaya semua orang serius dan sebagai perlindungan kalau ada yang tidak bayar."
+      },
+      "q3": {
+        "q": "Kapan Deposit Keamanan saya dikembalikan?",
+        "a": "Deposit Keamanan Anda akan otomatis dikembalikan setelah arisan selesai semua (semua anggota sudah dapat giliran). Kalau Anda tidak pernah telat atau tidak bayar, Anda dapat deposit penuh kembali."
+      },
+      "q4": {
+        "q": "Bagaimana cara setor/tarik uang?",
+        "a": "Anda bisa setor uang lewat transfer bank atau metode lain. Saat mau tarik uang (baik iuran bulanan atau Deposit Keamanan), uangnya akan dikirim langsung ke rekening bank Anda."
+      },
+      "q5": {
+        "q": "Bagaimana kalau ada yang tidak bayar iuran bulanan?",
+        "a": "Kalau ada anggota yang tidak bayar setelah 7 hari, admin grup bisa laporkan. Deposit Keamanan mereka akan otomatis dipakai untuk tutup kekurangan, jadi anggota lain tidak kena dampak. Orang yang tidak bayar juga dapat 'catatan buruk' yang bisa dilihat grup lain."
+      }
+    },
+    "security": {
+      "q1": {
+        "q": "Apakah uang saya aman?",
+        "a": "Sangat aman! Uang Anda dilindungi teknologi blockchain (sistem keamanan digital) yang tidak bisa dimanipulasi. Tidak ada orang, termasuk kami atau admin, yang bisa ambil uang Anda sembarangan. Semua mengikuti aturan otomatis yang sudah ditetapkan."
+      },
+      "q2": {
+        "q": "Bagaimana kalau admin kabur bawa uang?",
+        "a": "Ini tidak bisa terjadi! Uangnya tidak dipegang admin atau orang manapun, tapi oleh sistem otomatis (smart contract). Admin hanya bisa atur jadwal arisan, tapi tidak bisa ambil uangnya."
+      },
+      "q3": {
+        "q": "Bagaimana kalau website ArisanAman tutup?",
+        "a": "Uang Anda tetap aman karena tersimpan di blockchain, bukan di website kami. Meskipun website tutup, uang masih bisa diambil lewat cara lain. Seperti uang disimpan di brankas yang Anda punya kuncinya."
+      },
+      "q4": {
+        "q": "Bagaimana saya tahu ini bukan penipuan?",
+        "a": "ArisanAman dibangun dengan teknologi yang transparan. Semua transaksi bisa diverifikasi siapa saja. Kami juga hanya ambil biaya saat Anda berhasil terima uang arisan, artinya kami untung kalau Anda puas."
+      }
+    },
+    "tech": {
+      "q1": {
+        "q": "Apa itu blockchain? Apakah saya harus mengerti?",
+        "a": "Blockchain itu seperti 'buku catatan digital' yang tidak bisa dipalsukan. Anda tidak perlu mengerti cara kerjanya, sama seperti tidak perlu mengerti mesin mobil untuk bisa nyetir. Anda cukup tahu bahwa teknologi ini membuat ArisanAman lebih aman."
+      },
+      "q2": {
+        "q": "Apa itu Smart Contract?",
+        "a": "Smart Contract itu seperti 'perjanjian otomatis'. Contoh: 'Kalau semua anggota sudah bayar, maka uang diberikan ke pemenang'. Ini semua terjadi otomatis tanpa campur tangan manusia, jadi adil dan tidak bisa dicurangi."
+      },
+      "q3": {
+        "q": "Apakah saya harus buat wallet?",
+        "a": "Tidak! ArisanAman otomatis buatkan 'wallet tidak terlihat' untuk Anda saat login dengan Google. Anda tidak perlu ingat password atau kode-kode rumit. Cukup login Google seperti biasa."
+      },
+      "q4": {
+        "q": "Apa maksudnya 'on-chain' atau 'tercatat di blockchain'?",
+        "a": "Artinya transaksi tercatat di sistem digital yang permanen dan tidak bisa diubah. Seperti struk yang tidak akan pernah hilang atau dipalsukan. Ini membuat semua transaksi transparan dan bisa diverifikasi."
+      }
+    },
+    "glossary": {
+      "term1": {
+        "term": "Arisan/Circle",
+        "def": "Kelompok tabungan dimana anggota menyetor secara berkala, dan satu anggota menerima uang setiap periode secara bergiliran."
+      },
+      "term2": {
+        "term": "Deposit Keamanan",
+        "def": "Uang jaminan yang harus dibayar semua anggota di awal. Dikembalikan utuh di akhir kalau tidak gagal bayar. Fungsinya sebagai perlindungan kalau ada yang tidak bayar."
+      },
+      "term3": {
+        "term": "Admin/Ketua Grup",
+        "def": "Orang yang membuat dan mengelola grup arisan. Admin mengatur jadwal dan anggota, tapi TIDAK BISA ambil uangnya."
+      },
+      "term4": {
+        "term": "Anggota/Member",
+        "def": "Orang-orang yang ikut grup arisan. Setiap anggota harus bayar Deposit Keamanan dan iuran bulanan."
+      },
+      "term5": {
+        "term": "Iuran/Contribution",
+        "def": "Bayaran bulanan yang harus dibayar semua anggota. Contoh: kalau arisan Rp 1.000.000 dengan 10 anggota, maka iurannya Rp 100.000/bulan."
+      },
+      "term6": {
+        "term": "Putaran/Round",
+        "def": "Satu siklus pembayaran dalam arisan. Setiap putaran, satu anggota dapat giliran terima uang. Contoh: Putaran 1 = bulan 1, Putaran 2 = bulan 2, dst."
+      },
+      "term7": {
+        "term": "Pemenang/Winner",
+        "def": "Anggota yang dapat giliran menerima uang arisan di putaran tersebut. Dipilih secara acak atau sesuai urutan yang disepakati."
+      },
+      "term8": {
+        "term": "Gagal Bayar/Default",
+        "def": "Kondisi saat anggota tidak bayar iuran bulanan setelah masa tenggang (7 hari). Yang gagal bayar akan Deposit Keamanannya dipakai dan dapat catatan buruk."
+      },
+      "term9": {
+        "term": "Social Vouching/Jaminan",
+        "def": "Kalau Anda baru dan belum punya track record, anggota lama yang baik bisa 'jamin Anda' dengan taruh uang mereka sendiri sebagai jaminan. Kalau Anda tidak bayar, mereka yang rugi."
+      },
+      "term10": {
+        "term": "Reputasi/Track Record",
+        "def": "Riwayat pembayaran Anda di ArisanAman. Reputasi bagus (selalu bayar tepat waktu) memudahkan gabung grup lain. Reputasi buruk membuat susah diterima."
+      }
+    }
   }
 }
 

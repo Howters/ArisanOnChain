@@ -44,6 +44,7 @@
     "dashboard": "Dashboard",
     "arisan": "Circles",
     "history": "History",
+    "faq": "Help & FAQ",
     "profile": "Profile",
     "settings": "Settings",
     "createNew": "Create New Circle",
@@ -637,6 +638,152 @@
       "tip": "Tip: Share this page with your arisan friends!"
     },
     "footer": "© 2024 ArisanAman. Built for Indonesia 🇮🇩"
+  },
+  "faqPage": {
+    "title": "Help & FAQ",
+    "subtitle": "Everything you need to know to use ArisanAman safely and easily",
+    "basicTitle": "Getting Started - Basics",
+    "moneyTitle": "Money & Payments",
+    "securityTitle": "Security & Trust",
+    "techTitle": "Technical Questions",
+    "glossaryTitle": "Glossary - Important Terms",
+    "glossarySubtitle": "Simple explanations of terms you'll encounter in ArisanAman",
+    "stillHaveQuestions": "Still have questions?",
+    "contactSupport": "Contact our support team via WhatsApp or email. We're here to help!",
+    "basic": {
+      "q1": {
+        "q": "What is ArisanAman?",
+        "a": "ArisanAman is a digital arisan application that's safer and more organized. Like regular arisan with neighbors or PKK, but all records are stored digitally so nothing can be manipulated or lost."
+      },
+      "q2": {
+        "q": "How is this different from regular arisan?",
+        "a": "In regular arisan, records are often just written in notebooks and based on trust alone. With ArisanAman, everything is recorded digitally and transparently. If someone doesn't pay, there's an automatic security system that protects other members."
+      },
+      "q3": {
+        "q": "Do I need to understand technology or cryptocurrency?",
+        "a": "Not at all! ArisanAman is designed to be as easy as WhatsApp. You just need to login with your Google account, and everything else is automatic. No need to understand blockchain, wallets, or other technical things."
+      },
+      "q4": {
+        "q": "How do I start?",
+        "a": "Very easy! 1) Login with your Google account, 2) Fill in your profile (name, phone number, city), 3) Create a new arisan group or join an existing one. That's it!"
+      },
+      "q5": {
+        "q": "Can I use this with my PKK/RT/RW group?",
+        "a": "Absolutely! ArisanAman is perfect for PKK groups, neighborhood associations, office groups, friend groups, or any community that wants to organize arisan safely."
+      },
+      "q6": {
+        "q": "What if I'm not good with phones/apps?",
+        "a": "Don't worry! ArisanAman is designed to be very simple. The interface is in Indonesian and easy to understand. You can also ask for help from younger family members or friends to set it up initially."
+      },
+      "q7": {
+        "q": "Can I use this on my phone?",
+        "a": "Yes! ArisanAman works on phones, tablets, and computers. You can access it through your phone's browser (Chrome, Safari, etc.)."
+      },
+      "q8": {
+        "q": "Is there a tutorial or guide?",
+        "a": "Yes! After you login, there are simple step-by-step guides. You can also see this Help page anytime from the side menu."
+      }
+    },
+    "money": {
+      "q1": {
+        "q": "How much does it cost to use ArisanAman?",
+        "a": "Creating an arisan group: FREE. Joining a group: FREE. Monthly payments: FREE (0% fee). The only fee is 1.5% when you receive the arisan payout. For example, if you receive Rp 1,000,000, the fee is only Rp 15,000."
+      },
+      "q2": {
+        "q": "What is Security Deposit and why is it needed?",
+        "a": "Security Deposit is like a 'good faith deposit' that all members must pay at the beginning. This money will be returned in full at the end of the arisan. Its purpose is to ensure everyone is serious and as protection if someone doesn't pay."
+      },
+      "q3": {
+        "q": "When will my Security Deposit be returned?",
+        "a": "Your Security Deposit will be automatically returned after the arisan is completely finished (all members have received their turn). If you have never been late or missed payments, you'll get your full deposit back."
+      },
+      "q4": {
+        "q": "How do I deposit/withdraw money?",
+        "a": "You can deposit money through bank transfer or other methods. When you want to withdraw (either monthly contributions or Security Deposit), the money will be sent directly to your bank account."
+      },
+      "q5": {
+        "q": "What if someone doesn't pay their monthly contribution?",
+        "a": "If a member doesn't pay after 7 days, the group admin can report them. Their Security Deposit will be automatically used to cover the shortage, so other members are not affected. The person who doesn't pay will also get a 'bad record' that other groups can see."
+      }
+    },
+    "security": {
+      "q1": {
+        "q": "Is my money safe?",
+        "a": "Very safe! Your money is protected by blockchain technology (digital security system) that cannot be manipulated. No one, including us or the admin, can take your money arbitrarily. Everything follows automatic rules that have been set."
+      },
+      "q2": {
+        "q": "What if the admin runs away with the money?",
+        "a": "This cannot happen! The money is not held by the admin or any person, but by an automatic system (smart contract). The admin can only manage the arisan schedule, but cannot take the money."
+      },
+      "q3": {
+        "q": "What if the ArisanAman website closes?",
+        "a": "Your money remains safe because it's stored on the blockchain, not on our website. Even if the website closes, the money can still be retrieved through other means. It's like money stored in a safe that you have the key to."
+      },
+      "q4": {
+        "q": "How do I know this isn't a scam?",
+        "a": "ArisanAman is built with transparent technology. All transactions can be verified by anyone. We also only charge a fee when you successfully receive the arisan payout, meaning we only profit if you're satisfied."
+      }
+    },
+    "tech": {
+      "q1": {
+        "q": "What is blockchain? Do I need to understand it?",
+        "a": "Blockchain is like a 'digital ledger' that cannot be falsified. You don't need to understand how it works, just like you don't need to understand how a car engine works to drive. You just need to know that this technology makes ArisanAman safer."
+      },
+      "q2": {
+        "q": "What is a Smart Contract?",
+        "a": "A Smart Contract is like an 'automatic agreement'. For example: 'If all members have paid, then the payout is given to the winner'. This all happens automatically without human intervention, so it's fair and cannot be cheated."
+      },
+      "q3": {
+        "q": "Do I need to create a wallet?",
+        "a": "No! ArisanAman automatically creates an 'invisible wallet' for you when you login with Google. You don't need to remember passwords or complicated codes. Just login with Google like usual."
+      },
+      "q4": {
+        "q": "What is 'on-chain' or 'recorded on blockchain'?",
+        "a": "It means the transaction is recorded in a digital system that is permanent and cannot be changed. Like a receipt that can never be lost or falsified. This makes all transactions transparent and verifiable."
+      }
+    },
+    "glossary": {
+      "term1": {
+        "term": "Arisan/Circle",
+        "def": "A savings group where members contribute periodically, and one member receives the payout each period in rotation."
+      },
+      "term2": {
+        "term": "Security Deposit",
+        "def": "A good faith deposit that must be paid by all members at the beginning. Returned in full at the end if you're not in default. Functions as protection if someone doesn't pay."
+      },
+      "term3": {
+        "term": "Admin/Group Leader",
+        "def": "The person who creates and manages the arisan group. Admin manages the schedule and members, but CANNOT take the money."
+      },
+      "term4": {
+        "term": "Member/Participant",
+        "def": "People who join an arisan group. Each member must pay a Security Deposit and monthly contributions."
+      },
+      "term5": {
+        "term": "Contribution",
+        "def": "Monthly payment that must be paid by all members. For example: if the arisan is Rp 1,000,000 with 10 members, then the contribution is Rp 100,000/month."
+      },
+      "term6": {
+        "term": "Round/Period",
+        "def": "One payment cycle in arisan. Each round, one member gets their turn to receive the payout. For example, Round 1 = month 1, Round 2 = month 2, and so on."
+      },
+      "term7": {
+        "term": "Winner/Recipient",
+        "def": "The member who gets their turn to receive the arisan payout in that round. Selected randomly or according to the agreed order."
+      },
+      "term8": {
+        "term": "Default/Non-payment",
+        "def": "Condition when a member doesn't pay their monthly contribution after the grace period (7 days). Those in default will have their Security Deposit used and receive a bad record."
+      },
+      "term9": {
+        "term": "Social Vouching/Guarantee",
+        "def": "If you're new and don't have a track record yet, an existing good member can 'vouch for you' by putting up their own money as collateral. If you don't pay, they lose their money."
+      },
+      "term10": {
+        "term": "Reputation/Track Record",
+        "def": "Your payment history in ArisanAman. Good reputation (always pays on time) makes it easier to join other groups. Bad reputation makes it difficult to be accepted."
+      }
+    }
   }
 }
 

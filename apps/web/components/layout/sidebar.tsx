@@ -12,6 +12,7 @@ import {
   Plus,
   X,
   History,
+  HelpCircle,
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -29,6 +30,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     { name: t("dashboard"), href: "/dashboard", icon: LayoutDashboard, exact: true },
     { name: t("arisan"), href: "/circles", icon: CircleDot, exact: false },
     { name: t("history"), href: "/history", icon: History, exact: false },
+    { name: t("faq"), href: "/faq", icon: HelpCircle, exact: false },
     { name: t("profile"), href: "/profile", icon: User, exact: true },
     { name: t("settings"), href: "/settings", icon: Settings, exact: false },
   ];
