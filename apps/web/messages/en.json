@@ -26,7 +26,9 @@
     "period": "Period",
     "members": "members",
     "month": "month",
-    "perMonth": "/month"
+    "week": "week",
+    "perMonth": "/month",
+    "perWeek": "/week"
   },
   "header": {
     "balance": "Balance",
@@ -104,6 +106,8 @@
     "payDeposit": "Pay Deposit",
     "stats": {
       "contributionMonth": "Contribution/Month",
+      "contributionWeek": "Contribution/Week",
+      "contribution": "Contribution",
       "securityDeposit": "Security Deposit",
       "totalPot": "Total Pot",
       "members": "Members"
@@ -112,6 +116,7 @@
       "title": "Estimated Yield (5% APY)",
       "desc": "Pool funds earn interest during the circle",
       "perMonth": "Est. yield per month",
+      "perWeek": "Est. yield per week",
       "total": "Total est"
     },
     "funds": {

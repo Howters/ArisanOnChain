@@ -201,7 +201,7 @@ export default function DashboardPage() {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              {formatIDR(Number(pool.contributionAmount))}{tc("perMonth")} • {pool.memberCount} {tc("members")}
+                              {formatIDR(Number(pool.contributionAmount))}{pool.rotationPeriod === "Weekly" ? tc("perWeek") : tc("perMonth")} • {pool.memberCount} {tc("members")}
                             </p>
                           </div>
                           <div className="text-right shrink-0">

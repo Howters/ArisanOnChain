@@ -239,7 +239,7 @@ export default function CirclesPage() {
                   <CardContent className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{t("contribution")}</span>
-                      <span className="font-medium">{formatIDR(Number(pool.contributionAmount))}{tc("perMonth")}</span>
+                      <span className="font-medium">{formatIDR(Number(pool.contributionAmount))}{pool.rotationPeriod === "Weekly" ? tc("perWeek") : tc("perMonth")}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{tc("period")}</span>

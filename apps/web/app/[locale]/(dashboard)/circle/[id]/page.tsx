@@ -581,7 +581,7 @@ export default function CirclePage() {
 
       <div className="grid gap-4 md:grid-cols-4">
         {[
-          { label: t("stats.contributionMonth"), value: formatIDR(Number(pool.contributionAmount)), icon: Wallet },
+          { label: pool.rotationPeriod === "Weekly" ? t("stats.contributionWeek") : t("stats.contributionMonth"), value: formatIDR(Number(pool.contributionAmount)), icon: Wallet },
           { label: t("stats.securityDeposit"), value: formatIDR(Number(pool.securityDeposit)), icon: Shield },
           { label: t("stats.totalPot"), value: formatIDR(totalPot), icon: Trophy },
           { label: t("stats.members"), value: `${activeMembers.length}/${pool.maxMembers}`, icon: Users },
@@ -618,9 +618,9 @@ export default function CirclePage() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-muted-foreground">{t("yield.perMonth")}</p>
+                <p className="text-xs text-muted-foreground">{pool.rotationPeriod === "Weekly" ? t("yield.perWeek") : t("yield.perMonth")}</p>
                 <p className="text-xl font-bold text-green-500">+{formatIDR(estimatedMonthlyYield)}</p>
-                <p className="text-xs text-muted-foreground">{t("yield.total")}: +{formatIDR(estimatedTotalYield)} ({totalPoolDuration} {tc("month")})</p>
+                <p className="text-xs text-muted-foreground">{t("yield.total")}: +{formatIDR(estimatedTotalYield)} ({totalPoolDuration} {pool.rotationPeriod === "Weekly" ? tc("week") : tc("month")})</p>
               </div>
             </div>
           </CardContent>

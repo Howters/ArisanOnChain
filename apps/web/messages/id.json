@@ -26,7 +26,9 @@
     "period": "Periode",
     "members": "anggota",
     "month": "bulan",
-    "perMonth": "/bulan"
+    "week": "minggu",
+    "perMonth": "/bulan",
+    "perWeek": "/minggu"
   },
   "header": {
     "balance": "Saldo",
@@ -104,6 +106,8 @@
     "payDeposit": "Bayar Jaminan",
     "stats": {
       "contributionMonth": "Iuran/Bulan",
+      "contributionWeek": "Iuran/Minggu",
+      "contribution": "Iuran",
       "securityDeposit": "Uang Jaminan",
       "totalPot": "Total Pot",
       "members": "Anggota"
@@ -112,6 +116,7 @@
       "title": "Estimasi Yield (5% APY)",
       "desc": "Dana pool menghasilkan bunga selama arisan berlangsung",
       "perMonth": "Est. yield per bulan",
+      "perWeek": "Est. yield per minggu",
       "total": "Total est"
     },
     "funds": {

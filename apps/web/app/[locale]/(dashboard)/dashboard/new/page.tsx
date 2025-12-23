@@ -338,7 +338,7 @@ export default function CreateCirclePage() {
                       onClick={() => setFormData({ ...formData, contributionAmount: amount })}
                     >
                       <span className="font-bold">{formatIDR(amount)}</span>
-                      <span className="text-xs opacity-70">{tc("perMonth")}</span>
+                      <span className="text-xs opacity-70">{formData.rotationPeriod === "weekly" ? tc("perWeek") : tc("perMonth")}</span>
                     </Button>
                   ))}
                 </div>
