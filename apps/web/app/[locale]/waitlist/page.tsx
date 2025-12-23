@@ -28,8 +28,13 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface WaitlistStats {
   total: number;
-  byRole: { admin: number; member: number };
-  recentSignups: number;
+  byRole: { Admin: number; Member: number };
+  recentSignups: Array<{
+    nama: string;
+    peran: string;
+    kota: string;
+    createdAt: string;
+  }>;
 }
 
 export default function WaitlistPage() {
@@ -120,10 +125,20 @@ export default function WaitlistPage() {
     }
   };
 
+  const getThisWeekCount = () => {
+    if (!stats?.recentSignups) return 0;
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return stats.recentSignups.filter((signup) => {
+      const signupDate = new Date(signup.createdAt);
+      return signupDate >= weekAgo;
+    }).length;
+  };
+
   const socialProof = [
     { value: stats?.total ? `${stats.total}+` : "500+", label: t("stats.registered") },
-    { value: stats?.byRole?.admin ? `${stats.byRole.admin}+` : "50+", label: t("stats.adminsWaiting") },
-    { value: stats?.recentSignups ? `${stats.recentSignups}+` : "20+", label: t("stats.thisWeek") },
+    { value: stats?.byRole?.Admin ? `${stats.byRole.Admin}+` : "50+", label: t("stats.adminsWaiting") },
+    { value: getThisWeekCount() > 0 ? `${getThisWeekCount()}+` : "20+", label: t("stats.thisWeek") },
   ];
 
   if (isSubmitted) {
@@ -504,6 +519,8 @@ export default function WaitlistPage() {
     </div>
   );
 }
+
+
 
 
 

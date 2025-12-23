@@ -283,7 +283,7 @@
       },
       "multipliers": {
         "1x": "Trusted group",
-        "1.5x": "Semi-trusted",
+        "1,5x": "Semi-trusted",
         "2x": "Mixed",
         "3x": "Maximum security"
       }

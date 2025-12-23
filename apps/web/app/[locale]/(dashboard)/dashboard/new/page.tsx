@@ -45,7 +45,7 @@ export default function CreateCirclePage() {
 
   const DEPOSIT_MULTIPLIERS = [
     { value: 1, label: "1x", desc: t("step3.multipliers.1x") },
-    { value: 1.5, label: "1.5x", desc: t("step3.multipliers.1.5x") },
+    { value: 1.5, label: "1.5x", desc: t("step3.multipliers.1,5x") },
     { value: 2, label: "2x", desc: t("step3.multipliers.2x") },
     { value: 3, label: "3x", desc: t("step3.multipliers.3x") },
   ];
