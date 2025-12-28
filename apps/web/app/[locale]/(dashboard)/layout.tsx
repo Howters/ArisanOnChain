@@ -36,7 +36,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const nextPathname = useNextPathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [profileChecked, setProfileChecked] = useState(false);
+  const [profileStatus, setProfileStatus] = useState<'loading' | 'complete' | 'incomplete' | null>(null);
   
   const { isLoading: isAutoConnecting } = useAutoConnect({
     client,
@@ -50,20 +50,34 @@ export default function DashboardLayout({
   }, [isAutoConnecting, account, router]);
 
   useEffect(() => {
-    if (!account?.address || nextPathname.includes("/profile") || profileChecked) return;
+    if (!account?.address) {
+      setProfileStatus(null);
+      return;
+    }
+
+    if (nextPathname.includes("/profile")) {
+      setProfileStatus('complete');
+      return;
+    }
+
+    setProfileStatus('loading');
     
     fetch(`/api/profile?address=${account.address}`)
       .then(res => res.json())
       .then(data => {
-        if (!data.profile) {
+        if (!data.profile || !data.profile.nama || !data.profile.whatsapp) {
+          setProfileStatus('incomplete');
           router.push(`/profile?returnTo=${encodeURIComponent(pathname)}`);
+        } else {
+          setProfileStatus('complete');
         }
-        setProfileChecked(true);
       })
-      .catch(() => setProfileChecked(true));
-  }, [account?.address, nextPathname, pathname, router, profileChecked]);
+      .catch(() => {
+        setProfileStatus('complete');
+      });
+  }, [account?.address, nextPathname, pathname, router]);
 
-  if (isAutoConnecting) {
+  if (isAutoConnecting || !account) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -74,7 +88,7 @@ export default function DashboardLayout({
     );
   }
 
-  if (!account) {
+  if (profileStatus === 'loading' && !nextPathname.includes("/profile")) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

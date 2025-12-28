@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasExistingProfile, setHasExistingProfile] = useState(false);
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProfileData>({
     nama: "",
     whatsapp: "",
@@ -37,12 +38,20 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const returnToParam = params.get("returnTo");
+      setReturnTo(returnToParam);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!walletAddress) return;
     
     fetch(`/api/profile?address=${walletAddress}`)
       .then(res => res.json())
       .then(data => {
-        if (data.profile) {
+        if (data.profile && data.profile.nama && data.profile.whatsapp) {
           setFormData({
             nama: data.profile.nama || "",
             whatsapp: data.profile.whatsapp || "",
@@ -63,6 +72,11 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!walletAddress) return;
+
+    if (!formData.nama.trim() || !formData.whatsapp.trim()) {
+      toast.error(t("requiredFields") || "Please fill in all required fields");
+      return;
+    }
     
     setIsSaving(true);
     
@@ -86,9 +100,14 @@ export default function ProfilePage() {
       toast.success(tc("success"));
       setHasExistingProfile(true);
       
-      const returnTo = new URLSearchParams(window.location.search).get("returnTo");
       if (returnTo) {
-        router.push(returnTo as any);
+        setTimeout(() => {
+          router.push(returnTo as any);
+        }, 500);
+      } else {
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 500);
       }
     } catch {
       toast.error(tc("error"));
@@ -115,6 +134,18 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
+      {returnTo && !hasExistingProfile && (
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-blue-500 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium text-blue-500">{t("profileRequired")}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {t("profileRequiredDesc")}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div>
         <div className="flex items-center gap-3 mb-2">
           <h1 className="text-2xl font-bold">

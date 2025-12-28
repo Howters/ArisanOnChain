@@ -23,7 +23,7 @@ export function LanguageSwitcher() {
       className="gap-2"
     >
       <Globe className="w-4 h-4" />
-      {locale === "id" ? "EN" : "ID"}
+      {locale === "id" ? "ID" : "EN"}
     </Button>
   );
 }

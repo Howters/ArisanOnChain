@@ -127,6 +127,10 @@ export default function CirclePage() {
 
   const memberProfiles = pool?.memberProfiles || {};
 
+  const getDisplayName = (address: string) => {
+    return memberProfiles[address.toLowerCase()]?.nama || formatAddress(address);
+  };
+
   const sendWhatsAppReminder = (memberAddress: string) => {
     const profile = memberProfiles[memberAddress.toLowerCase()];
     if (!profile?.whatsapp) {
@@ -332,12 +336,12 @@ export default function CirclePage() {
   };
 
   const openReportDefaultModal = (member: { address: string }) => {
-    setDefaultTarget({ address: member.address, name: formatAddress(member.address) });
+    setDefaultTarget({ address: member.address, name: getDisplayName(member.address) });
     setShowReportDefaultModal(true);
   };
 
   const openVouchModal = (member: { address: string }) => {
-    setVouchTarget({ address: member.address, name: formatAddress(member.address) });
+    setVouchTarget({ address: member.address, name: getDisplayName(member.address) });
     setVouchAmount(String(pool.contributionAmount));
     setShowVouchModal(true);
   };
@@ -493,7 +497,7 @@ export default function CirclePage() {
                 {activeMembers.map((member: any, index: number) => (
                   <div key={member.address} className="flex items-center gap-3 p-2 rounded-lg bg-muted">
                     <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">{index + 1}</span>
-                    <span className="font-mono text-sm">{formatAddress(member.address)}</span>
+                    <span className="font-mono text-sm">{getDisplayName(member.address)}</span>
                     {member.isAdmin && <Badge variant="secondary" className="text-xs">Admin</Badge>}
                   </div>
                 ))}
@@ -728,7 +732,7 @@ export default function CirclePage() {
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium truncate text-sm">{memberProfiles[member.address.toLowerCase()]?.nama || formatAddress(member.address)}</p>
+                          <p className="font-medium truncate text-sm">{getDisplayName(member.address)}</p>
                           {member.isAdmin && <Badge variant="secondary" className="shrink-0"><Crown className="h-3 w-3 mr-1" />Admin</Badge>}
                           {member.address.toLowerCase() === userAddress && <Badge variant="outline" className="shrink-0">{t("you")}</Badge>}
                         </div>
@@ -780,7 +784,7 @@ export default function CirclePage() {
                         <Avatar className="h-8 w-8"><AvatarFallback className="text-xs">{member.address.slice(2, 4).toUpperCase()}</AvatarFallback></Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium text-sm truncate font-mono">{formatAddress(member.address)}</p>
+                            <p className="font-medium text-sm truncate font-mono">{getDisplayName(member.address)}</p>
                             <MemberDebtBadge address={member.address} />
                           </div>
                           {member.vouches?.length > 0 ? <p className="text-xs text-success">{t("vouched", { count: member.vouches.length })}</p> : pool.vouchRequired ? <p className="text-xs text-warning">{t("noVouch")}</p> : null}
@@ -856,7 +860,7 @@ export default function CirclePage() {
               <CardContent className="space-y-4">
                 <div className="text-center p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <p className="text-sm text-muted-foreground mb-1">{pool.currentWinner ? t("winner") + " " + pool.currentRound : t("status")}</p>
-                  <p className="text-lg font-bold">{pool.currentWinner ? formatAddress(pool.currentWinner) : allContributed ? t("readyShuffle") : t("waitingContributions")}</p>
+                  <p className="text-lg font-bold">{pool.currentWinner ? getDisplayName(pool.currentWinner) : allContributed ? t("readyShuffle") : t("waitingContributions")}</p>
                   {pool.currentPayout && Number(pool.currentPayout) > 0 && <p className="text-2xl font-bold text-primary mt-2">{formatIDR(Number(pool.currentPayout))}</p>}
                 </div>
                 <div className="space-y-2 text-sm">
@@ -873,7 +877,7 @@ export default function CirclePage() {
               <CardContent className="space-y-3">
                 {pool.roundHistory.map((round: any) => (
                   <div key={round.round} className="flex items-center justify-between p-3 rounded-lg border">
-                    <div><p className="font-medium text-sm">{tc("period")} {round.round}</p><p className="text-xs font-mono text-muted-foreground">{formatAddress(round.winner)}</p></div>
+                    <div><p className="font-medium text-sm">{tc("period")} {round.round}</p><p className="text-xs font-mono text-muted-foreground">{getDisplayName(round.winner)}</p></div>
                     <div className="text-right"><p className="font-bold text-primary">{formatIDR(Number(round.payout))}</p>{round.completed && <Badge variant="success" className="text-xs"><Check className="h-2 w-2 mr-1" />{tc("completed")}</Badge>}</div>
                   </div>
                 ))}

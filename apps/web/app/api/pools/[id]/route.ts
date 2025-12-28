@@ -117,7 +117,7 @@ async function getPoolDetailFromIndexer(poolId: string, userAddress: string | nu
     try {
       const profiles = await getProfilesByAddresses(allMemberAddresses);
       profiles.forEach((profile, address) => {
-        memberProfiles[address] = { nama: profile.nama, whatsapp: profile.whatsapp };
+        memberProfiles[address.toLowerCase()] = { nama: profile.nama, whatsapp: profile.whatsapp };
       });
     } catch (e) {
       console.log("[Pool Detail API] Could not fetch profiles:", e);
@@ -435,7 +435,7 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
   try {
     const profiles = await getProfilesByAddresses(allMemberAddresses);
     profiles.forEach((profile, address) => {
-      memberProfiles[address] = { nama: profile.nama, whatsapp: profile.whatsapp };
+      memberProfiles[address.toLowerCase()] = { nama: profile.nama, whatsapp: profile.whatsapp };
     });
   } catch (e) {
     console.log("[Pool Detail API] Could not fetch profiles:", e);

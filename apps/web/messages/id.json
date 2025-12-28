@@ -347,7 +347,10 @@
     "saveChanges": "Simpan Perubahan",
     "saveContinue": "Simpan & Lanjutkan",
     "whyWhatsapp": "Kenapa perlu WhatsApp?",
-    "whyWhatsappDesc": "Admin arisan dapat mengirim reminder pembayaran langsung ke WhatsApp Anda. Data Anda aman dan tidak dibagikan ke pihak ketiga."
+    "whyWhatsappDesc": "Admin arisan dapat mengirim reminder pembayaran langsung ke WhatsApp Anda. Data Anda aman dan tidak dibagikan ke pihak ketiga.",
+    "profileRequired": "Profil Diperlukan",
+    "profileRequiredDesc": "Silakan lengkapi profil Anda untuk melanjutkan menggunakan aplikasi. Informasi ini diperlukan untuk notifikasi arisan dan komunikasi.",
+    "requiredFields": "Mohon isi semua field yang wajib"
   },
   "login": {
     "welcomeBack": "Selamat datang kembali",

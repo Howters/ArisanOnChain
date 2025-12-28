@@ -347,7 +347,10 @@
     "saveChanges": "Save Changes",
     "saveContinue": "Save & Continue",
     "whyWhatsapp": "Why WhatsApp?",
-    "whyWhatsappDesc": "Circle admins can send payment reminders directly to your WhatsApp. Your data is safe and not shared with third parties."
+    "whyWhatsappDesc": "Circle admins can send payment reminders directly to your WhatsApp. Your data is safe and not shared with third parties.",
+    "profileRequired": "Profile Required",
+    "profileRequiredDesc": "Please complete your profile to continue using the application. This information is needed for circle notifications and communications.",
+    "requiredFields": "Please fill in all required fields"
   },
   "login": {
     "welcomeBack": "Welcome back",
