@@ -191,7 +191,7 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
     return NextResponse.json({ error: "Pool not found" }, { status: 404 });
   }
 
-  const [poolStatus, config, admin, memberList, pendingList, rotationOrder, roundDeadline, poolName, category] = await Promise.all([
+  const [poolStatus, config, admin, memberList, pendingList, rotationOrder, roundDeadline] = await Promise.all([
     publicClient.readContract({
       address: poolAddress,
       abi: ArisanPoolAbi,
@@ -227,31 +227,28 @@ async function getPoolDetailFromRPC(poolId: string, userAddress: string | null) 
       abi: ArisanPoolAbi,
       functionName: "getRoundDeadline",
     }),
-    publicClient.readContract({
-      address: poolAddress,
-      abi: ArisanPoolAbi,
-      functionName: "poolName" as any,
-    }),
-    publicClient.readContract({
-      address: poolAddress,
-      abi: ArisanPoolAbi,
-      functionName: "category" as any,
-    }),
   ]);
 
   const [status, currentRound, totalRounds, activeMembers, deadline] = poolStatus as [number, bigint, bigint, bigint, bigint];
-  const [
+  const {
     contributionAmount,
     securityDepositAmount,
     maxMembers,
     paymentDay,
     vouchRequired,
-    rotationPeriod
-  ] = config as unknown as [bigint, bigint, bigint, number, boolean, number];
-  
-  // poolName and category are read separately as public variables
-  const poolNameStr = (poolName as string) || "";
-  const categoryStr = (category as string) || "";
+    rotationPeriod,
+    poolName: poolNameStr,
+    category: categoryStr
+  } = config as {
+    contributionAmount: bigint;
+    securityDepositAmount: bigint;
+    maxMembers: bigint;
+    paymentDay: number;
+    vouchRequired: boolean;
+    rotationPeriod: number;
+    poolName: string;
+    category: string;
+  };
   
   const poolConfig = {
     contributionAmount,
