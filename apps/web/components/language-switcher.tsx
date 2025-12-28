@@ -22,7 +22,7 @@ export function LanguageSwitcher() {
       onClick={() => switchLocale(locale === "id" ? "en" : "id")}
     >
       <Globe className="h-3.5 w-3.5" />
-      {locale === "id" ? "EN" : "ID"}
+      {locale === "id" ? "ID" : "EN"}
     </Button>
   );
 }

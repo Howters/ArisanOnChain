@@ -36,7 +36,9 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const nextPathname = useNextPathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [profileStatus, setProfileStatus] = useState<'loading' | 'complete' | 'incomplete' | null>(null);
+  const [profileChecked, setProfileChecked] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
+  const [lastCheckedAddress, setLastCheckedAddress] = useState<string | null>(null);
   
   const { isLoading: isAutoConnecting } = useAutoConnect({
     client,
@@ -51,44 +53,46 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!account?.address) {
-      setProfileStatus(null);
+      setProfileChecked(false);
+      setIsCheckingProfile(false);
+      setLastCheckedAddress(null);
+      return;
+    }
+
+    if (account.address !== lastCheckedAddress) {
+      setProfileChecked(false);
+      setIsCheckingProfile(true);
+      setLastCheckedAddress(account.address);
+    }
+
+    if (profileChecked) {
+      setIsCheckingProfile(false);
       return;
     }
 
     if (nextPathname.includes("/profile")) {
-      setProfileStatus('complete');
+      setProfileChecked(true);
+      setIsCheckingProfile(false);
       return;
     }
-
-    setProfileStatus('loading');
     
     fetch(`/api/profile?address=${account.address}`)
       .then(res => res.json())
       .then(data => {
         if (!data.profile || !data.profile.nama || !data.profile.whatsapp) {
-          setProfileStatus('incomplete');
           router.push(`/profile?returnTo=${encodeURIComponent(pathname)}`);
-        } else {
-          setProfileStatus('complete');
         }
+        setProfileChecked(true);
       })
       .catch(() => {
-        setProfileStatus('complete');
+        setProfileChecked(true);
+      })
+      .finally(() => {
+        setIsCheckingProfile(false);
       });
-  }, [account?.address, nextPathname, pathname, router]);
+  }, [account?.address, nextPathname, pathname, router, profileChecked, lastCheckedAddress]);
 
-  if (isAutoConnecting || !account) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">{tc("loading")}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (profileStatus === 'loading' && !nextPathname.includes("/profile")) {
+  if (isAutoConnecting || !account || (isCheckingProfile && !profileChecked)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
