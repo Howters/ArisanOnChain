@@ -321,20 +321,18 @@ ponder.on("ArisanPool:RoundStarted", async ({ event, context }) => {
 
 ponder.on("ArisanPool:FundsWithdrawn", async ({ event, context }) => {
   const poolAddress = event.log.address.toLowerCase();
+  const memberAddress = event.args.member.toLowerCase();
   
-  const poolRecord = await context.db
-    .select({ id: pool.id })
-    .from(pool)
-    .where(eq(pool.address, poolAddress))
-    .limit(1);
+  const allPools = await context.db.sql`
+    SELECT id FROM pool WHERE LOWER(address) = ${poolAddress} LIMIT 1
+  `;
   
-  if (!poolRecord || poolRecord.length === 0) {
+  if (!allPools || allPools.length === 0) {
     console.warn(`Pool not found for address ${poolAddress}`);
     return;
   }
   
-  const poolId = poolRecord[0].id;
-  const memberAddress = event.args.member.toLowerCase();
+  const poolId = allPools[0].id;
   const memberId = `${poolId}-${memberAddress}`;
 
   const existingMember = await context.db.find(member, { id: memberId });
