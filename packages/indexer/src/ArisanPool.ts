@@ -320,31 +320,5 @@ ponder.on("ArisanPool:RoundStarted", async ({ event, context }) => {
 });
 
 ponder.on("ArisanPool:FundsWithdrawn", async ({ event, context }) => {
-  const poolAddress = event.log.address.toLowerCase();
-  const memberAddress = event.args.member.toLowerCase();
-  
-  const allPools = await context.db.sql`
-    SELECT id FROM pool WHERE LOWER(address) = ${poolAddress} LIMIT 1
-  `;
-  
-  if (!allPools || allPools.length === 0) {
-    console.warn(`Pool not found for address ${poolAddress}`);
-    return;
-  }
-  
-  const poolId = allPools[0].id;
-  const memberId = `${poolId}-${memberAddress}`;
-
-  const existingMember = await context.db.find(member, { id: memberId });
-  if (!existingMember) return;
-
-  if (event.args.withdrawType === "liquid") {
-    await context.db
-      .update(member, { id: memberId })
-      .set({ liquidBalance: 0n });
-  } else if (event.args.withdrawType === "security_deposit") {
-    await context.db
-      .update(member, { id: memberId })
-      .set({ lockedStake: 0n });
-  }
+  console.log(`FundsWithdrawn event: member=${event.args.member}, amount=${event.args.amount}, type=${event.args.withdrawType}`);
 });
