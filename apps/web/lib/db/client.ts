@@ -130,15 +130,16 @@ export async function getProfilesByAddresses(
   }
 
   try {
-    const placeholders = addresses.map((_, i) => `$${i + 1}`).join(",");
+    const lowercaseAddresses = addresses.map(addr => addr.toLowerCase());
+    const placeholders = lowercaseAddresses.map((_, i) => `$${i + 1}`).join(",");
     const result = await pool.query(
-      `SELECT * FROM user_profiles WHERE wallet_address IN (${placeholders})`,
-      addresses
+      `SELECT * FROM user_profiles WHERE LOWER(wallet_address) IN (${placeholders})`,
+      lowercaseAddresses
     );
 
     const profileMap = new Map<string, UserProfile>();
     result.rows.forEach((row: any) => {
-      profileMap.set(row.wallet_address, {
+      profileMap.set(row.wallet_address.toLowerCase(), {
         walletAddress: row.wallet_address,
         nama: row.nama,
         whatsapp: row.whatsapp,
