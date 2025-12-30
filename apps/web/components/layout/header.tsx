@@ -16,7 +16,6 @@ import { formatAddress, formatIDR } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
 import { Link } from "@/i18n/routing";
 import { TopUpDialog } from "@/components/topup/topup-dialog";
-import { FaucetButton } from "@/components/faucet/faucet-button";
 import { useBalance } from "@/lib/hooks/use-contracts";
 import { useEffect, useState } from "react";
 import { useSocialProfile } from "@/lib/hooks/use-social-profile";
@@ -125,7 +124,6 @@ export function Header({ onMenuClick }: HeaderProps) {
           )}
         </div>
 
-        <FaucetButton />
         <TopUpDialog />
 
         <DropdownMenu>

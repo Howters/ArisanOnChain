@@ -214,6 +214,7 @@ export default function LandingPage() {
       <main>
         <section className="relative overflow-hidden">
           <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 sm:pt-32 pb-24">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="max-w-3xl">
               <FadeContent blur duration={600} delay={0}>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-muted-foreground mb-8">
@@ -285,6 +286,21 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </FadeContent>
+            </div>
+            
+            <FadeContent blur duration={800} delay={600}>
+              <div className="relative hidden lg:block">
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 aspect-square">
+                  <Image
+                    src="/images/hero-illustration.png"
+                    alt="Ilustrasi ibu-ibu menggunakan arisan digital"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </FadeContent>
             </div>
           </div>
         </section>
@@ -396,8 +412,15 @@ export default function LandingPage() {
                 {howItWorks.map((item, i) => (
                   <FadeContent key={i} blur duration={600} delay={i * 100}>
                     <div className="relative text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 relative z-10">
-                        <item.icon className="w-7 h-7 text-primary" />
+                      <div className="relative w-32 h-32 mx-auto mb-4">
+                        <div className="absolute inset-0 rounded-2xl bg-white/5 border border-white/10">
+                          <Image
+                            src={`/images/how-it-works-step-${i + 1}.png`}
+                            alt={item.title}
+                            fill
+                            className="object-cover rounded-2xl"
+                          />
+                        </div>
                       </div>
                       <div className="text-xs text-primary font-mono mb-2">{item.step}</div>
                       <h3 className="font-semibold mb-2">{item.title}</h3>
@@ -480,7 +503,16 @@ export default function LandingPage() {
               </FadeContent>
 
               <FadeContent blur duration={600} delay={200}>
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+                <div className="space-y-6">
+                  <div className="relative w-full aspect-square rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+                    <Image
+                      src="/images/security-illustration.png"
+                      alt="Keamanan Smart Contract Blockchain"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
                   <h3 className="text-xl font-semibold mb-6">{t("security.defaultTitle")}</h3>
                   <div className="space-y-4 text-sm">
                     <div className="flex items-start gap-3">
@@ -505,6 +537,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
+                </div>
               </FadeContent>
             </div>
           </div>
@@ -516,6 +549,17 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
                 {t("comparison.title")}
               </h2>
+            </div>
+          </FadeContent>
+
+          <FadeContent blur duration={600} delay={50}>
+            <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-white/10 bg-white/5 mb-12">
+              <Image
+                src="/images/traditional-vs-digital.png"
+                alt="Perbandingan arisan tradisional vs arisan digital"
+                fill
+                className="object-cover"
+              />
             </div>
           </FadeContent>
 
