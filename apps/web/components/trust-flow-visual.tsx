@@ -374,8 +374,8 @@ export default function TrustFlowVisual() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 2.2, duration: 0.5 }}
               >
-                <circle cx="200" cy="900" r="80" fill="url(#potGrad)" filter="url(#shadow)" />
-                <foreignObject x="120" y="820" width="160" height="160">
+                <circle cx="200" cy="700" r="80" fill="url(#potGrad)" filter="url(#shadow)" />
+                <foreignObject x="120" y="620" width="160" height="160">
                   <div className="flex flex-col items-center justify-center h-full text-white">
                     <Coins className="w-14 h-14 mb-2" />
                     <div className="text-base font-bold text-center">Pool Pot</div>
