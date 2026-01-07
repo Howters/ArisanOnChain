@@ -29,7 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import TrustFlowDiagram from "@/components/trust-flow-diagram";
+import TrustFlowVisual from "@/components/trust-flow-visual";
 import SystemArchitectureDiagram from "@/components/system-architecture-diagram";
 
 function FAQItem({ q, a, isOpen, onClick }: { q: string; a: string; isOpen: boolean; onClick: () => void }) {
@@ -568,7 +568,7 @@ export default function LandingPage() {
 
         <section id="trust-flow" className="bg-black/20 backdrop-blur-sm border-y border-white/10">
           <FadeContent blur duration={600}>
-            <TrustFlowDiagram />
+            <TrustFlowVisual />
           </FadeContent>
         </section>
 
