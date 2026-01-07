@@ -792,6 +792,223 @@
         "def": "Riwayat pembayaran Anda di ArisanAman. Reputasi bagus (selalu bayar tepat waktu) memudahkan gabung grup lain. Reputasi buruk membuat susah diterima."
       }
     }
+  },
+  "trustFlow": {
+    "badge": "Untuk Juri & Investor",
+    "title": "Alur Penegakan Trustless",
+    "description": "Jaminan matematis bahwa kecurangan tidak mungkin. Setiap langkah ditegakkan oleh kode smart contract, bukan kepercayaan sosial.",
+    "playAnimation": "Putar Animasi",
+    "pauseAnimation": "Jeda Animasi",
+    "showDefault": "Tampilkan Skenario Default",
+    "hideDefault": "Sembunyikan Skenario Default",
+    "step": "Langkah",
+    "howItWorks": "Cara Kerjanya:",
+    "example": "Contoh:",
+    "warning": "Peringatan:",
+    "bonus": "Bonus:",
+    "possibilities": "Kemungkinan:",
+    "whyTrustless": "Mengapa Sistem Ini Trustless",
+    "moneyLocked": {
+      "title": "Uang Terkunci di Kode",
+      "desc": "Smart contract menyimpan dana. Tidak ada manusia yang bisa mencuri atau mengalihkan."
+    },
+    "autoEnforce": {
+      "title": "Penegakan Otomatis",
+      "desc": "Hukuman terpicu otomatis. Tidak ada voting, tidak ada diskusi."
+    },
+    "transparent": {
+      "title": "Transparan & Dapat Diverifikasi",
+      "desc": "Semua transaksi di blockchain. Siapa saja bisa audit."
+    },
+    "bottomLine": "Intinya:",
+    "bottomLineText": "Curang biayanya LEBIH MAHAL daripada jujur",
+    "bottomLineSubtext": "Matematika > Kepercayaan. Deposit Keamanan (Rp 2jt) > Iuran Bulanan (Rp 1jt)",
+    "steps": {
+      "step1": {
+        "title": "Buat Arisan",
+        "subtitle": "Admin memulai",
+        "enforcement": "Smart Contract Dideploy",
+        "description": "Admin membuat arisan baru dengan mengatur nama, iuran bulanan, dan jumlah deposit keamanan.",
+        "details": [
+          "✅ Tentukan nama arisan (contoh: Arisan Keluarga)",
+          "✅ Set iuran bulanan (contoh: Rp 1.000.000)",
+          "✅ Pilih deposit keamanan (contoh: Rp 2.000.000)",
+          "✅ Atur tanggal pembayaran (contoh: tanggal 1)"
+        ],
+        "example": "Ibu Siti membuat 'Arisan RT 05' dengan iuran Rp 1jt/bulan",
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #1: Aturan Tidak Bisa Diubah",
+          "description": "Setelah dideploy, bahkan admin tidak dapat mengubah jumlah iuran, urutan giliran, atau aturan hukuman. Semuanya ditegakkan oleh kode."
+        }
+      },
+      "step2": {
+        "title": "Gabung & Lock Deposit",
+        "subtitle": "Anggota amankan komitmen",
+        "enforcement": "WAJIB: Deposit keamanan diperlukan",
+        "description": "Anggota mengajukan diri untuk bergabung. Admin menyetujui dan anggota mengunci deposit keamanan mereka.",
+        "details": [
+          "👥 Minimal 3 anggota untuk mulai",
+          "✅ Admin approve setiap anggota",
+          "🔒 Anggota lock deposit keamanan",
+          "📝 Deposit dikembalikan setelah selesai"
+        ],
+        "example": "Ani, Budi, Citra gabung & lock deposit Rp 2jt masing-masing",
+        "warning": "Deposit akan disita jika tidak bayar iuran!",
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #2: Deposit > Iuran",
+          "description": "Deposit keamanan SELALU lebih tinggi dari iuran bulanan. Ini membuat curang secara finansial tidak rasional. Jika Anda mencuri 1jt, Anda kehilangan 2jt.",
+          "math": "Deposit Keamanan (Rp 2jt) > Iuran Bulanan (Rp 1jt)"
+        }
+      },
+      "step3": {
+        "title": "Aktifkan Arisan",
+        "subtitle": "Mulai arisan",
+        "enforcement": "CEK OTOMATIS: Min 3 anggota",
+        "description": "Setelah min 3 anggota, admin mengatur urutan giliran dan mengaktifkan arisan.",
+        "details": [
+          "✓ Cek: Minimal 3 anggota aktif",
+          "✓ Cek: Semua anggota locked deposit",
+          "✓ Cek: Urutan giliran sudah diset",
+          "❌ Tidak bisa aktifkan jika ada cek yang gagal"
+        ],
+        "example": "Urutan: Siti → Ani → Budi → Citra. Round 1 mulai!",
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #3: Smart Contract Validasi",
+          "description": "Aktivasi otomatis hanya ketika SEMUA persyaratan terpenuhi. Tidak ada override manusia yang mungkin. Kode kontrak menegakkan anggota minimum dan deposit."
+        }
+      },
+      "step4": {
+        "title": "Bayar Iuran Bulanan",
+        "subtitle": "Setiap bulan",
+        "enforcement": "HUKUMAN OTOMATIS jika tidak bayar",
+        "description": "Semua anggota bayar iuran bulanan. Yang sudah bayar akan dapat notifikasi WhatsApp (reminder).",
+        "details": [
+          "💰 Setiap anggota bayar iuran (contoh: Rp 1jt)",
+          "✅ Klik 'Bayar Iuran' di dashboard",
+          "📱 WhatsApp reminder untuk yang belum bayar",
+          "⏳ Masa tenggang 7 hari setelah deadline"
+        ],
+        "example": "Semua bayar Rp 1jt → Total pot: Rp 4jt",
+        "options": [
+          { "label": "✅ Semua bayar", "path": "Lanjut ke pemenang" },
+          { "label": "❌ Ada yang telat >7 hari", "path": "Dilaporkan default" }
+        ],
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #4: Penegakan Otomatis",
+          "description": "Jika anggota tidak bayar dalam 7 hari, siapa saja bisa trigger default. Tidak ada voting, tidak ada diskusi. Smart contract OTOMATIS menyita deposit, mint DebtNFT, dan ban dari platform."
+        },
+        "defaultScenario": {
+          "trigger": "Anggota gagal bayar setelah masa tenggang 7 hari",
+          "actions": [
+            "⚡ Sita deposit keamanan (instan)",
+            "💀 Mint DebtNFT ke wallet defaulter (permanen)",
+            "📉 Skor reputasi → 0",
+            "🚫 Banned dari gabung pool baru",
+            "💰 Dana yang disita → kompensasi anggota pool"
+          ]
+        }
+      },
+      "step5": {
+        "title": "Tentukan Pemenang",
+        "subtitle": "Adil & transparan",
+        "enforcement": "Urutan giliran TETAP (on-chain)",
+        "description": "Admin tentukan pemenang sesuai urutan. Pemenang klaim uang setelah dikurangi fee 1.5%.",
+        "details": [
+          "🎯 Admin klik 'Tentukan Pemenang'",
+          "👑 Pemenang sesuai urutan giliran",
+          "💸 Pemenang klaim payout (Rp 4jt - 1.5% fee)",
+          "🔄 Ulangi untuk round berikutnya"
+        ],
+        "example": "Round 1: Siti menang! Klaim Rp 3.940.000 (sudah dikurangi fee)",
+        "math": "Payout = (Iuran × Jumlah Anggota) - Platform Fee 1.5%",
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #5: Terbukti Adil",
+          "description": "Urutan giliran DISET SEBELUM aktivasi dan disimpan di blockchain. Siapa saja bisa verifikasi urutannya. Admin tidak punya kemampuan untuk memanipulasi siapa menang kapan."
+        }
+      },
+      "step6": {
+        "title": "Klaim Pembayaran",
+        "subtitle": "Pemenang terima dana",
+        "enforcement": "Transfer LANGSUNG dari kontrak",
+        "description": "Pemenang klik 'Klaim Payout' dan dana langsung dari smart contract ke wallet pemenang.",
+        "details": [
+          "Pemenang klik 'Klaim Payout'",
+          "Smart contract kalkulasi: (Iuran × Anggota) - 1.5% fee",
+          "Transfer langsung ke pemenang (tanpa perantara)",
+          "❌ Admin TIDAK BISA mencuri atau mengalihkan dana"
+        ],
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #6: Tanpa Sentuhan Manusia",
+          "description": "Dana langsung dari smart contract ke wallet pemenang. Admin tidak pernah pegang uang. Secara matematis tidak mungkin untuk mencuri.",
+          "math": "Payout = (Rp 1jt × 4 anggota) - 1.5% = Rp 3.940.000"
+        }
+      },
+      "step7": {
+        "title": "Selesai & Tarik Deposit",
+        "subtitle": "Semua round selesai",
+        "enforcement": "Pengembalian deposit OTOMATIS",
+        "description": "Setelah semua anggota dapat giliran, arisan selesai. Deposit keamanan OTOMATIS dibuka.",
+        "details": [
+          "Semua anggota sudah dapat giliran",
+          "Status arisan → COMPLETED",
+          "Deposit keamanan OTOMATIS dibuka",
+          "Reputasi +1 (catatan on-chain permanen)"
+        ],
+        "example": "Semua dapat giliran! Siti, Ani, Budi, Citra tarik deposit Rp 2jt masing-masing",
+        "bonus": "✨ Reputasi bagus → Bisa vouch orang lain di arisan baru!",
+        "trustPoint": {
+          "title": "POIN KEPERCAYAAN #7: Pengembalian Terjamin",
+          "description": "Jika Anda selesaikan semua iuran, smart contract OTOMATIS mengembalikan deposit keamanan penuh Anda. Tidak perlu persetujuan admin."
+        }
+      }
+    },
+    "defaultButton": "Bagaimana kalau ada yang tidak bayar? (Klik untuk lihat)"
+  },
+  "architecture": {
+    "badge": "Gambaran Sistem",
+    "title": "Bagaimana Semuanya Terhubung",
+    "description": "Lihat arsitektur lengkap: smart contract, pool, anggota, dan sistem pendukung bekerja sama dalam sistem terdesentralisasi yang aman.",
+    "legend": {
+      "factory": "Kontrak Factory",
+      "pools": "Instance Pool",
+      "members": "Anggota",
+      "token": "Token",
+      "support": "Sistem Pendukung"
+    },
+    "components": {
+      "factory": {
+        "title": "Arisan Factory",
+        "subtitle": "Smart Contract"
+      },
+      "pool1": {
+        "title": "Pool #1",
+        "subtitle": "Arisan Keluarga"
+      },
+      "pool2": {
+        "title": "Pool #2",
+        "subtitle": "Arisan Kantor"
+      },
+      "pool3": {
+        "title": "Pool #3",
+        "subtitle": "Arisan RT"
+      },
+      "token": {
+        "title": "MockIDRX Token",
+        "subtitle": "Mata Uang"
+      },
+      "debtNft": {
+        "title": "DebtNFT",
+        "subtitle": "Sistem Hukuman"
+      },
+      "reputation": {
+        "title": "Reputasi",
+        "subtitle": "Skor On-Chain"
+      },
+      "wallet": {
+        "title": "Platform Wallet",
+        "subtitle": "Koleksi Fee"
+      }
+    }
   }
 }
 

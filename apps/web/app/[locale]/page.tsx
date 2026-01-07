@@ -29,6 +29,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import TrustFlowDiagram from "@/components/trust-flow-diagram";
+import SystemArchitectureDiagram from "@/components/system-architecture-diagram";
 
 function FAQItem({ q, a, isOpen, onClick }: { q: string; a: string; isOpen: boolean; onClick: () => void }) {
   return (
@@ -63,6 +65,7 @@ export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const t = useTranslations("landing");
   const tc = useTranslations("common");
+  const tArch = useTranslations("architecture");
 
   const stats = [
     { value: "Rp 2.5B+", label: t("stats.protectedVolume"), icon: Shield },
@@ -404,7 +407,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </FadeContent>
-
+            
             <div className="relative">
               <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2" />
               
@@ -430,6 +433,26 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="architecture" className="bg-black/20 backdrop-blur-sm border-y border-white/10">
+          <div className="max-w-6xl mx-auto px-6 py-24">
+            <FadeContent blur duration={600}>
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
+                  <Shield className="w-4 h-4" />
+                  {tArch("badge")}
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+                  {tArch("title")}
+                </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  {tArch("description")}
+                </p>
+              </div>
+              <SystemArchitectureDiagram />
+            </FadeContent>
           </div>
         </section>
 
@@ -541,6 +564,12 @@ export default function LandingPage() {
               </FadeContent>
             </div>
           </div>
+        </section>
+
+        <section id="trust-flow" className="bg-black/20 backdrop-blur-sm border-y border-white/10">
+          <FadeContent blur duration={600}>
+            <TrustFlowDiagram />
+          </FadeContent>
         </section>
 
         <section id="comparison" className="max-w-6xl mx-auto px-6 py-24">

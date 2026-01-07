@@ -792,6 +792,223 @@
         "def": "Your payment history in ArisanAman. Good reputation (always pays on time) makes it easier to join other groups. Bad reputation makes it difficult to be accepted."
       }
     }
+  },
+  "trustFlow": {
+    "badge": "For Judges & Investors",
+    "title": "Trustless Enforcement Flow",
+    "description": "Mathematical guarantee that cheating is impossible. Every step is enforced by smart contract code, not social trust.",
+    "playAnimation": "Play Animation",
+    "pauseAnimation": "Pause Animation",
+    "showDefault": "Show Default Scenario",
+    "hideDefault": "Hide Default Scenario",
+    "step": "Step",
+    "howItWorks": "How It Works:",
+    "example": "Example:",
+    "warning": "Warning:",
+    "bonus": "Bonus:",
+    "possibilities": "Possibilities:",
+    "whyTrustless": "Why This System Is Trustless",
+    "moneyLocked": {
+      "title": "Money Locked in Code",
+      "desc": "Smart contract holds funds. No human can steal or redirect."
+    },
+    "autoEnforce": {
+      "title": "Automatic Enforcement",
+      "desc": "Penalties trigger automatically. No voting, no discussion."
+    },
+    "transparent": {
+      "title": "Transparent & Verifiable",
+      "desc": "All transactions on blockchain. Anyone can audit."
+    },
+    "bottomLine": "Bottom Line:",
+    "bottomLineText": "Cheating costs MORE than honest participation",
+    "bottomLineSubtext": "Math > Trust. Security Deposit (Rp 2jt) > Monthly Contribution (Rp 1jt)",
+    "steps": {
+      "step1": {
+        "title": "Create Pool",
+        "subtitle": "Admin sets up arisan",
+        "enforcement": "Smart Contract Deployed",
+        "description": "Admin creates a new arisan by setting the name, monthly contribution, and security deposit amount.",
+        "details": [
+          "✅ Set arisan name (e.g., Family Arisan)",
+          "✅ Set monthly contribution (e.g., Rp 1,000,000)",
+          "✅ Choose security deposit (e.g., Rp 2,000,000)",
+          "✅ Set payment date (e.g., 1st of month)"
+        ],
+        "example": "Mrs. Siti creates 'RT 05 Arisan' with Rp 1jt/month contribution",
+        "trustPoint": {
+          "title": "TRUST POINT #1: Rules Can't Be Changed",
+          "description": "Once deployed, even the admin cannot modify contribution amounts, rotation order, or penalty rules. Everything is enforced by code."
+        }
+      },
+      "step2": {
+        "title": "Join & Lock Deposit",
+        "subtitle": "Members secure commitment",
+        "enforcement": "MANDATORY: Security deposit required",
+        "description": "Members apply to join. Admin approves and members lock their security deposit.",
+        "details": [
+          "👥 Minimum 3 members to start",
+          "✅ Admin approves each member",
+          "🔒 Members lock security deposit",
+          "📝 Deposit returned after completion"
+        ],
+        "example": "Ani, Budi, Citra join & lock Rp 2jt deposit each",
+        "warning": "Deposit will be seized if you don't pay contributions!",
+        "trustPoint": {
+          "title": "TRUST POINT #2: Deposit > Contribution",
+          "description": "Security deposit is ALWAYS higher than monthly contribution. This makes cheating financially irrational. If you steal 1jt, you lose 2jt.",
+          "math": "Security Deposit (Rp 2jt) > Monthly Contribution (Rp 1jt)"
+        }
+      },
+      "step3": {
+        "title": "Activate Pool",
+        "subtitle": "Start the arisan",
+        "enforcement": "AUTOMATIC CHECK: Min 3 members",
+        "description": "After min 3 members, admin sets rotation order and activates arisan.",
+        "details": [
+          "✓ Check: At least 3 active members",
+          "✓ Check: All members locked deposit",
+          "✓ Check: Rotation order set",
+          "❌ Cannot activate if any check fails"
+        ],
+        "example": "Order: Siti → Ani → Budi → Citra. Round 1 starts!",
+        "trustPoint": {
+          "title": "TRUST POINT #3: Smart Contract Validates",
+          "description": "Activation is automatic only when ALL requirements met. No human override possible. Contract code enforces minimum members and deposits."
+        }
+      },
+      "step4": {
+        "title": "Monthly Contribution",
+        "subtitle": "Every month",
+        "enforcement": "AUTOMATIC PENALTY if unpaid",
+        "description": "All members pay monthly contribution. Those who paid get WhatsApp notification (reminder).",
+        "details": [
+          "💰 Each member pays contribution (e.g., Rp 1jt)",
+          "✅ Click 'Pay Contribution' in dashboard",
+          "📱 WhatsApp reminder for those who haven't paid",
+          "⏳ Grace period 7 days after deadline"
+        ],
+        "example": "Everyone pays Rp 1jt → Total pot: Rp 4jt",
+        "options": [
+          { "label": "✅ Everyone pays", "path": "Continue to winner" },
+          { "label": "❌ Someone late >7 days", "path": "Reported default" }
+        ],
+        "trustPoint": {
+          "title": "TRUST POINT #4: Automatic Enforcement",
+          "description": "If member doesn't pay within 7 days, anyone can trigger default. No voting, no discussion. Smart contract AUTOMATICALLY seizes deposit, mints DebtNFT, and bans from platform."
+        },
+        "defaultScenario": {
+          "trigger": "Member fails to contribute after 7-day grace",
+          "actions": [
+            "⚡ Seize security deposit (instant)",
+            "💀 Mint DebtNFT to defaulter's wallet (permanent)",
+            "📉 Reputation score → 0",
+            "🚫 Banned from joining new pools",
+            "💰 Seized funds → compensate pool members"
+          ]
+        }
+      },
+      "step5": {
+        "title": "Determine Winner",
+        "subtitle": "Fair & transparent",
+        "enforcement": "FIXED rotation order (on-chain)",
+        "description": "Admin determines winner according to order. Winner claims money after 1.5% fee deduction.",
+        "details": [
+          "🎯 Admin clicks 'Determine Winner'",
+          "👑 Winner according to rotation order",
+          "💸 Winner claims payout (Rp 4jt - 1.5% fee)",
+          "🔄 Repeat for next round"
+        ],
+        "example": "Round 1: Siti wins! Claims Rp 3,940,000 (after fee deduction)",
+        "math": "Payout = (Contribution × Members) - Platform Fee 1.5%",
+        "trustPoint": {
+          "title": "TRUST POINT #5: Provably Fair",
+          "description": "Rotation order is SET BEFORE activation and stored on blockchain. Anyone can verify the order. Admin has zero ability to manipulate who wins when."
+        }
+      },
+      "step6": {
+        "title": "Claim Payout",
+        "subtitle": "Winner receives funds",
+        "enforcement": "DIRECT transfer from contract",
+        "description": "Winner clicks 'Claim Payout' and funds go directly from smart contract to winner's wallet.",
+        "details": [
+          "Winner clicks 'Claim Payout'",
+          "Smart contract calculates: (Contributions × Members) - 1.5% fee",
+          "Direct transfer to winner (no middleman)",
+          "❌ Admin CANNOT steal or redirect funds"
+        ],
+        "trustPoint": {
+          "title": "TRUST POINT #6: No Human Touch",
+          "description": "Funds go DIRECTLY from smart contract to winner's wallet. Admin never holds money. Mathematically impossible to steal.",
+          "math": "Payout = (Rp 1jt × 4 members) - 1.5% = Rp 3,940,000"
+        }
+      },
+      "step7": {
+        "title": "Complete & Withdraw",
+        "subtitle": "All rounds finished",
+        "enforcement": "AUTOMATIC deposit return",
+        "description": "After all members received their turn, arisan is complete. Security deposits AUTOMATICALLY unlocked.",
+        "details": [
+          "All members received their turn",
+          "Pool status → COMPLETED",
+          "Security deposits AUTOMATICALLY unlocked",
+          "Reputation +1 (permanent on-chain record)"
+        ],
+        "example": "Everyone got their turn! Siti, Ani, Budi, Citra withdraw Rp 2jt deposit each",
+        "bonus": "✨ Good reputation → Can vouch for others in new arisan!",
+        "trustPoint": {
+          "title": "TRUST POINT #7: Guaranteed Return",
+          "description": "If you complete all contributions, smart contract AUTOMATICALLY returns your full security deposit. No admin approval needed."
+        }
+      }
+    },
+    "defaultButton": "What if someone doesn't pay? (Click to see)"
+  },
+  "architecture": {
+    "badge": "System Overview",
+    "title": "How Everything Connects",
+    "description": "See the complete architecture: smart contracts, pools, members, and support systems working together in a secure, decentralized system.",
+    "legend": {
+      "factory": "Factory Contract",
+      "pools": "Pool Instances",
+      "members": "Members",
+      "token": "Token",
+      "support": "Support Systems"
+    },
+    "components": {
+      "factory": {
+        "title": "Arisan Factory",
+        "subtitle": "Smart Contract"
+      },
+      "pool1": {
+        "title": "Pool #1",
+        "subtitle": "Family Arisan"
+      },
+      "pool2": {
+        "title": "Pool #2",
+        "subtitle": "Office Arisan"
+      },
+      "pool3": {
+        "title": "Pool #3",
+        "subtitle": "RT Arisan"
+      },
+      "token": {
+        "title": "MockIDRX Token",
+        "subtitle": "Currency"
+      },
+      "debtNft": {
+        "title": "DebtNFT",
+        "subtitle": "Penalty System"
+      },
+      "reputation": {
+        "title": "Reputation",
+        "subtitle": "On-Chain Score"
+      },
+      "wallet": {
+        "title": "Platform Wallet",
+        "subtitle": "Fee Collection"
+      }
+    }
   }
 }
 
