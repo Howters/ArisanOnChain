@@ -4,8 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   Shield, Lock, Users, Wallet, Trophy, CheckCircle, 
-  AlertCircle, Zap, ArrowRight, Play, Pause, TrendingUp,
-  Coins, ArrowUpCircle, User, DollarSign, Building2
+  AlertCircle, Zap, Play, Pause, TrendingUp,
+  Coins, User, DollarSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,9 +64,9 @@ export default function TrustFlowVisual() {
       </div>
 
       {/* Visual Flow Diagram */}
-      <div className="relative min-h-[900px]">
+      <div className="relative">
         <svg
-          viewBox="0 0 1200 1100"
+          viewBox="0 0 1400 1200"
           className="w-full h-auto"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -112,7 +112,7 @@ export default function TrustFlowVisual() {
             <>
               {/* Main Flow Line */}
               <motion.path
-                d="M 600 100 L 600 200 L 400 300 L 400 450 L 600 550 L 600 650 L 800 750 L 800 850"
+                d="M 700 100 L 700 200 L 500 300 L 500 550 L 700 650 L 700 800"
                 stroke="url(#successGrad)"
                 strokeWidth="4"
                 fill="none"
@@ -139,7 +139,7 @@ export default function TrustFlowVisual() {
                   <animateMotion
                     dur="5s"
                     repeatCount="indefinite"
-                    path="M 600 100 L 600 200 L 400 300 L 400 450 L 600 550 L 600 650 L 800 750 L 800 850"
+                    path="M 700 100 L 700 200 L 500 300 L 500 550 L 700 650 L 700 800"
                   />
                 </motion.circle>
               )}
@@ -148,7 +148,7 @@ export default function TrustFlowVisual() {
 
           {/* Deposit to Yield Vault Flow */}
           <motion.path
-            d="M 600 220 L 900 220 L 900 350"
+            d="M 700 220 L 1050 220 L 1050 350"
             stroke="url(#yieldGrad)"
             strokeWidth="3"
             fill="none"
@@ -161,39 +161,26 @@ export default function TrustFlowVisual() {
           {/* Animated coins flowing to yield vault */}
           {isAnimating && (
             <>
-              <motion.circle r="4" fill="#f59e0b" filter="url(#glow)">
-                <animateMotion
-                  dur="2s"
-                  repeatCount="indefinite"
-                  path="M 600 220 L 900 220 L 900 350"
-                />
-              </motion.circle>
-              <motion.circle r="4" fill="#f59e0b" filter="url(#glow)">
-                <animateMotion
-                  dur="2s"
-                  begin="0.5s"
-                  repeatCount="indefinite"
-                  path="M 600 220 L 900 220 L 900 350"
-                />
-              </motion.circle>
-              <motion.circle r="4" fill="#f59e0b" filter="url(#glow)">
-                <animateMotion
-                  dur="2s"
-                  begin="1s"
-                  repeatCount="indefinite"
-                  path="M 600 220 L 900 220 L 900 350"
-                />
-              </motion.circle>
+              {[0, 0.5, 1].map((delay, i) => (
+                <motion.circle key={i} r="4" fill="#f59e0b" filter="url(#glow)">
+                  <animateMotion
+                    dur="2s"
+                    begin={`${delay}s`}
+                    repeatCount="indefinite"
+                    path="M 700 220 L 1050 220 L 1050 350"
+                  />
+                </motion.circle>
+              ))}
             </>
           )}
 
-          {/* Member Avatars Contributing (NEW!) */}
+          {/* Member Avatars Contributing */}
           {showPath === "happy" && (
             <>
               {memberColors.map((color, i) => {
                 const angle = (i / 4) * Math.PI * 2 - Math.PI / 2;
-                const startX = 400 + Math.cos(angle) * 100;
-                const startY = 450 + Math.sin(angle) * 100;
+                const startX = 500 + Math.cos(angle) * 150;
+                const startY = 550 + Math.sin(angle) * 150;
                 
                 return (
                   <g key={i}>
@@ -203,19 +190,19 @@ export default function TrustFlowVisual() {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 1.2 + i * 0.1, duration: 0.3 }}
                     >
-                      <circle cx={startX} cy={startY} r="25" fill={color} filter="url(#shadow)" />
-                      <foreignObject x={startX - 12} y={startY - 12} width="24" height="24">
+                      <circle cx={startX} cy={startY} r="35" fill={color} filter="url(#shadow)" />
+                      <foreignObject x={startX - 15} y={startY - 15} width="30" height="30">
                         <div className="flex items-center justify-center h-full">
-                          <User className="w-4 h-4 text-white" />
+                          <User className="w-6 h-6 text-white" />
                         </div>
                       </foreignObject>
                       <text
                         x={startX}
-                        y={startY + 40}
-                        fontSize="11"
+                        y={startY + 55}
+                        fontSize="14"
                         fill="currentColor"
                         textAnchor="middle"
-                        className="fill-muted-foreground font-semibold"
+                        className="fill-foreground font-semibold"
                       >
                         {memberNames[i]}
                       </text>
@@ -223,9 +210,9 @@ export default function TrustFlowVisual() {
 
                     {/* Contribution Flow Line */}
                     <motion.path
-                      d={`M ${startX} ${startY} L 200 450`}
+                      d={`M ${startX} ${startY} L 200 720`}
                       stroke={color}
-                      strokeWidth="2"
+                      strokeWidth="3"
                       strokeDasharray="5,3"
                       fill="none"
                       opacity="0.6"
@@ -236,12 +223,12 @@ export default function TrustFlowVisual() {
 
                     {/* Animated contribution coins */}
                     {isAnimating && (
-                      <motion.circle r="4" fill={color} filter="url(#glow)">
+                      <motion.circle r="5" fill={color} filter="url(#glow)">
                         <animateMotion
                           dur="2s"
                           begin={`${i * 0.3}s`}
                           repeatCount="indefinite"
-                          path={`M ${startX} ${startY} L 200 450`}
+                          path={`M ${startX} ${startY} L 200 720`}
                         />
                       </motion.circle>
                     )}
@@ -251,23 +238,12 @@ export default function TrustFlowVisual() {
             </>
           )}
 
-          {/* Contributions to Pool Pot */}
-          <motion.path
-            d="M 200 500 L 200 580"
-            stroke="url(#potGrad)"
-            strokeWidth="4"
-            fill="none"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 1, delay: 2 }}
-          />
-
           {/* Default Path Flow */}
           {showPath === "default" && (
             <>
               {/* Branch to Default */}
               <motion.path
-                d="M 600 100 L 600 200 L 400 300 L 400 450 L 950 550 L 950 680"
+                d="M 700 100 L 700 200 L 500 300 L 500 550 L 1100 650 L 1100 850"
                 stroke="url(#errorGrad)"
                 strokeWidth="4"
                 fill="none"
@@ -286,7 +262,7 @@ export default function TrustFlowVisual() {
                   <animateMotion
                     dur="5s"
                     repeatCount="indefinite"
-                    path="M 600 100 L 600 200 L 400 300 L 400 450 L 950 550 L 950 680"
+                    path="M 700 100 L 700 200 L 500 300 L 500 550 L 1100 650 L 1100 850"
                   />
                 </motion.circle>
               )}
@@ -299,8 +275,8 @@ export default function TrustFlowVisual() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <circle cx="600" cy="100" r="60" fill="url(#stepGrad)" filter="url(#shadow)" />
-            <foreignObject x="540" y="40" width="120" height="120">
+            <circle cx="700" cy="100" r="60" fill="url(#stepGrad)" filter="url(#shadow)" />
+            <foreignObject x="640" y="40" width="120" height="120">
               <div className="flex flex-col items-center justify-center h-full text-white">
                 <Users className="w-10 h-10 mb-2" />
                 <div className="text-xs font-bold text-center">Create Pool</div>
@@ -314,8 +290,8 @@ export default function TrustFlowVisual() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <rect x="540" y="180" width="120" height="80" rx="15" fill="url(#stepGrad)" filter="url(#shadow)" />
-            <foreignObject x="540" y="185" width="120" height="70">
+            <rect x="640" y="180" width="120" height="80" rx="15" fill="url(#stepGrad)" filter="url(#shadow)" />
+            <foreignObject x="640" y="185" width="120" height="70">
               <div className="flex flex-col items-center justify-center h-full text-white">
                 <Lock className="w-8 h-8 mb-1" />
                 <div className="text-xs font-bold text-center">Lock Deposit</div>
@@ -330,8 +306,8 @@ export default function TrustFlowVisual() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <rect x="820" y="350" width="160" height="120" rx="20" fill="url(#yieldGrad)" filter="url(#shadow)" />
-            <foreignObject x="830" y="365" width="140" height="90">
+            <rect x="970" y="350" width="160" height="120" rx="20" fill="url(#yieldGrad)" filter="url(#shadow)" />
+            <foreignObject x="980" y="365" width="140" height="90">
               <div className="flex flex-col items-center justify-center h-full text-white">
                 <TrendingUp className="w-10 h-10 mb-2" />
                 <div className="text-sm font-bold text-center">Yield Vault</div>
@@ -355,8 +331,8 @@ export default function TrustFlowVisual() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.5 }}
           >
-            <circle cx="400" cy="300" r="50" fill="url(#stepGrad)" filter="url(#shadow)" />
-            <foreignObject x="350" y="260" width="100" height="80">
+            <circle cx="500" cy="300" r="50" fill="url(#stepGrad)" filter="url(#shadow)" />
+            <foreignObject x="450" y="260" width="100" height="80">
               <div className="flex flex-col items-center justify-center h-full text-white">
                 <Zap className="w-8 h-8 mb-1" />
                 <div className="text-xs font-bold text-center">Activate</div>
@@ -364,47 +340,59 @@ export default function TrustFlowVisual() {
             </foreignObject>
           </motion.g>
 
-          {/* Step 4: Pay Contribution (Central Hub) */}
+          {/* Step 4: Contributions Hub (Central) */}
           <motion.g
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <circle cx="400" cy="450" r="60" fill="url(#stepGrad)" filter="url(#shadow)" />
-            <foreignObject x="340" y="400" width="120" height="100">
+            <circle cx="500" cy="550" r="70" fill="url(#stepGrad)" filter="url(#shadow)" />
+            <foreignObject x="430" y="490" width="140" height="120">
               <div className="flex flex-col items-center justify-center h-full text-white">
-                <Wallet className="w-10 h-10 mb-1" />
-                <div className="text-xs font-bold text-center">Contributions</div>
-                <div className="text-[10px] opacity-80">Rp 1jt each</div>
+                <Wallet className="w-12 h-12 mb-2" />
+                <div className="text-sm font-bold text-center">Contributions</div>
+                <div className="text-xs opacity-80">Rp 1jt each</div>
               </div>
             </foreignObject>
           </motion.g>
 
           {/* Pool Pot */}
           {showPath === "happy" && (
-            <motion.g
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 2.2, duration: 0.5 }}
-            >
-              <circle cx="200" cy="650" r="70" fill="url(#potGrad)" filter="url(#shadow)" />
-              <foreignObject x="130" y="580" width="140" height="140">
-                <div className="flex flex-col items-center justify-center h-full text-white">
-                  <Coins className="w-12 h-12 mb-2" />
-                  <div className="text-sm font-bold text-center">Pool Pot</div>
-                  <div className="text-lg font-bold mt-1">Rp 4jt</div>
-                  {isAnimating && (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      className="text-xl mt-1"
-                    >
-                      💰
-                    </motion.div>
-                  )}
-                </div>
-              </foreignObject>
-            </motion.g>
+            <>
+              <motion.path
+                d="M 200 770 L 200 900"
+                stroke="url(#potGrad)"
+                strokeWidth="4"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1, delay: 2 }}
+              />
+
+              <motion.g
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 2.2, duration: 0.5 }}
+              >
+                <circle cx="200" cy="900" r="80" fill="url(#potGrad)" filter="url(#shadow)" />
+                <foreignObject x="120" y="820" width="160" height="160">
+                  <div className="flex flex-col items-center justify-center h-full text-white">
+                    <Coins className="w-14 h-14 mb-2" />
+                    <div className="text-base font-bold text-center">Pool Pot</div>
+                    <div className="text-xl font-bold mt-1">Rp 4jt</div>
+                    {isAnimating && (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="text-2xl mt-1"
+                      >
+                        💰
+                      </motion.div>
+                    )}
+                  </div>
+                </foreignObject>
+              </motion.g>
+            </>
           )}
 
           {/* Branch Decision */}
@@ -414,11 +402,11 @@ export default function TrustFlowVisual() {
             transition={{ delay: 2.4, duration: 0.5 }}
           >
             <polygon
-              points="600,520 700,570 600,620 500,570"
+              points="700,620 800,670 700,720 600,670"
               fill="#FFC107"
               filter="url(#shadow)"
             />
-            <foreignObject x="540" y="545" width="120" height="50">
+            <foreignObject x="640" y="645" width="120" height="50">
               <div className="flex items-center justify-center h-full">
                 <div className="text-xs font-bold text-center text-gray-900">
                   Everyone<br/>Paid?
@@ -432,9 +420,9 @@ export default function TrustFlowVisual() {
             <>
               {/* Arrow from pot to winner */}
               <motion.path
-                d="M 270 650 L 540 650"
+                d="M 280 900 L 620 800"
                 stroke="url(#successGrad)"
-                strokeWidth="3"
+                strokeWidth="4"
                 fill="none"
                 strokeDasharray="8,4"
                 initial={{ pathLength: 0 }}
@@ -447,37 +435,37 @@ export default function TrustFlowVisual() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 2.8, duration: 0.5 }}
               >
-                <circle cx="600" cy="650" r="60" fill="url(#successGrad)" filter="url(#shadow)" />
-                <foreignObject x="540" y="590" width="120" height="120">
+                <circle cx="700" cy="800" r="70" fill="url(#successGrad)" filter="url(#shadow)" />
+                <foreignObject x="630" y="730" width="140" height="140">
                   <div className="flex flex-col items-center justify-center h-full text-white">
-                    <Trophy className="w-10 h-10 mb-2" />
-                    <div className="text-xs font-bold text-center">Siti Wins!</div>
-                    <div className="text-sm font-bold">Rp 3.94jt</div>
+                    <Trophy className="w-12 h-12 mb-2" />
+                    <div className="text-sm font-bold text-center">Siti Wins!</div>
+                    <div className="text-lg font-bold">Rp 3.94jt</div>
                   </div>
                 </foreignObject>
               </motion.g>
 
-              {/* Platform Fee Breakdown (NEW!) */}
+              {/* Platform Fee Breakdown */}
               <motion.g
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 3, duration: 0.5 }}
               >
-                <rect x="540" y="730" width="120" height="100" rx="15" fill="#6366f1" fillOpacity="0.3" stroke="#6366f1" strokeWidth="2" filter="url(#shadow)" />
-                <foreignObject x="545" y="740" width="110" height="80">
-                  <div className="text-center text-white">
-                    <div className="text-[10px] font-bold mb-2">Fee Breakdown</div>
-                    <div className="text-[9px] space-y-1">
+                <rect x="480" y="900" width="140" height="120" rx="15" fill="#6366f1" fillOpacity="0.9" stroke="#6366f1" strokeWidth="2" filter="url(#shadow)" />
+                <foreignObject x="490" y="915" width="120" height="90">
+                  <div className="text-white">
+                    <div className="text-xs font-bold mb-2 text-center">Fee Breakdown</div>
+                    <div className="text-[10px] space-y-1.5">
                       <div className="flex justify-between">
                         <span>Total Pot:</span>
                         <span className="font-bold">Rp 4.00jt</span>
                       </div>
                       <div className="flex justify-between text-amber-300">
-                        <span>Platform (1.5%):</span>
+                        <span>Fee (1.5%):</span>
                         <span className="font-bold">-Rp 60k</span>
                       </div>
-                      <div className="border-t border-white/20 pt-1 flex justify-between text-green-300">
-                        <span>Winner Gets:</span>
+                      <div className="border-t border-white/30 pt-1 flex justify-between text-green-300">
+                        <span>Winner:</span>
                         <span className="font-bold">Rp 3.94jt</span>
                       </div>
                     </div>
@@ -490,14 +478,14 @@ export default function TrustFlowVisual() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 3.2, duration: 0.5 }}
               >
-                <rect x="720" y="710" width="160" height="140" rx="20" fill="url(#successGrad)" filter="url(#shadow)" />
-                <foreignObject x="730" y="725" width="140" height="110">
+                <rect x="900" y="880" width="180" height="140" rx="20" fill="url(#successGrad)" filter="url(#shadow)" />
+                <foreignObject x="910" y="895" width="160" height="110">
                   <div className="flex flex-col items-center justify-center h-full text-white">
-                    <CheckCircle className="w-12 h-12 mb-2" />
-                    <div className="text-sm font-bold text-center">Complete!</div>
-                    <div className="text-[10px] opacity-90 space-y-0.5 mt-1">
-                      <div>✓ Get deposit: Rp 2jt</div>
-                      <div>✓ +Yield: Rp 100k</div>
+                    <CheckCircle className="w-14 h-14 mb-2" />
+                    <div className="text-base font-bold text-center">Complete!</div>
+                    <div className="text-[11px] opacity-90 space-y-0.5 mt-2">
+                      <div>✓ Deposit: Rp 2jt</div>
+                      <div>✓ Yield: Rp 100k</div>
                       <div>✓ Reputation +1</div>
                     </div>
                   </div>
@@ -514,14 +502,14 @@ export default function TrustFlowVisual() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 2.6, duration: 0.5 }}
               >
-                <rect x="870" y="680" width="160" height="160" rx="20" fill="url(#errorGrad)" filter="url(#shadow)" />
-                <foreignObject x="880" y="695" width="140" height="130">
+                <rect x="1020" y="850" width="180" height="180" rx="20" fill="url(#errorGrad)" filter="url(#shadow)" />
+                <foreignObject x="1030" y="870" width="160" height="140">
                   <div className="flex flex-col items-center justify-center h-full text-white">
-                    <AlertCircle className="w-12 h-12 mb-2" />
-                    <div className="text-sm font-bold text-center mb-2">AUTOMATIC PENALTY</div>
-                    <div className="text-[10px] text-center space-y-1">
-                      <div>⚡ Deposit Seized (Rp 2jt)</div>
-                      <div>💀 DebtNFT Minted</div>
+                    <AlertCircle className="w-14 h-14 mb-3" />
+                    <div className="text-base font-bold text-center mb-2">PENALTY</div>
+                    <div className="text-[11px] text-center space-y-1">
+                      <div>⚡ Deposit Seized</div>
+                      <div>💀 DebtNFT</div>
                       <div>📉 Reputation = 0</div>
                       <div>🚫 Platform Ban</div>
                     </div>
@@ -533,22 +521,22 @@ export default function TrustFlowVisual() {
 
           {/* Labels */}
           {showPath === "happy" && (
-            <text x="620" y="575" fontSize="12" fill="#22c55e" fontWeight="bold">
+            <text x="720" y="675" fontSize="14" fill="#22c55e" fontWeight="bold">
               ✓ YES
             </text>
           )}
           {showPath === "default" && (
-            <text x="700" y="555" fontSize="12" fill="#ef4444" fontWeight="bold">
+            <text x="810" y="655" fontSize="14" fill="#ef4444" fontWeight="bold">
               ✗ NO
             </text>
           )}
         </svg>
 
         {/* Trust Points - Floating Cards */}
-        <div className="absolute top-0 right-0 space-y-3 hidden xl:block max-w-xs">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
             className="bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm border border-green-500/30 rounded-xl p-4"
           >
@@ -564,8 +552,8 @@ export default function TrustFlowVisual() {
           </motion.div>
 
           <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.7 }}
             className="bg-gradient-to-r from-amber-500/20 to-amber-600/20 backdrop-blur-sm border border-amber-500/30 rounded-xl p-4"
           >
@@ -581,8 +569,8 @@ export default function TrustFlowVisual() {
           </motion.div>
 
           <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.9 }}
             className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 backdrop-blur-sm border border-blue-500/30 rounded-xl p-4"
           >
@@ -598,8 +586,8 @@ export default function TrustFlowVisual() {
           </motion.div>
 
           <motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 1.1 }}
             className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4"
           >
