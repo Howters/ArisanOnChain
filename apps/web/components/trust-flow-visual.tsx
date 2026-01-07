@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { 
   Shield, Lock, Users, Wallet, Trophy, CheckCircle, 
   AlertCircle, Zap, Play, Pause, TrendingUp,
-  Coins, User, DollarSign
+  Coins, User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -440,43 +440,15 @@ export default function TrustFlowVisual() {
                   <div className="flex flex-col items-center justify-center h-full text-white">
                     <Trophy className="w-12 h-12 mb-2" />
                     <div className="text-sm font-bold text-center">Siti Wins!</div>
-                    <div className="text-lg font-bold">Rp 3.94jt</div>
+                    <div className="text-lg font-bold">Rp 4jt</div>
                   </div>
                 </foreignObject>
               </motion.g>
 
-              {/* Platform Fee Breakdown */}
               <motion.g
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 3, duration: 0.5 }}
-              >
-                <rect x="480" y="900" width="140" height="120" rx="15" fill="#6366f1" fillOpacity="0.9" stroke="#6366f1" strokeWidth="2" filter="url(#shadow)" />
-                <foreignObject x="490" y="915" width="120" height="90">
-                  <div className="text-white">
-                    <div className="text-xs font-bold mb-2 text-center">Fee Breakdown</div>
-                    <div className="text-[10px] space-y-1.5">
-                      <div className="flex justify-between">
-                        <span>Total Pot:</span>
-                        <span className="font-bold">Rp 4.00jt</span>
-                      </div>
-                      <div className="flex justify-between text-amber-300">
-                        <span>Fee (1.5%):</span>
-                        <span className="font-bold">-Rp 60k</span>
-                      </div>
-                      <div className="border-t border-white/30 pt-1 flex justify-between text-green-300">
-                        <span>Winner:</span>
-                        <span className="font-bold">Rp 3.94jt</span>
-                      </div>
-                    </div>
-                  </div>
-                </foreignObject>
-              </motion.g>
-
-              <motion.g
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 3.2, duration: 0.5 }}
               >
                 <rect x="900" y="880" width="180" height="140" rx="20" fill="url(#successGrad)" filter="url(#shadow)" />
                 <foreignObject x="910" y="895" width="160" height="110">
@@ -592,11 +564,11 @@ export default function TrustFlowVisual() {
             className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4"
           >
             <div className="flex items-start gap-3">
-              <DollarSign className="w-6 h-6 text-purple-500 shrink-0" />
+              <Lock className="w-6 h-6 text-purple-500 shrink-0" />
               <div>
-                <div className="font-bold text-sm mb-1">Transparent Fees</div>
+                <div className="font-bold text-sm mb-1">Money Locked</div>
                 <div className="text-xs text-muted-foreground">
-                  Only 1.5% platform fee. Fully visible.
+                  Smart contract holds funds. Can't steal.
                 </div>
               </div>
             </div>
@@ -628,7 +600,7 @@ export default function TrustFlowVisual() {
             </li>
             <li className="flex items-center gap-2">
               <span className="text-green-500">✓</span>
-              <span>Winner gets Rp 3.94jt (after 1.5% fee)</span>
+              <span>Winner gets full pot: Rp 4jt</span>
             </li>
             <li className="flex items-center gap-2">
               <span className="text-green-500">✓</span>
