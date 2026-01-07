@@ -420,7 +420,7 @@ export default function TrustFlowVisual() {
             <>
               {/* Arrow from pot to winner */}
               <motion.path
-                d="M 280 900 L 620 800"
+                d="M 280 700 L 620 800"
                 stroke="url(#successGrad)"
                 strokeWidth="4"
                 fill="none"
