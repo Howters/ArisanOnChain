@@ -10,7 +10,8 @@
     "deploy:local": "hardhat run scripts/deploy-local.ts --network localhost",
     "node": "hardhat node",
     "clean": "hardhat clean",
-    "verify": "hardhat verify"
+    "verify": "hardhat verify",
+    "verify:lisk": "hardhat run scripts/verify.ts --network liskSepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",

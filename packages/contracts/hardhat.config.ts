@@ -8,6 +8,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x000000000000000000000000000000
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://rpc.sepolia.org";
 const LISK_SEPOLIA_RPC_URL = process.env.LISK_SEPOLIA_RPC_URL || "https://rpc.sepolia-api.lisk.com";
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+const BLOCKSCOUT_API_KEY = "abc123";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -43,7 +44,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       sepolia: ETHERSCAN_API_KEY,
-      liskSepolia: ETHERSCAN_API_KEY,
+      liskSepolia: BLOCKSCOUT_API_KEY,
     },
     customChains: [
       {
