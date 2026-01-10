@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { cn, formatIDR } from "@/lib/utils";
+import { cn, formatIDR, formatIDRX } from "@/lib/utils";
 import { Wallet, QrCode, Building2, Check, AlertTriangle, Loader2 } from "lucide-react";
 import { useUserStore } from "@/stores/user-store";
 import { useTopUp } from "@/lib/hooks/use-contracts";
@@ -132,9 +132,9 @@ export function TopUpDialog() {
         {step === "payment" && (
           <>
             <DialogHeader>
-              <DialogTitle>Pilih Metode Pembayaran</DialogTitle>
+              <DialogTitle>Pilih Metode Pembelian</DialogTitle>
               <DialogDescription>
-                Jumlah: {formatIDR(amount)} IDRX
+                Jumlah: {formatIDRX(amount)} IDRX
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -180,9 +180,9 @@ export function TopUpDialog() {
         {step === "confirm" && (
           <>
             <DialogHeader>
-              <DialogTitle>Konfirmasi Pembayaran</DialogTitle>
+              <DialogTitle>Konfirmasi Pembelian</DialogTitle>
               <DialogDescription>
-                {selectedMethod === "qris" ? "Scan kode QRIS berikut" : "Selesaikan pembayaran"}
+                {selectedMethod === "qris" ? "Scan kode QRIS berikut" : "Selesaikan pembelian"}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -214,7 +214,7 @@ export function TopUpDialog() {
                 <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
                 <p className="text-muted-foreground">
                   <span className="font-medium text-foreground">INI SIMULASI</span> - Dana tidak nyata. 
-                  Klik tombol di bawah untuk mensimulasikan pembayaran berhasil.
+                  Klik tombol di bawah untuk mensimulasikan pembelian berhasil.
                 </p>
               </div>
 
@@ -239,7 +239,7 @@ export function TopUpDialog() {
                       Memproses...
                     </>
                   ) : (
-                    "Saya Sudah Bayar (Simulasi)"
+                    "Saya Sudah Membeli (Simulasi)"
                   )}
                 </Button>
               </div>

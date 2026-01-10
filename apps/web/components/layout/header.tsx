@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu, Wallet, LogOut, User, Settings, RefreshCw, Loader2, Copy, Check, AlertTriangle } from "lucide-react";
-import { formatAddress, formatIDR } from "@/lib/utils";
+import { formatAddress, formatIDRX } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
 import { Link } from "@/i18n/routing";
 import { TopUpDialog } from "@/components/topup/topup-dialog";
@@ -106,7 +106,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <>
                 <span className="text-muted-foreground">{t("balance")}: </span>
                 <span className="font-semibold">
-                  {formatIDR(Number(balances.liquid))} IDRX
+                  {formatIDRX(Number(balances.liquid))} IDRX
                 </span>
               </>
             )}

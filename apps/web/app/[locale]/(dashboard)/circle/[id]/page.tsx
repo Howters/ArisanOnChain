@@ -37,7 +37,7 @@ import {
   MessageCircle,
   TrendingUp,
 } from "lucide-react";
-import { formatIDR, formatAddress } from "@/lib/utils";
+import { formatIDR, formatIDRX, formatAddress } from "@/lib/utils";
 import { useState } from "react";
 import { 
   usePool, 
@@ -431,7 +431,7 @@ export default function CirclePage() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{tm("depositConfirm.yourBalance")}</span>
                 <span className={`font-medium ${hasEnoughForDeposit ? "text-success" : "text-destructive"}`}>
-                  {formatIDR(Number(userBalance))} IDRX
+                  {formatIDRX(Number(userBalance))} IDRX
                 </span>
               </div>
             </div>
@@ -469,7 +469,7 @@ export default function CirclePage() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{tm("depositConfirm.yourBalance")}</span>
                 <span className={`font-medium ${hasEnoughForContribution ? "text-success" : "text-destructive"}`}>
-                  {formatIDR(Number(userBalance))} IDRX
+                  {formatIDRX(Number(userBalance))} IDRX
                 </span>
               </div>
               </div>

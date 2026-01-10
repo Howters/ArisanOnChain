@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Droplets, Loader2, Check } from "lucide-react";
 import { useFaucet } from "@/lib/hooks/use-contracts";
 import { useState } from "react";
-import { formatIDR } from "@/lib/utils";
+import { formatIDRX } from "@/lib/utils";
 import { toast } from "sonner";
 import { useWalletAddress, useWalletReady } from "@/lib/hooks/use-wallet-address";
 
@@ -28,7 +28,7 @@ export function FaucetButton() {
       await faucet.mutateAsync();
       setShowSuccess(true);
       toast.success("Faucet berhasil!", {
-        description: `+${formatIDR(FAUCET_AMOUNT)} IDRX telah ditambahkan`,
+        description: `+${formatIDRX(FAUCET_AMOUNT)} IDRX telah ditambahkan`,
       });
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error: any) {
@@ -42,7 +42,7 @@ export function FaucetButton() {
     return (
       <Button variant="outline" size="sm" className="text-success border-success/50">
         <Check className="mr-2 h-4 w-4" />
-        +{formatIDR(FAUCET_AMOUNT)}
+        +{formatIDRX(FAUCET_AMOUNT)}
       </Button>
     );
   }

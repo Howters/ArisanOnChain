@@ -19,7 +19,7 @@ import { Link } from "@/i18n/routing";
 import { useUserStore } from "@/stores/user-store";
 import { usePools, useBalance, useDebtNFTs } from "@/lib/hooks/use-contracts";
 import { useSocialProfile } from "@/lib/hooks/use-social-profile";
-import { formatIDR } from "@/lib/utils";
+import { formatIDR, formatIDRX } from "@/lib/utils";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const stats = [
     {
       label: t("availableBalance"),
-      value: formatIDR(Number(balances.liquid)),
+      value: formatIDRX(Number(balances.liquid)),
       sublabel: "IDRX",
       icon: Wallet,
       color: "text-primary",
@@ -60,7 +60,7 @@ export default function DashboardPage() {
     },
     {
       label: t("lockedFunds"),
-      value: formatIDR(Number(balances.locked)),
+      value: formatIDRX(Number(balances.locked)),
       sublabel: t("securityDeposit"),
       icon: Lock,
       color: "text-warning",
@@ -101,7 +101,7 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <p className="font-medium text-destructive">{t("debtWarning", { count: debts.length })}</p>
                   <p className="text-sm text-muted-foreground">
-                    {t("totalDebt")}: {formatIDR(debts.reduce((acc: number, d: any) => acc + Number(d.defaultedAmount), 0))} IDRX
+                    {t("totalDebt")}: {formatIDRX(debts.reduce((acc: number, d: any) => acc + Number(d.defaultedAmount), 0))} IDRX
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {t("payDebt")}
