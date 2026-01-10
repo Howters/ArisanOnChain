@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://arisan-on-chain.vercel.app)
 [![Built on Lisk](https://img.shields.io/badge/Built%20on-Lisk%20L2-blue)](https://lisk.com)
-[![Hackathon](https://img.shields.io/badge/Hackathon-2025-orange)]()
+[![Hackathon](https://img.shields.io/badge/Hackathon-2026-orange)]()
 
 ---
 
@@ -773,7 +773,7 @@ pnpm dev
 
 ## 👥 Team 
 
-Built with ❤️ for the Kelas Rutin Batch IV 2025
+Built with ❤️ for the Lisk Round 3
 
 ---
 
