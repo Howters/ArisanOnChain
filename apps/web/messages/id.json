@@ -619,49 +619,6 @@
         "desc": "Verifikasi usia dengan KTP menggunakan zero-knowledge proofs. Data Anda tetap rahasia."
       }
     },
-    "kyc": {
-      "title": "Verifikasi KYC",
-      "subtitle": "Verifikasi identitas dengan KTP (Zero-Knowledge)",
-      "description": "Kami menggunakan teknologi ZK-KYC untuk memverifikasi Anda berusia 17+ tahun tanpa menyimpan data pribadi Anda.",
-      "privacyNote": "Data KTP Anda diproses secara lokal dan hanya bukti verifikasi usia yang disimpan.",
-      "form": {
-        "ktpNumber": "Nomor KTP (16 digit)",
-        "ktpNumberPlaceholder": "Masukkan nomor KTP 16 digit",
-        "fullName": "Nama Lengkap (sesuai KTP)",
-        "fullNamePlaceholder": "Masukkan nama lengkap dari KTP",
-        "birthDate": "Tanggal Lahir",
-        "address": "Alamat (sesuai KTP)",
-        "addressPlaceholder": "Masukkan alamat lengkap dari KTP",
-        "submit": "Ajukan KYC",
-        "submitting": "Mengajukan..."
-      },
-      "status": {
-        "unverified": "Belum Terverifikasi",
-        "pending": "Sedang Ditinjau",
-        "verified": "Terverifikasi ✓",
-        "rejected": "Ditolak"
-      },
-      "messages": {
-        "success": "KYC berhasil diajukan! Verifikasi memakan waktu 24 jam.",
-        "verified": "KYC terverifikasi! Anda sekarang bisa menggunakan semua fitur.",
-        "rejected": "KYC ditolak. Silakan periksa data Anda dan coba lagi.",
-        "error": "Error mengajukan KYC. Silakan coba lagi."
-      },
-      "zk": {
-        "title": "Zero-Knowledge Proof",
-        "description": "Kami hanya memverifikasi bahwa Anda berusia 17+ tahun. Tanggal lahir dan detail pribadi Anda tetap rahasia.",
-        "proof": "ZK Proof Dihasilkan",
-        "ageVerified": "Usia 17+ Terverifikasi"
-      },
-      "updates": {
-        "title": "Update Langsung",
-        "desc": "Notifikasi langsung saat fitur baru diluncurkan"
-      },
-      "community": {
-        "title": "Komunitas Prioritas",
-        "desc": "Bergabung dengan grup WhatsApp eksklusif early adopters"
-      }
-    },
     "launch": {
       "title": "🎯 Target Launch: Q1 2026",
       "desc": "Kami sedang dalam tahap final development. Kamu akan jadi yang pertama tahu saat ArisanAman siap digunakan."
@@ -689,6 +646,41 @@
       "tip": "Tips: Share halaman ini ke teman-teman arisan kamu!"
     },
     "footer": "© 2026 ArisanAman. Built for Indonesia 🇮🇩"
+  },
+  "kyc": {
+    "title": "Verifikasi KYC",
+    "subtitle": "Verifikasi identitas dengan KTP (Zero-Knowledge)",
+    "description": "Kami menggunakan teknologi ZK-KYC untuk memverifikasi Anda berusia 17+ tahun tanpa menyimpan data pribadi Anda.",
+    "privacyNote": "Data KTP Anda diproses secara lokal dan hanya bukti verifikasi usia yang disimpan.",
+    "form": {
+      "ktpNumber": "Nomor KTP (16 digit)",
+      "ktpNumberPlaceholder": "Masukkan nomor KTP 16 digit",
+      "fullName": "Nama Lengkap (sesuai KTP)",
+      "fullNamePlaceholder": "Masukkan nama lengkap dari KTP",
+      "birthDate": "Tanggal Lahir",
+      "address": "Alamat (sesuai KTP)",
+      "addressPlaceholder": "Masukkan alamat lengkap dari KTP",
+      "submit": "Ajukan KYC",
+      "submitting": "Mengajukan..."
+    },
+    "status": {
+      "unverified": "Belum Terverifikasi",
+      "pending": "Sedang Ditinjau",
+      "verified": "Terverifikasi ✓",
+      "rejected": "Ditolak"
+    },
+    "messages": {
+      "success": "KYC berhasil diajukan! Verifikasi memakan waktu 24 jam.",
+      "verified": "KYC terverifikasi! Anda sekarang bisa menggunakan semua fitur.",
+      "rejected": "KYC ditolak. Silakan periksa data Anda dan coba lagi.",
+      "error": "Error mengajukan KYC. Silakan coba lagi."
+    },
+    "zk": {
+      "title": "Zero-Knowledge Proof",
+      "description": "Kami hanya memverifikasi bahwa Anda berusia 17+ tahun. Tanggal lahir dan detail pribadi Anda tetap rahasia.",
+      "proof": "ZK Proof Dihasilkan",
+      "ageVerified": "Usia 17+ Terverifikasi"
+    }
   },
   "faqPage": {
     "title": "Bantuan & FAQ",

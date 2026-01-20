@@ -619,49 +619,6 @@
         "desc": "Verify age with KTP using zero-knowledge proofs. Your data stays private."
       }
     },
-    "kyc": {
-      "title": "KYC Verification",
-      "subtitle": "Verify your identity with KTP (Zero-Knowledge)",
-      "description": "We use ZK-KYC technology to verify you're 17+ years old without storing your personal data.",
-      "privacyNote": "Your KTP data is processed locally and only a proof of age verification is stored.",
-      "form": {
-        "ktpNumber": "KTP Number (16 digits)",
-        "ktpNumberPlaceholder": "Enter 16-digit KTP number",
-        "fullName": "Full Name (as in KTP)",
-        "fullNamePlaceholder": "Enter full name from KTP",
-        "birthDate": "Birth Date",
-        "address": "Address (as in KTP)",
-        "addressPlaceholder": "Enter complete address from KTP",
-        "submit": "Submit KYC",
-        "submitting": "Submitting..."
-      },
-      "status": {
-        "unverified": "Not Verified",
-        "pending": "Under Review",
-        "verified": "Verified ✓",
-        "rejected": "Rejected"
-      },
-      "messages": {
-        "success": "KYC submitted successfully! Verification takes 24 hours.",
-        "verified": "KYC verified! You can now use all features.",
-        "rejected": "KYC was rejected. Please check your data and try again.",
-        "error": "Error submitting KYC. Please try again."
-      },
-      "zk": {
-        "title": "Zero-Knowledge Proof",
-        "description": "We only verify that you are 17+ years old. Your actual birth date and personal details remain private.",
-        "proof": "ZK Proof Generated",
-        "ageVerified": "Age 17+ Verified"
-      },
-      "updates": {
-        "title": "Direct Updates",
-        "desc": "Get notified immediately when new features launch"
-      },
-      "community": {
-        "title": "Priority Community",
-        "desc": "Join exclusive WhatsApp group for early adopters"
-      }
-    },
     "launch": {
       "title": "🎯 Target Launch: Q1 2026",
       "desc": "We're in the final development stage. You'll be the first to know when ArisanAman is ready to use."
@@ -689,6 +646,41 @@
       "tip": "Tip: Share this page with your arisan friends!"
     },
     "footer": "© 2026 ArisanAman. Built for Indonesia 🇮🇩"
+  },
+  "kyc": {
+    "title": "KYC Verification",
+    "subtitle": "Verify your identity with KTP (Zero-Knowledge)",
+    "description": "We use ZK-KYC technology to verify you're 17+ years old without storing your personal data.",
+    "privacyNote": "Your KTP data is processed locally and only a proof of age verification is stored.",
+    "form": {
+      "ktpNumber": "KTP Number (16 digits)",
+      "ktpNumberPlaceholder": "Enter 16-digit KTP number",
+      "fullName": "Full Name (as in KTP)",
+      "fullNamePlaceholder": "Enter full name from KTP",
+      "birthDate": "Birth Date",
+      "address": "Address (as in KTP)",
+      "addressPlaceholder": "Enter complete address from KTP",
+      "submit": "Submit KYC",
+      "submitting": "Submitting..."
+    },
+    "status": {
+      "unverified": "Not Verified",
+      "pending": "Under Review",
+      "verified": "Verified ✓",
+      "rejected": "Rejected"
+    },
+    "messages": {
+      "success": "KYC submitted successfully! Verification takes 24 hours.",
+      "verified": "KYC verified! You can now use all features.",
+      "rejected": "KYC was rejected. Please check your data and try again.",
+      "error": "Error submitting KYC. Please try again."
+    },
+    "zk": {
+      "title": "Zero-Knowledge Proof",
+      "description": "We only verify that you are 17+ years old. Your actual birth date and personal details remain private.",
+      "proof": "ZK Proof Generated",
+      "ageVerified": "Age 17+ Verified"
+    }
   },
   "faqPage": {
     "title": "Help & FAQ",

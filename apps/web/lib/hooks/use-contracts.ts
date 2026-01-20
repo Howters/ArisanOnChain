@@ -80,7 +80,8 @@ export function useTopUp() {
       
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
   });
@@ -179,7 +180,8 @@ export function useCreatePool() {
         poolAddress 
       };
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pools"] });
     },
   });
@@ -206,7 +208,8 @@ export function useRequestJoin(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -233,7 +236,8 @@ export function useApproveMember(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -260,7 +264,8 @@ export function useRejectMember(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -295,7 +300,8 @@ export function useLockSecurityDeposit(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
@@ -331,7 +337,8 @@ export function useContribute(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
@@ -367,7 +374,8 @@ export function useVouch(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
@@ -395,7 +403,8 @@ export function useSetRotationOrder(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -422,7 +431,8 @@ export function useActivatePool(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
       queryClient.invalidateQueries({ queryKey: ["pools"] });
     },
@@ -450,7 +460,8 @@ export function useDetermineWinner(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -477,7 +488,8 @@ export function useClaimPayout(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
@@ -505,7 +517,8 @@ export function useReportDefault(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
     },
   });
@@ -532,7 +545,8 @@ export function useFaucet() {
       
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
   });
@@ -559,7 +573,8 @@ export function useWithdrawLiquidFunds(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
@@ -587,7 +602,8 @@ export function useWithdrawSecurityDeposit(poolAddress: string | undefined) {
       const result = await sendTx(tx);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       queryClient.invalidateQueries({ queryKey: ["pool"] });
       queryClient.invalidateQueries({ queryKey: ["balance"] });
     },
