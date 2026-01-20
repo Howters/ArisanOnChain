@@ -12,6 +12,18 @@ export interface UserProfile {
   nama: string;
   whatsapp: string;
   kota?: string;
+  kycStatus?: 'unverified' | 'pending' | 'verified' | 'rejected';
+  zkProofHash?: string;
+  isAdult?: boolean;
+  kycSubmittedAt?: string;
+}
+
+export interface KYCData {
+  walletAddress: string;
+  ktpNumber: string;
+  fullName: string;
+  birthDate: string;
+  address: string;
 }
 
 export interface WaitlistEntry {
@@ -34,9 +46,22 @@ async function initTables() {
           nama TEXT NOT NULL,
           whatsapp TEXT NOT NULL,
           kota TEXT,
+          kyc_status TEXT DEFAULT 'unverified' CHECK (kyc_status IN ('unverified', 'pending', 'verified', 'rejected')),
+          zk_proof_hash TEXT,
+          is_adult BOOLEAN,
+          kyc_submitted_at TIMESTAMP,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )
+      `);
+
+      // Add columns if they don't exist (for existing tables)
+      await client.query(`
+        ALTER TABLE user_profiles
+        ADD COLUMN IF NOT EXISTS kyc_status TEXT DEFAULT 'unverified' CHECK (kyc_status IN ('unverified', 'pending', 'verified', 'rejected')),
+        ADD COLUMN IF NOT EXISTS zk_proof_hash TEXT,
+        ADD COLUMN IF NOT EXISTS is_adult BOOLEAN,
+        ADD COLUMN IF NOT EXISTS kyc_submitted_at TIMESTAMP
       `);
 
       // Waitlist table
@@ -87,6 +112,10 @@ export async function getProfile(
       nama: row.nama,
       whatsapp: row.whatsapp,
       kota: row.kota,
+      kycStatus: row.kyc_status,
+      zkProofHash: row.zk_proof_hash,
+      isAdult: row.is_adult,
+      kycSubmittedAt: row.kyc_submitted_at?.toISOString(),
     };
   } catch (error) {
     console.error("Error getting profile:", error);
@@ -101,15 +130,28 @@ export async function upsertProfile(profile: UserProfile): Promise<{
   try {
     await pool.query(
       `
-        INSERT INTO user_profiles (wallet_address, nama, whatsapp, kota, updated_at)
-        VALUES ($1, $2, $3, $4, NOW())
+        INSERT INTO user_profiles (wallet_address, nama, whatsapp, kota, kyc_status, zk_proof_hash, is_adult, kyc_submitted_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
         ON CONFLICT(wallet_address) DO UPDATE SET
           nama = excluded.nama,
           whatsapp = excluded.whatsapp,
           kota = excluded.kota,
+          kyc_status = COALESCE(excluded.kyc_status, user_profiles.kyc_status),
+          zk_proof_hash = COALESCE(excluded.zk_proof_hash, user_profiles.zk_proof_hash),
+          is_adult = COALESCE(excluded.is_adult, user_profiles.is_adult),
+          kyc_submitted_at = COALESCE(excluded.kyc_submitted_at, user_profiles.kyc_submitted_at),
           updated_at = NOW()
       `,
-      [profile.walletAddress, profile.nama, profile.whatsapp, profile.kota || null]
+      [
+        profile.walletAddress,
+        profile.nama,
+        profile.whatsapp,
+        profile.kota || null,
+        profile.kycStatus || 'unverified',
+        profile.zkProofHash || null,
+        profile.isAdult || null,
+        profile.kycSubmittedAt ? new Date(profile.kycSubmittedAt) : null
+      ]
     );
 
     return { success: true };
@@ -196,7 +238,7 @@ export async function getWaitlistStats() {
   try {
     // Single optimized query to get all stats
     const result = await pool.query(`
-      SELECT 
+      SELECT
         COUNT(*) as total,
         SUM(CASE WHEN peran = 'Admin' THEN 1 ELSE 0 END) as admin_count,
         SUM(CASE WHEN peran = 'Member' THEN 1 ELSE 0 END) as member_count
@@ -234,5 +276,197 @@ export async function getWaitlistStats() {
   } catch (error) {
     console.error("Error getting waitlist stats:", error);
     throw error;
+  }
+}
+
+// KYC Functions
+
+// Mock ZK proof generation (simplified for demo)
+function generateZKProof(ktpData: KYCData): string {
+  // In a real ZK system, this would generate a cryptographic proof
+  // For demo, we create a hash that proves age >= 17 without revealing DOB
+  const age = calculateAge(ktpData.birthDate);
+  const isAdult = age >= 17;
+
+  // Mock ZK proof: hash of (ktpNumber + age_verification + salt)
+  const salt = Math.random().toString(36).substring(2, 15);
+  const proofData = `${ktpData.ktpNumber}:${isAdult ? 'adult' : 'minor'}:${salt}`;
+  const proofHash = require('crypto').createHash('sha256').update(proofData).digest('hex');
+
+  return proofHash;
+}
+
+// Calculate age from birth date
+function calculateAge(birthDate: string): number {
+  const today = new Date();
+  const birth = new Date(birthDate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
+// Mock KTP validation
+function validateKTP(ktpData: KYCData): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  // KTP number should be 16 digits
+  if (!/^\d{16}$/.test(ktpData.ktpNumber)) {
+    errors.push("Nomor KTP harus 16 digit");
+  }
+
+  // Name should not be empty and reasonable length
+  if (!ktpData.fullName || ktpData.fullName.length < 2) {
+    errors.push("Nama lengkap harus diisi");
+  }
+
+  // Birth date should be valid and not in future
+  const birthDate = new Date(ktpData.birthDate);
+  const today = new Date();
+  if (isNaN(birthDate.getTime())) {
+    errors.push("Tanggal lahir tidak valid");
+  } else if (birthDate > today) {
+    errors.push("Tanggal lahir tidak boleh di masa depan");
+  }
+
+  // Address should not be empty
+  if (!ktpData.address || ktpData.address.length < 10) {
+    errors.push("Alamat harus diisi dengan lengkap");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+export async function submitKYC(walletAddress: string, kycData: KYCData): Promise<{
+  success: boolean;
+  error?: string;
+  kycStatus?: string;
+}> {
+  try {
+    // Validate KTP data
+    const validation = validateKTP(kycData);
+    if (!validation.valid) {
+      return {
+        success: false,
+        error: validation.errors.join(", ")
+      };
+    }
+
+    // Generate mock ZK proof
+    const zkProofHash = generateZKProof(kycData);
+    const age = calculateAge(kycData.birthDate);
+    const isAdult = age >= 17;
+
+    // Update profile with KYC data
+    await pool.query(
+      `
+        UPDATE user_profiles
+        SET kyc_status = 'pending',
+            zk_proof_hash = $1,
+            is_adult = $2,
+            kyc_submitted_at = NOW(),
+            updated_at = NOW()
+        WHERE wallet_address = $3
+      `,
+      [zkProofHash, isAdult, walletAddress]
+    );
+
+    return {
+      success: true,
+      kycStatus: 'pending'
+    };
+  } catch (error) {
+    console.error("Error submitting KYC:", error);
+    return {
+      success: false,
+      error: "Failed to submit KYC"
+    };
+  }
+}
+
+export async function verifyKYC(walletAddress: string): Promise<{
+  success: boolean;
+  error?: string;
+  kycStatus?: string;
+}> {
+  try {
+    // Mock verification - in real system, this would verify ZK proof
+    // For demo, we'll randomly approve/reject pending applications
+    const result = await pool.query(
+      "SELECT kyc_status, zk_proof_hash FROM user_profiles WHERE wallet_address = $1",
+      [walletAddress]
+    );
+
+    if (result.rows.length === 0) {
+      return {
+        success: false,
+        error: "Profile not found"
+      };
+    }
+
+    const profile = result.rows[0];
+
+    if (profile.kyc_status !== 'pending') {
+      return {
+        success: false,
+        error: "KYC not submitted or already verified"
+      };
+    }
+
+    // Mock verification logic - approve 90% of applications
+    const isApproved = Math.random() > 0.1;
+    const newStatus = isApproved ? 'verified' : 'rejected';
+
+    await pool.query(
+      "UPDATE user_profiles SET kyc_status = $1, updated_at = NOW() WHERE wallet_address = $2",
+      [newStatus, walletAddress]
+    );
+
+    return {
+      success: true,
+      kycStatus: newStatus
+    };
+  } catch (error) {
+    console.error("Error verifying KYC:", error);
+    return {
+      success: false,
+      error: "Failed to verify KYC"
+    };
+  }
+}
+
+export async function getKYCStatus(walletAddress: string): Promise<{
+  kycStatus: string;
+  isAdult: boolean | null;
+  zkProofHash: string | null;
+  submittedAt: string | null;
+} | null> {
+  try {
+    const result = await pool.query(
+      "SELECT kyc_status, is_adult, zk_proof_hash, kyc_submitted_at FROM user_profiles WHERE wallet_address = $1",
+      [walletAddress]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const row = result.rows[0];
+    return {
+      kycStatus: row.kyc_status || 'unverified',
+      isAdult: row.is_adult,
+      zkProofHash: row.zk_proof_hash,
+      submittedAt: row.kyc_submitted_at?.toISOString() || null
+    };
+  } catch (error) {
+    console.error("Error getting KYC status:", error);
+    return null;
   }
 }

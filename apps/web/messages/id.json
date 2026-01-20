@@ -113,12 +113,13 @@
       "members": "Anggota"
     },
     "yield": {
-      "title": "Estimasi Yield (5% APY)",
-      "desc": "Dana pool menghasilkan bunga selama arisan berlangsung",
+      "title": "Estimasi Yield (3% Customer APY)",
+      "desc": "Dana terkunci mendapatkan 3% yield (5% total: 2% platform, 3% customer)",
       "perMonth": "Est. yield per bulan",
       "perWeek": "Est. yield per minggu",
       "total": "Total est"
     },
+    "payoutFeeNote": "Dikurangi {fee} biaya platform saat diklaim",
     "funds": {
       "title": "Dana Tersedia",
       "balance": "Saldo",
@@ -300,6 +301,7 @@
       "members": "Anggota",
       "contribution": "Iuran/Bulan",
       "payout": "Payout",
+      "payoutNote": "Pemenang menerima payout dikurangi 2% biaya platform",
       "deposit": "Uang Jaminan",
       "paymentDate": "Tanggal Bayar",
       "vouchRequired": "Vouch Wajib",
@@ -377,7 +379,9 @@
       "protectedVolume": "Volume Dilindungi",
       "activeCircles": "Circle Aktif",
       "defaultRate": "Tingkat Gagal Bayar",
-      "platformFee": "Biaya Platform Saja"
+      "platformFee": "Biaya Platform Saja",
+      "yield": "Dapatkan 3% Yield",
+      "yieldDesc": "Dana terkunci mendapatkan 3% yield (5% total: 2% platform, 3% customer)"
     },
     "problem": {
       "badge": "Masalahnya",
@@ -421,7 +425,7 @@
         "step4": {
           "num": "04",
           "title": "Pemenang Dapat Pool",
-          "desc": "Admin menentukan pemenang. Pemenang klaim jumlah pool dikurangi 1.5% biaya platform."
+          "desc": "Admin menentukan pemenang. Pemenang klaim jumlah pool dikurangi 2% biaya platform."
         },
         "step5": {
           "num": "05",
@@ -462,7 +466,7 @@
         "transparentFees": {
           "highlight": "Adil & transparan",
           "title": "Biaya Transparan",
-          "desc": "Hanya 1.5% biaya dari pembayaran kemenangan. Tanpa biaya tersembunyi. Pembuatan pool, bergabung, dan penarikan GRATIS."
+          "desc": "Hanya 2% biaya dari pembayaran kemenangan. Dapatkan 3% yield dari dana terkunci (5% total yield: 2% platform, 3% customer). Tanpa biaya tersembunyi. Pembuatan pool, bergabung, dan penarikan GRATIS."
         }
       }
     },
@@ -536,7 +540,7 @@
         },
         "q6": {
           "q": "Berapa biayanya?",
-          "a": "Membuat pool: GRATIS. Bergabung pool: GRATIS. Kontribusi bulanan: 0% biaya. Penarikan: GRATIS. Satu-satunya biaya adalah 1.5% dari pembayaran kemenangan saat Anda klaim hadiah."
+          "a": "Membuat pool: GRATIS. Bergabung pool: GRATIS. Kontribusi bulanan: 0% biaya. Penarikan: GRATIS. Satu-satunya biaya adalah 2% dari pembayaran kemenangan saat Anda klaim hadiah. Selain itu, dana terkunci mendapatkan 3% yield (5% total yield: 2% platform, 3% customer)."
         },
         "q7": {
           "q": "Apa itu Debt NFT?",
@@ -609,6 +613,45 @@
       "zeroFee": {
         "title": "Zero Platform Fee",
         "desc": "Gratis biaya platform selama 3 bulan pertama untuk early adopters"
+      },
+      "zkKyc": {
+        "title": "Perlindungan ZK-KYC",
+        "desc": "Verifikasi usia dengan KTP menggunakan zero-knowledge proofs. Data Anda tetap rahasia."
+      }
+    },
+    "kyc": {
+      "title": "Verifikasi KYC",
+      "subtitle": "Verifikasi identitas dengan KTP (Zero-Knowledge)",
+      "description": "Kami menggunakan teknologi ZK-KYC untuk memverifikasi Anda berusia 17+ tahun tanpa menyimpan data pribadi Anda.",
+      "privacyNote": "Data KTP Anda diproses secara lokal dan hanya bukti verifikasi usia yang disimpan.",
+      "form": {
+        "ktpNumber": "Nomor KTP (16 digit)",
+        "ktpNumberPlaceholder": "Masukkan nomor KTP 16 digit",
+        "fullName": "Nama Lengkap (sesuai KTP)",
+        "fullNamePlaceholder": "Masukkan nama lengkap dari KTP",
+        "birthDate": "Tanggal Lahir",
+        "address": "Alamat (sesuai KTP)",
+        "addressPlaceholder": "Masukkan alamat lengkap dari KTP",
+        "submit": "Ajukan KYC",
+        "submitting": "Mengajukan..."
+      },
+      "status": {
+        "unverified": "Belum Terverifikasi",
+        "pending": "Sedang Ditinjau",
+        "verified": "Terverifikasi ✓",
+        "rejected": "Ditolak"
+      },
+      "messages": {
+        "success": "KYC berhasil diajukan! Verifikasi memakan waktu 24 jam.",
+        "verified": "KYC terverifikasi! Anda sekarang bisa menggunakan semua fitur.",
+        "rejected": "KYC ditolak. Silakan periksa data Anda dan coba lagi.",
+        "error": "Error mengajukan KYC. Silakan coba lagi."
+      },
+      "zk": {
+        "title": "Zero-Knowledge Proof",
+        "description": "Kami hanya memverifikasi bahwa Anda berusia 17+ tahun. Tanggal lahir dan detail pribadi Anda tetap rahasia.",
+        "proof": "ZK Proof Dihasilkan",
+        "ageVerified": "Usia 17+ Terverifikasi"
       },
       "updates": {
         "title": "Update Langsung",
@@ -695,7 +738,7 @@
     "money": {
       "q1": {
         "q": "Berapa biaya pakai ArisanAman?",
-        "a": "Buat grup arisan: GRATIS. Gabung grup: GRATIS. Bayar iuran bulanan: GRATIS (0% biaya). Biaya hanya 1.5% saat Anda menerima uang arisan. Contoh: terima Rp 1.000.000, biayanya cuma Rp 15.000."
+        "a": "Buat grup arisan: GRATIS. Gabung grup: GRATIS. Bayar iuran bulanan: GRATIS (0% biaya). Biaya hanya 2% saat Anda menerima uang arisan. Contoh: terima Rp 1.000.000, biayanya cuma Rp 20.000. Selain itu, dana terkunci mendapatkan 3% yield (5% total yield: 2% platform, 3% customer)."
       },
       "q2": {
         "q": "Apa itu Deposit Keamanan dan kenapa perlu?",
@@ -912,15 +955,15 @@
         "title": "Tentukan Pemenang",
         "subtitle": "Adil & transparan",
         "enforcement": "Urutan giliran TETAP (on-chain)",
-        "description": "Admin tentukan pemenang sesuai urutan. Pemenang klaim uang setelah dikurangi fee 1.5%.",
+        "description": "Admin tentukan pemenang sesuai urutan. Pemenang klaim uang setelah dikurangi fee 2%.",
         "details": [
           "🎯 Admin klik 'Tentukan Pemenang'",
           "👑 Pemenang sesuai urutan giliran",
-          "💸 Pemenang klaim payout (Rp 4jt - 1.5% fee)",
+          "💸 Pemenang klaim payout (Rp 4jt - 2% fee)",
           "🔄 Ulangi untuk round berikutnya"
         ],
-        "example": "Round 1: Siti menang! Klaim Rp 3.940.000 (sudah dikurangi fee)",
-        "math": "Payout = (Iuran × Jumlah Anggota) - Platform Fee 1.5%",
+        "example": "Round 1: Siti menang! Klaim Rp 3.920.000 (sudah dikurangi fee)",
+        "math": "Payout = (Iuran × Jumlah Anggota) - Platform Fee 2%",
         "trustPoint": {
           "title": "POIN KEPERCAYAAN #5: Terbukti Adil",
           "description": "Urutan giliran DISET SEBELUM aktivasi dan disimpan di blockchain. Siapa saja bisa verifikasi urutannya. Admin tidak punya kemampuan untuk memanipulasi siapa menang kapan."
@@ -933,14 +976,14 @@
         "description": "Pemenang klik 'Klaim Payout' dan dana langsung dari smart contract ke wallet pemenang.",
         "details": [
           "Pemenang klik 'Klaim Payout'",
-          "Smart contract kalkulasi: (Iuran × Anggota) - 1.5% fee",
+          "Smart contract kalkulasi: (Iuran × Anggota) - 2% fee",
           "Transfer langsung ke pemenang (tanpa perantara)",
           "❌ Admin TIDAK BISA mencuri atau mengalihkan dana"
         ],
         "trustPoint": {
           "title": "POIN KEPERCAYAAN #6: Tanpa Sentuhan Manusia",
           "description": "Dana langsung dari smart contract ke wallet pemenang. Admin tidak pernah pegang uang. Secara matematis tidak mungkin untuk mencuri.",
-          "math": "Payout = (Rp 1jt × 4 anggota) - 1.5% = Rp 3.940.000"
+          "math": "Payout = (Rp 1jt × 4 anggota) - 2% = Rp 3.920.000"
         }
       },
       "step7": {

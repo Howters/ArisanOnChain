@@ -71,7 +71,7 @@ export default function LandingPage() {
     { value: "Rp 2.5B+", label: t("stats.protectedVolume"), icon: Shield },
     { value: "1,234", label: t("stats.activeCircles"), icon: Users },
     { value: "0%", label: t("stats.defaultRate"), icon: BadgeCheck },
-    { value: "1.5%", label: t("stats.platformFee"), icon: Coins },
+    { value: "2%", label: t("stats.platformFee"), icon: Coins },
   ];
 
   const features = [
@@ -110,6 +110,12 @@ export default function LandingPage() {
       title: t("features.items.transparentFees.title"),
       desc: t("features.items.transparentFees.desc"),
       highlight: t("features.items.transparentFees.highlight"),
+    },
+    {
+      icon: Shield,
+      title: t("features.items.zkKyc.title"),
+      desc: t("features.items.zkKyc.desc"),
+      highlight: "Privacy-First Verification",
     },
   ];
 

@@ -12,6 +12,7 @@ import { Loader2, User, Phone, MapPin, Check, ArrowRight, AlertTriangle } from "
 import { useTranslations } from "next-intl";
 import { useDebtNFTs } from "@/lib/hooks/use-contracts";
 import { Badge } from "@/components/ui/badge";
+import { KYCStatus } from "@/components/auth/kyc-status";
 
 interface ProfileData {
   nama: string;
@@ -235,6 +236,21 @@ export default function ProfilePage() {
           </form>
         </CardContent>
       </Card>
+
+      {/* KYC Section */}
+      {walletAddress && (
+        <Card className="border-orange-500/20 bg-orange-500/5">
+          <CardHeader>
+            <CardTitle className="text-lg">Identity Verification</CardTitle>
+            <CardDescription>
+              Verify your identity to unlock all features
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <KYCStatus walletAddress={walletAddress} />
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-blue-500/20 bg-blue-500/5">
         <CardContent className="p-4">

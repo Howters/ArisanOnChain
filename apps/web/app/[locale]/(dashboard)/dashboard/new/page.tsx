@@ -568,6 +568,7 @@ export default function CreateCirclePage() {
                 <div className="p-4 rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground mb-1">{t("step4.payout")}</p>
                   <p className="font-medium">{formatIDR(totalPayout)}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t("step4.payoutNote")}</p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground mb-1">{t("step4.deposit")}</p>

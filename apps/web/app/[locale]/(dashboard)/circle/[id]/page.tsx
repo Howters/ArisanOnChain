@@ -353,7 +353,8 @@ export default function CirclePage() {
   };
 
   const totalPot = Number(pool.contributionAmount) * activeMembers.length;
-  const annualYieldRate = 0.05;
+  // 3% customer yield (5% total: 2% platform, 3% customer)
+  const annualYieldRate = 0.03;
   const monthlyYieldRate = annualYieldRate / 12;
   const estimatedMonthlyYield = Math.floor(totalPot * monthlyYieldRate);
   const totalPoolDuration = pool.maxMembers;
@@ -861,7 +862,12 @@ export default function CirclePage() {
                 <div className="text-center p-4 rounded-lg bg-primary/5 border border-primary/20">
                   <p className="text-sm text-muted-foreground mb-1">{pool.currentWinner ? t("winner") + " " + pool.currentRound : t("status")}</p>
                   <p className="text-lg font-bold">{pool.currentWinner ? getDisplayName(pool.currentWinner) : allContributed ? t("readyShuffle") : t("waitingContributions")}</p>
-                  {pool.currentPayout && Number(pool.currentPayout) > 0 && <p className="text-2xl font-bold text-primary mt-2">{formatIDR(Number(pool.currentPayout))}</p>}
+                  {pool.currentPayout && Number(pool.currentPayout) > 0 && (
+                    <>
+                      <p className="text-2xl font-bold text-primary mt-2">{formatIDR(Number(pool.currentPayout))}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t("payoutFeeNote", { fee: "2%" })}</p>
+                    </>
+                  )}
                 </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-muted-foreground">{t("paidCount")}</span><span className="font-medium">{activeMembers.filter((m: any) => m.hasContributed).length}/{activeMembers.length}</span></div>

@@ -113,12 +113,13 @@
       "members": "Members"
     },
     "yield": {
-      "title": "Estimated Yield (5% APY)",
-      "desc": "Pool funds earn interest during the circle",
+      "title": "Estimated Yield (3% Customer APY)",
+      "desc": "Locked funds earn 3% yield (5% total: 2% platform, 3% customer)",
       "perMonth": "Est. yield per month",
       "perWeek": "Est. yield per week",
       "total": "Total est"
     },
+    "payoutFeeNote": "Minus {fee} platform fee when claimed",
     "funds": {
       "title": "Available Funds",
       "balance": "Balance",
@@ -300,6 +301,7 @@
       "members": "Members",
       "contribution": "Contribution/Month",
       "payout": "Payout",
+      "payoutNote": "Winner receives payout minus 2% platform fee",
       "deposit": "Security Deposit",
       "paymentDate": "Payment Date",
       "vouchRequired": "Vouch Required",
@@ -377,7 +379,9 @@
       "protectedVolume": "Protected Volume",
       "activeCircles": "Active Circles",
       "defaultRate": "Default Rate",
-      "platformFee": "Platform Fee Only"
+      "platformFee": "Platform Fee Only",
+      "yield": "Earn 3% Yield",
+      "yieldDesc": "Locked funds earn 3% yield (5% total: 2% platform, 3% customer)"
     },
     "problem": {
       "badge": "The Problem",
@@ -421,7 +425,7 @@
         "step4": {
           "num": "04",
           "title": "Winner Takes Pool",
-          "desc": "Admin determines the winner. Winner claims the pooled amount minus 1.5% platform fee."
+          "desc": "Admin determines the winner. Winner claims the pooled amount minus 2% platform fee."
         },
         "step5": {
           "num": "05",
@@ -462,7 +466,7 @@
         "transparentFees": {
           "highlight": "Fair & transparent",
           "title": "Transparent Fees",
-          "desc": "Only 1.5% fee on winning payout. No hidden charges. Pool creation, joining, and withdrawals are FREE."
+          "desc": "Only 2% fee on winning payout. Earn 3% yield on locked funds (5% total yield: 2% platform, 3% customer). No hidden charges. Pool creation, joining, and withdrawals are FREE."
         }
       }
     },
@@ -536,7 +540,7 @@
         },
         "q6": {
           "q": "What are the fees?",
-          "a": "Creating pools: FREE. Joining pools: FREE. Monthly contributions: 0% fee. Withdrawals: FREE. The only fee is 1.5% on the winning payout when you claim your prize."
+          "a": "Creating pools: FREE. Joining pools: FREE. Monthly contributions: 0% fee. Withdrawals: FREE. The only fee is 2% on the winning payout when you claim your prize. Additionally, locked funds earn 3% yield (5% total yield: 2% platform, 3% customer)."
         },
         "q7": {
           "q": "What is a Debt NFT?",
@@ -609,6 +613,45 @@
       "zeroFee": {
         "title": "Zero Platform Fee",
         "desc": "Free platform fee for the first 3 months for early adopters"
+      },
+      "zkKyc": {
+        "title": "ZK-KYC Protection",
+        "desc": "Verify age with KTP using zero-knowledge proofs. Your data stays private."
+      }
+    },
+    "kyc": {
+      "title": "KYC Verification",
+      "subtitle": "Verify your identity with KTP (Zero-Knowledge)",
+      "description": "We use ZK-KYC technology to verify you're 17+ years old without storing your personal data.",
+      "privacyNote": "Your KTP data is processed locally and only a proof of age verification is stored.",
+      "form": {
+        "ktpNumber": "KTP Number (16 digits)",
+        "ktpNumberPlaceholder": "Enter 16-digit KTP number",
+        "fullName": "Full Name (as in KTP)",
+        "fullNamePlaceholder": "Enter full name from KTP",
+        "birthDate": "Birth Date",
+        "address": "Address (as in KTP)",
+        "addressPlaceholder": "Enter complete address from KTP",
+        "submit": "Submit KYC",
+        "submitting": "Submitting..."
+      },
+      "status": {
+        "unverified": "Not Verified",
+        "pending": "Under Review",
+        "verified": "Verified ✓",
+        "rejected": "Rejected"
+      },
+      "messages": {
+        "success": "KYC submitted successfully! Verification takes 24 hours.",
+        "verified": "KYC verified! You can now use all features.",
+        "rejected": "KYC was rejected. Please check your data and try again.",
+        "error": "Error submitting KYC. Please try again."
+      },
+      "zk": {
+        "title": "Zero-Knowledge Proof",
+        "description": "We only verify that you are 17+ years old. Your actual birth date and personal details remain private.",
+        "proof": "ZK Proof Generated",
+        "ageVerified": "Age 17+ Verified"
       },
       "updates": {
         "title": "Direct Updates",
@@ -695,7 +738,7 @@
     "money": {
       "q1": {
         "q": "How much does it cost to use ArisanAman?",
-        "a": "Creating an arisan group: FREE. Joining a group: FREE. Monthly payments: FREE (0% fee). The only fee is 1.5% when you receive the arisan payout. For example, if you receive Rp 1,000,000, the fee is only Rp 15,000."
+        "a": "Creating an arisan group: FREE. Joining a group: FREE. Monthly payments: FREE (0% fee). The only fee is 2% when you receive the arisan payout. For example, if you receive Rp 1,000,000, the fee is only Rp 20,000. Additionally, locked funds earn 3% yield (5% total yield: 2% platform, 3% customer)."
       },
       "q2": {
         "q": "What is Security Deposit and why is it needed?",
@@ -912,15 +955,15 @@
         "title": "Determine Winner",
         "subtitle": "Fair & transparent",
         "enforcement": "FIXED rotation order (on-chain)",
-        "description": "Admin determines winner according to order. Winner claims money after 1.5% fee deduction.",
+        "description": "Admin determines winner according to order. Winner claims money after 2% fee deduction.",
         "details": [
           "🎯 Admin clicks 'Determine Winner'",
           "👑 Winner according to rotation order",
-          "💸 Winner claims payout (Rp 4jt - 1.5% fee)",
+          "💸 Winner claims payout (Rp 4jt - 2% fee)",
           "🔄 Repeat for next round"
         ],
-        "example": "Round 1: Siti wins! Claims Rp 3,940,000 (after fee deduction)",
-        "math": "Payout = (Contribution × Members) - Platform Fee 1.5%",
+        "example": "Round 1: Siti wins! Claims Rp 3,920,000 (after fee deduction)",
+        "math": "Payout = (Contribution × Members) - Platform Fee 2%",
         "trustPoint": {
           "title": "TRUST POINT #5: Provably Fair",
           "description": "Rotation order is SET BEFORE activation and stored on blockchain. Anyone can verify the order. Admin has zero ability to manipulate who wins when."
@@ -933,14 +976,14 @@
         "description": "Winner clicks 'Claim Payout' and funds go directly from smart contract to winner's wallet.",
         "details": [
           "Winner clicks 'Claim Payout'",
-          "Smart contract calculates: (Contributions × Members) - 1.5% fee",
+          "Smart contract calculates: (Contributions × Members) - 2% fee",
           "Direct transfer to winner (no middleman)",
           "❌ Admin CANNOT steal or redirect funds"
         ],
         "trustPoint": {
           "title": "TRUST POINT #6: No Human Touch",
           "description": "Funds go DIRECTLY from smart contract to winner's wallet. Admin never holds money. Mathematically impossible to steal.",
-          "math": "Payout = (Rp 1jt × 4 members) - 1.5% = Rp 3,940,000"
+          "math": "Payout = (Rp 1jt × 4 members) - 2% = Rp 3,920,000"
         }
       },
       "step7": {
