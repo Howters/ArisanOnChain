@@ -99,14 +99,18 @@ export function KYCStatus({ walletAddress, compact = false }: KYCStatusProps) {
   }
 
   if (compact) {
+    const status = kycStatus?.kycStatus || "unverified";
     return (
       <div className="flex items-center gap-2">
-        {getStatusIcon(kycStatus?.kycStatus || "unverified")}
-        <Badge variant={getStatusColor(kycStatus?.kycStatus || "unverified")}>
-          {t("status")[kycStatus?.kycStatus as keyof typeof t.status] || "Unverified"}
+        {getStatusIcon(status)}
+        <Badge variant={getStatusColor(status)}>
+          {status === "unverified" && t("status.unverified")}
+          {status === "pending" && t("status.pending")}
+          {status === "verified" && t("status.verified")}
+          {status === "rejected" && t("status.rejected")}
         </Badge>
         <div className="flex gap-2">
-          {kycStatus?.kycStatus === "pending" && (
+          {status === "pending" && (
             <Button
               variant="outline"
               size="sm"
@@ -116,7 +120,7 @@ export function KYCStatus({ walletAddress, compact = false }: KYCStatusProps) {
               {verifying ? "..." : "Verify"}
             </Button>
           )}
-          {kycStatus?.kycStatus !== "verified" && (
+          {status !== "verified" && (
             <Button
               variant="outline"
               size="sm"
@@ -130,20 +134,25 @@ export function KYCStatus({ walletAddress, compact = false }: KYCStatusProps) {
     );
   }
 
+  const status = kycStatus?.kycStatus || "unverified";
+  
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {getStatusIcon(kycStatus?.kycStatus || "unverified")}
+          {getStatusIcon(status)}
           <div>
             <h3 className="font-medium">{t("title")}</h3>
             <p className="text-sm text-muted-foreground">
-              {t("status")[kycStatus?.kycStatus as keyof typeof t.status] || "Unverified"}
+              {status === "unverified" && t("status.unverified")}
+              {status === "pending" && t("status.pending")}
+              {status === "verified" && t("status.verified")}
+              {status === "rejected" && t("status.rejected")}
             </p>
           </div>
         </div>
         <div className="flex gap-2">
-          {kycStatus?.kycStatus === "pending" && (
+          {status === "pending" && (
             <Button
               variant="outline"
               size="sm"
@@ -153,14 +162,14 @@ export function KYCStatus({ walletAddress, compact = false }: KYCStatusProps) {
               {verifying ? "Verifying..." : "Demo: Verify Now"}
             </Button>
           )}
-          {kycStatus?.kycStatus !== "verified" && (
+          {status !== "verified" && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowForm(true)}
             >
               <Shield className="mr-2 h-4 w-4" />
-              {kycStatus?.kycStatus === "pending" ? "Update Info" : "Start Verification"}
+              {status === "pending" ? "Update Info" : "Start Verification"}
             </Button>
           )}
         </div>

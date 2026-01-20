@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CheckCircle, Clock, XCircle, Lock, Eye } from "lucide-react";
+import { Shield, CheckCircle, Clock, XCircle, Lock, Eye, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 interface KYCFormProps {
@@ -25,6 +25,16 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
     birthDate: "",
     address: ""
   });
+
+  const handleAutofill = () => {
+    setFormData({
+      ktpNumber: "3201234567890123",
+      fullName: "Budi Santoso",
+      birthDate: "1990-01-15",
+      address: "Jl. Merdeka No. 123, RT 01/RW 02, Kelurahan Cikini, Kecamatan Menteng, Jakarta Pusat"
+    });
+    toast.success("Form auto-filled with test data!");
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -93,25 +103,46 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <div className="flex items-center gap-3">
-          <Shield className="h-6 w-6 text-primary" />
-          <div>
-            <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>{t("subtitle")}</CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Shield className="h-6 w-6 text-primary" />
+            <div>
+              <CardTitle>{t("title")}</CardTitle>
+              <CardDescription>{t("subtitle")}</CardDescription>
+            </div>
           </div>
+          {currentKycStatus !== "verified" && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleAutofill}
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Autofill
+            </Button>
+          )}
         </div>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Current Status */}
         {currentKycStatus && (
           <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
             <div className="flex items-center gap-2">
               {getStatusIcon(currentKycStatus)}
-              <span className="font-medium">{t("status")[currentKycStatus as keyof typeof t.status] || currentKycStatus}</span>
+              <span className="font-medium">
+                {currentKycStatus === "unverified" && t("status.unverified")}
+                {currentKycStatus === "pending" && t("status.pending")}
+                {currentKycStatus === "verified" && t("status.verified")}
+                {currentKycStatus === "rejected" && t("status.rejected")}
+              </span>
             </div>
             <Badge variant={getStatusColor(currentKycStatus)}>
-              {t("status")[currentKycStatus as keyof typeof t.status] || currentKycStatus}
+              {currentKycStatus === "unverified" && t("status.unverified")}
+              {currentKycStatus === "pending" && t("status.pending")}
+              {currentKycStatus === "verified" && t("status.verified")}
+              {currentKycStatus === "rejected" && t("status.rejected")}
             </Badge>
           </div>
         )}
@@ -126,7 +157,6 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
           <p className="text-xs text-blue-500 dark:text-blue-500 mt-1">{t("privacyNote")}</p>
         </div>
 
-        {/* KYC Form - Only show if not verified */}
         {currentKycStatus !== "verified" && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -141,6 +171,9 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
                   maxLength={16}
                   required
                 />
+                <p className="text-xs text-muted-foreground">
+                  {formData.ktpNumber.length}/16 digits
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -176,6 +209,9 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
                   required
                 />
+                <p className="text-xs text-muted-foreground">
+                  {formData.address.length}/10 characters minimum
+                </p>
               </div>
             </div>
 
@@ -191,6 +227,26 @@ export function KYCForm({ walletAddress, currentKycStatus, onKycUpdate }: KYCFor
             >
               {isSubmitting ? t("form.submitting") : t("form.submit")}
             </Button>
+
+            {!isFormValid && (
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p className="font-medium">Requirements to submit:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  {formData.ktpNumber.length !== 16 && (
+                    <li className="text-red-500">KTP number must be exactly 16 digits</li>
+                  )}
+                  {formData.fullName.length < 2 && (
+                    <li className="text-red-500">Full name required (minimum 2 characters)</li>
+                  )}
+                  {!formData.birthDate && (
+                    <li className="text-red-500">Birth date is required</li>
+                  )}
+                  {formData.address.length < 10 && (
+                    <li className="text-red-500">Address must be at least 10 characters</li>
+                  )}
+                </ul>
+              </div>
+            )}
           </form>
         )}
 
