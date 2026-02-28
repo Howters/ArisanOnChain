@@ -4,7 +4,7 @@ import { privateKeyToAccount } from "viem/accounts";
 
 const liskSepolia: Chain = {
   id: 4202,
-  name: "Lisk Sepolia",
+  name: "Sepolia",
   nativeCurrency: { name: "Sepolia ETH", symbol: "ETH", decimals: 18 },
   rpcUrls: {
     default: { http: ["https://rpc.sepolia-api.lisk.com"] },

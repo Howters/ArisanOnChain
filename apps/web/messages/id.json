@@ -51,7 +51,7 @@
     "settings": "Pengaturan",
     "createNew": "Buat Arisan Baru",
     "poweredBy": "🔐 Powered by Blockchain",
-    "secureNote": "Semua transaksi tercatat di Lisk L2. Aman, transparan, dan tanpa biaya gas."
+    "secureNote": "Semua transaksi tercatat on-chain. Aman, transparan, dan tanpa biaya gas."
   },
   "dashboard": {
     "welcome": "Selamat datang",
@@ -366,7 +366,7 @@
     "noSeedPhrase": "Tanpa seed phrase, tanpa biaya gas."
   },
   "landing": {
-    "badge": "Dibangun di Lisk L2 • Transaksi Tanpa Gas",
+    "badge": "Transaksi Tanpa Gas",
     "heroLine1": "Arisan tradisional,",
     "heroLine2": "tanpa risiko penipuan",
     "heroDesc": "ROSCA on-chain pertama di Indonesia. Deposit keamanan melindungi setiap anggota. Pelanggar dikenai sanksi. Uang Anda aman.",
@@ -562,8 +562,8 @@
       "desc": "ROSCA on-chain pertama untuk Indonesia. Membawa kepercayaan ke tabungan komunitas tradisional melalui teknologi blockchain.",
       "product": "Produk",
       "links": "Tautan",
-      "builtFor": "Dibangun untuk Indonesia 🇮🇩 • Lisk Hackathon 2026",
-      "contracts": "Smart contracts di Lisk Sepolia"
+      "builtFor": "Dibangun untuk Indonesia 🇮🇩",
+      "contracts": "Smart contracts on-chain"
     }
   },
   "waitlist": {

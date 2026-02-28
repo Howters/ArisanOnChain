@@ -713,8 +713,6 @@ export default function LandingPage() {
               <h4 className="font-medium mb-4">{t("footer.links")}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="https://github.com/Howters/ArisanOnChain" className="hover:text-foreground transition-colors">GitHub</a></li>
-                <li><a href="https://lisk.com" className="hover:text-foreground transition-colors">Lisk L2</a></li>
-                <li><a href="https://sepolia-blockscout.lisk.com" className="hover:text-foreground transition-colors">Block Explorer</a></li>
               </ul>
             </div>
           </div>

@@ -51,7 +51,7 @@
     "settings": "Settings",
     "createNew": "Create New Circle",
     "poweredBy": "🔐 Powered by Blockchain",
-    "secureNote": "All transactions recorded on Lisk L2. Safe, transparent, and gasless."
+    "secureNote": "All transactions recorded on-chain. Safe, transparent, and gasless."
   },
   "dashboard": {
     "welcome": "Welcome",
@@ -366,7 +366,7 @@
     "noSeedPhrase": "No seed phrases, no gas fees needed."
   },
   "landing": {
-    "badge": "Built on Lisk L2 • Gasless Transactions",
+    "badge": "Gasless Transactions",
     "heroLine1": "Traditional arisan,",
     "heroLine2": "zero scam risk",
     "heroDesc": "The first on-chain ROSCA for Indonesia. Security deposits protect every member. Defaulters are penalized. Your savings are safe.",
@@ -562,8 +562,8 @@
       "desc": "The first on-chain ROSCA for Indonesia. Bringing trust to traditional community savings through blockchain technology.",
       "product": "Product",
       "links": "Links",
-      "builtFor": "Built for Indonesia 🇮🇩 • Lisk Hackathon 2026",
-      "contracts": "Smart contracts on Lisk Sepolia"
+      "builtFor": "Built for Indonesia 🇮🇩",
+      "contracts": "Smart contracts on-chain"
     }
   },
   "waitlist": {

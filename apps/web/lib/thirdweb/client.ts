@@ -6,7 +6,7 @@ export const client = createThirdwebClient({
 
 export const liskSepolia = defineChain({
   id: 4202,
-  name: "Lisk Sepolia",
+  name: "Sepolia",
   nativeCurrency: {
     name: "Sepolia ETH",
     symbol: "ETH",

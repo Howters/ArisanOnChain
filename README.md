@@ -1,11 +1,10 @@
 # 🏦 ArisanAman
 
-### Decentralized ROSCA (Rotating Savings & Credit Association) on Lisk L2
+### Decentralized ROSCA (Rotating Savings & Credit Association)
 
 **Bringing trust to traditional community savings through blockchain technology.**
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://arisan-on-chain.vercel.app)
-[![Built on Lisk](https://img.shields.io/badge/Built%20on-Lisk%20L2-blue)](https://lisk.com)
 [![Hackathon](https://img.shields.io/badge/Hackathon-2026-orange)]()
 
 ---
@@ -704,7 +703,7 @@ Platform Fee Calculation:
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                  SMART CONTRACTS (Lisk L2)                      │
+│                      SMART CONTRACTS                            │
 ├─────────────────────────────────────────────────────────────────┤
 │  • ArisanFactory.sol    - Pool deployment & registry            │
 │  • ArisanPool.sol       - Core arisan logic & state             │
@@ -716,7 +715,7 @@ Platform Fee Calculation:
 
 ---
 
-## 📊 Smart Contract Addresses (Lisk Sepolia)
+## 📊 Smart Contract Addresses
 
 | Contract | Address |
 |----------|---------|
@@ -758,7 +757,7 @@ pnpm dev
 
 ### Innovation Points
 
-1. **First On-Chain ROSCA** on Lisk L2
+1. **First On-Chain ROSCA**
 2. **Social Staking** - Novel anti-fraud mechanism
 3. **Debt NFTs** - Blockchain-based credit scoring
 4. **Gasless UX** - Web2-like experience
@@ -773,7 +772,7 @@ pnpm dev
 
 ## 👥 Team 
 
-Built with ❤️ for the Lisk Round 3
+Built with ❤️ for Indonesia
 
 ---
 

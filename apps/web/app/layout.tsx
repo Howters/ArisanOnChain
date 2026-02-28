@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "ArisanAman — On-chain ROSCA",
   description: "The first on-chain rotating savings circle for Indonesia. Transparent, secure, and gasless.",
-  keywords: ["arisan", "blockchain", "ROSCA", "DeFi", "Indonesia", "Lisk"],
+  keywords: ["arisan", "blockchain", "ROSCA", "DeFi", "Indonesia"],
 };
 
 export default function RootLayout({
